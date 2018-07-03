@@ -3,6 +3,7 @@ package io.smileyjoe.applist.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -66,6 +67,8 @@ public class AppListFragment extends Fragment {
         RecyclerView recyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
         recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerAppDetails.setAdapter(new AppDetailAdapter(getAppDetailList()));
+        recyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+
         return rootView;
     }
 

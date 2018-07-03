@@ -17,4 +17,32 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/button_horizontal_padding</item>
+    </style>
+
+    <style name="Button.Primary">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RowWrapper">
+        <item name="android:paddingBottom">@dimen/row_vertical_margin</item>
+        <item name="android:paddingLeft">@dimen/row_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/row_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/row_vertical_margin</item>
+    </style>
+
 </resources>

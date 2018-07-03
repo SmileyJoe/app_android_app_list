@@ -3,10 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="horizontal"
-              android:paddingBottom="@dimen/row_vertical_margin"
-              android:paddingLeft="@dimen/row_horizontal_margin"
-              android:paddingRight="@dimen/row_horizontal_margin"
-              android:paddingTop="@dimen/row_vertical_margin">
+    style="@style/RowWrapper">
 
     <ImageView
         android:id="@+id/image_icon"
@@ -16,14 +13,17 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical">
         <TextView
             android:id="@+id/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"/>
+            style="@style/Text.Title"/>
+        <Button
+            android:id="@+id/button_play_store"
+            android:text="@string/button_open_play_store"
+            android:layout_gravity="right"
+            style="@style/Button.Primary"/>
     </LinearLayout>
 </LinearLayout>

@@ -46,6 +46,10 @@ public class AppDetail {
         return mIcon;
     }
 
+    public String getPlayStoreLink(){
+        return "http://play.google.com/store/apps/details?id=" + getPackage();
+    }
+
     @Override
     public String toString() {
         return "AppDetail{" +

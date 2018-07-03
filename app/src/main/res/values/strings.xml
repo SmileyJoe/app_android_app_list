@@ -3,4 +3,5 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="fragment_title_installed_apps">Installed</string>
+    <string name="button_open_play_store">Play Store</string>
 </resources>
