@@ -1,10 +1,12 @@
 package io.smileyjoe.applist.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import io.smileyjoe.applist.fragment.AppListFragment;
+import io.smileyjoe.applist.fragment.AppListFragment.Type;
 
 /**
  * Created by cody on 2018/07/03.
@@ -12,27 +14,27 @@ import io.smileyjoe.applist.fragment.AppListFragment;
 
 public class PagerAdapterMain extends FragmentPagerAdapter {
 
-    public PagerAdapterMain(FragmentManager fm) {
+    private final Type[] mTypes = new Type[]{Type.INSTALLED};
+    private Context mContext;
+
+    public PagerAdapterMain(Context context, FragmentManager fm) {
         super(fm);
+        mContext = context;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return AppListFragment.newInstance(position + 1);
+        return AppListFragment.newInstance(mTypes[position]);
     }
 
     @Override
     public int getCount() {
-        return 1;
+        return mTypes.length;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "SECTION 1";
-        }
-        return null;
+        return mTypes[position].getFragmentTitle(mContext);
     }
 
 }

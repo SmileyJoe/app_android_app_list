@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,8 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
+import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.PackageUtil;
 
 /**
@@ -18,17 +23,39 @@ import io.smileyjoe.applist.util.PackageUtil;
 
 public class AppListFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    public enum Type{
+        INSTALLED(R.string.fragment_title_installed_apps);
+
+        private int mFragmentTitleResId;
+
+        Type(int fragmentTitleResId) {
+            mFragmentTitleResId = fragmentTitleResId;
+        }
+
+        public String getFragmentTitle(Context context){
+            return context.getString(mFragmentTitleResId);
+        }
+    }
+
+    private static final String EXTRA_TYPE = "type";
+    private Type mType;
 
     public AppListFragment() {
     }
 
-    public static AppListFragment newInstance(int sectionNumber) {
+    public static AppListFragment newInstance(Type type) {
         AppListFragment fragment = new AppListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putSerializable(EXTRA_TYPE, type);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mType = (Type) getArguments().getSerializable(EXTRA_TYPE);
     }
 
     @Override
@@ -38,7 +65,16 @@ public class AppListFragment extends Fragment {
 
         RecyclerView recyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
         recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerAppDetails.setAdapter(new AppDetailAdapter(PackageUtil.getInstalledApplications(getContext().getPackageManager())));
+        recyclerAppDetails.setAdapter(new AppDetailAdapter(getAppDetailList()));
         return rootView;
+    }
+
+    private List<AppDetail> getAppDetailList(){
+        switch (mType){
+            case INSTALLED:
+                return PackageUtil.getInstalledApplications(getContext().getPackageManager());
+        }
+
+        return new ArrayList<>();
     }
 }
