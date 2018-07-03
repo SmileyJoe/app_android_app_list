@@ -23,7 +23,7 @@ public class PagerAdapterMain extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -31,8 +31,6 @@ public class PagerAdapterMain extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return "SECTION 1";
-            case 1:
-                return "SECTION 2";
         }
         return null;
     }
