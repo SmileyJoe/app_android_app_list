@@ -13,6 +13,7 @@ public class AppDetail {
     private String mPackage;
     private Intent mLaunchActivity;
     private Drawable mIcon;
+    private boolean mSaved;
 
     public void setName(String name) {
         mName = name;
@@ -30,6 +31,10 @@ public class AppDetail {
         mIcon = icon;
     }
 
+    public void setSaved(boolean saved) {
+        mSaved = saved;
+    }
+
     public String getName() {
         return mName;
     }
@@ -44,6 +49,10 @@ public class AppDetail {
 
     public Drawable getIcon() {
         return mIcon;
+    }
+
+    public boolean isSaved() {
+        return mSaved;
     }
 
     public String getPlayStoreLink(){

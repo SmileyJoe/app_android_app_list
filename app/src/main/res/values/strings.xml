@@ -4,4 +4,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="fragment_title_installed_apps">Installed</string>
     <string name="button_open_play_store">Play Store</string>
+    <string name="button_save">Save</string>
+    <string name="button_saved">Saved</string>
 </resources>

@@ -20,8 +20,8 @@
     <style name="Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/button_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingLeft">@dimen/button_padding</item>
+        <item name="android:paddingRight">@dimen/button_padding</item>
     </style>
 
     <style name="Button.Primary">

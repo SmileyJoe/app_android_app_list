@@ -1,29 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              style="@style/RowWrapper"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="horizontal"
-    style="@style/RowWrapper">
-
-    <ImageView
-        android:id="@+id/image_icon"
-        android:layout_width="@dimen/image_app_icon_width"
-        android:layout_height="@dimen/image_app_icon_height"
-        android:layout_marginRight="@dimen/app_detail_icon_margin_right"/>
+              android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical">
-        <TextView
-            android:id="@+id/text_title"
-            style="@style/Text.Title"/>
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image_icon"
+            android:layout_width="@dimen/image_app_icon_width"
+            android:layout_height="@dimen/image_app_icon_height"
+            android:layout_marginRight="@dimen/app_detail_icon_margin_right"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_title"
+                style="@style/Text.Title"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:orientation="horizontal">
+
+        <io.smileyjoe.applist.view.ButtonProgress
+            android:id="@+id/button_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text_enabled="@string/button_save"
+            app:text_disabled="@string/button_saved"
+            app:background_enabled="@color/colorPrimary"
+            app:background_disabled="@color/transparent"
+            app:background_loading="@color/colorPrimary"
+            app:text_color_enabled="@color/white"
+            app:text_color_disabled="@color/colorPrimary"
+            app:state="enabled"
+            android:layout_marginRight="@dimen/button_spacing"/>
+
         <Button
             android:id="@+id/button_play_store"
-            android:text="@string/button_open_play_store"
-            android:layout_gravity="right"
-            style="@style/Button.Primary"/>
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            style="@style/Button.Primary"
+            android:text="@string/button_open_play_store"/>
     </LinearLayout>
 </LinearLayout>
