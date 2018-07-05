@@ -4,9 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.comparator.AppDetailComparator;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
@@ -19,6 +21,7 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
     private List<AppDetail> mItems;
 
     public AppDetailAdapter(List<AppDetail> items) {
+        Collections.sort(items, new AppDetailComparator());
         mItems = items;
     }
 
