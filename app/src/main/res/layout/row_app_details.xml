@@ -27,6 +27,10 @@
             <TextView
                 android:id="@+id/text_title"
                 style="@style/Text.Title"/>
+
+            <TextView
+                android:id="@+id/text_package"
+                style="@style/Text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -34,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
+        android:paddingTop="@dimen/row_vertical_margin"
         android:orientation="horizontal">
 
         <io.smileyjoe.applist.view.ButtonProgress

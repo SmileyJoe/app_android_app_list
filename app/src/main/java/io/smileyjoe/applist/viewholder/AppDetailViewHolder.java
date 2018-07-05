@@ -19,6 +19,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView mImageIcon;
     private TextView mTextTitle;
+    private TextView mTextPackage;
     private Button mButtonPlayStore;
     private ButtonProgress mButtonProgress;
 
@@ -26,6 +27,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         mTextTitle = (TextView) itemView.findViewById(R.id.text_title);
+        mTextPackage = (TextView) itemView.findViewById(R.id.text_package);
         mImageIcon = (ImageView) itemView.findViewById(R.id.image_icon);
         mButtonPlayStore = (Button) itemView.findViewById(R.id.button_play_store);
         mButtonProgress = (ButtonProgress) itemView.findViewById(R.id.button_progress);
@@ -33,6 +35,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(AppDetail appDetail){
         mTextTitle.setText(appDetail.getName());
+        mTextPackage.setText(appDetail.getPackage());
         mImageIcon.setImageDrawable(appDetail.getIcon());
         mButtonPlayStore.setOnClickListener(new OnUrlClick(appDetail.getPlayStoreLink()));
         mButtonProgress.setOnClickListener(new OnSaveClick(appDetail));
