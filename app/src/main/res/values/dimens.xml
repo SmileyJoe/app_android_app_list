@@ -13,4 +13,5 @@
     <dimen name="button_spacing">8dp</dimen>
     <dimen name="button_progress_width">24dp</dimen>
     <dimen name="button_progress_height">@dimen/button_progress_width</dimen>
+    <dimen name="margin_bottom_sign_in_description">64dp</dimen>
 </resources>

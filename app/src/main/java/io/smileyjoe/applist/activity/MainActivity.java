@@ -1,5 +1,7 @@
 package io.smileyjoe.applist.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,10 +25,14 @@ import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.PagerAdapterMain;
 import io.smileyjoe.applist.fragment.AppListFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private PagerAdapterMain mPagerAdapterMain;
     private ViewPager mViewPager;
+
+    public static Intent getIntent(Context context){
+        return new Intent(context, MainActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

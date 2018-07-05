@@ -6,4 +6,15 @@
     <string name="button_open_play_store">Play Store</string>
     <string name="button_save">Save</string>
     <string name="button_saved">Saved</string>
+
+    <string name="dialog_title_confirm">Confirm</string>
+    <string name="dialog_title_error">Error</string>
+    <string name="dialog_title_success">Success</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="text_sign_in">Sign in...</string>
+    <string name="text_sign_in_description">Please sign in to continue.</string>
+    <string name="button_ok">OK</string>
+    <string name="error_sign_in">Something went wrong while signing you in. Please try again</string>
+    <string name="activity_title_sign_in">Sign In</string>
 </resources>

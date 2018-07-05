@@ -40,6 +40,16 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="Heading.Large" parent="TextAppearance.AppCompat.Display3">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Heading.Medium" parent="TextAppearance.AppCompat.Display2">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Heading.Sub" parent="TextAppearance.AppCompat.Subhead"/>
+
     <style name="RowWrapper">
         <item name="android:paddingBottom">@dimen/row_vertical_margin</item>
         <item name="android:paddingLeft">@dimen/row_horizontal_margin</item>

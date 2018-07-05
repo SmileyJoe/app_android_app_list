@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FirebaseAuth</string>
+    <string name="progress_sign_in">Signing you in</string>
+</resources>
