@@ -19,6 +19,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     public interface Listener{
         void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail);
+        void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail);
     }
 
     private ImageView mImageIcon;
@@ -67,7 +68,16 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         @Override
         public void onClick(View view) {
             if(mListener != null){
-                mListener.onSaveClick(((ButtonProgress) view), mAppDetail);
+                ButtonProgress buttonProgress = (ButtonProgress) view;
+
+                switch (buttonProgress.getState()){
+                    case ENABLED:
+                        mListener.onSaveClick(buttonProgress, mAppDetail);
+                        break;
+                    case DISABLED:
+                        mListener.onDeleteClick(buttonProgress, mAppDetail);
+                        break;
+                }
             }
         }
     }

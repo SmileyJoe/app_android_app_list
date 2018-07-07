@@ -127,6 +127,10 @@ public class ButtonProgress extends RelativeLayout {
         style();
     }
 
+    public State getState() {
+        return mState;
+    }
+
     public void setTextEnabled(String textEnabled) {
         mTextEnabled = textEnabled;
     }

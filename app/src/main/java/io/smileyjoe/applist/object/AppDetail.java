@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.Notify;
 
 /**
@@ -90,22 +91,33 @@ public class AppDetail {
     }
 
     public boolean save(Activity activity, DatabaseReference.CompletionListener listener){
-        User user = User.getCurrent();
+        DatabaseReference databaseReference = Db.getDetailReference(activity);
 
-        if(user != null){
+        if(databaseReference != null){
             HashMap<String, Object> data = new HashMap<>();
             data.put(DB_KEY_NAME, getName());
             data.put(DB_KEY_PACKAGE, getPackage());
 
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-
-            databaseReference.child(user.getId())
+            databaseReference
                     .child(getFirebaseKey(databaseReference))
                     .updateChildren(data, listener);
 
             return true;
         } else {
-            Notify.error(activity, R.string.error_not_signed_in);
+            return false;
+        }
+    }
+
+    public boolean delete(Activity activity, DatabaseReference.CompletionListener listener){
+        DatabaseReference databaseReference = Db.getDetailReference(activity);
+
+        if(databaseReference != null){
+            String firebaseKey = getFirebaseKey();
+            if(!TextUtils.isEmpty(firebaseKey)){
+                databaseReference.child(firebaseKey).removeValue(listener);
+            }
+            return true;
+        } else {
             return false;
         }
     }

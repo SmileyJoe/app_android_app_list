@@ -6,6 +6,7 @@
     <string name="button_open_play_store">Play Store</string>
     <string name="button_save">Save</string>
     <string name="button_saved">Saved</string>
+    <string name="button_delete">Delete</string>
 
     <string name="dialog_title_confirm">Confirm</string>
     <string name="dialog_title_error">Error</string>

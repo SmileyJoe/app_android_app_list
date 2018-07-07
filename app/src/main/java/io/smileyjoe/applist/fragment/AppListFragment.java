@@ -94,14 +94,24 @@ public class AppListFragment extends Fragment {
                 buttonProgress.setState(ButtonProgress.State.LOADING);
             }
         }
+
+        @Override
+        public void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail) {
+            if(appDetail.delete(getActivity(), new DeleteCompletionListener(buttonProgress, appDetail))){
+                buttonProgress.setState(ButtonProgress.State.LOADING);
+            }
+        }
     }
 
-    private class SaveCompletionListener implements DatabaseReference.CompletionListener{
-
+    private abstract class CompletionListener implements DatabaseReference.CompletionListener{
         private ButtonProgress mButtonProgress;
         private AppDetail mAppDetail;
+        private DatabaseError mDatabaseError;
+        private DatabaseReference mDatabaseReference;
 
-        public SaveCompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
+        protected abstract void onSuccess();
+
+        public CompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
             mButtonProgress = buttonProgress;
             mAppDetail = appDetail;
         }
@@ -109,12 +119,68 @@ public class AppListFragment extends Fragment {
         @Override
         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
             if(databaseError == null){
-                mAppDetail.setSaved(true);
-                mButtonProgress.setState(ButtonProgress.State.DISABLED);
+                onSuccess();
             } else {
-                mButtonProgress.setState(ButtonProgress.State.ENABLED);
-                Notify.error(getActivity(), R.string.error_generic);
+                onFail();
             }
+        }
+
+        protected void onFail(){
+            Notify.error(getActivity(), R.string.error_generic);
+        }
+
+        public ButtonProgress getButtonProgress() {
+            return mButtonProgress;
+        }
+
+        public AppDetail getAppDetail() {
+            return mAppDetail;
+        }
+
+        public DatabaseError getDatabaseError() {
+            return mDatabaseError;
+        }
+
+        public DatabaseReference getDatabaseReference() {
+            return mDatabaseReference;
+        }
+    }
+
+    private class DeleteCompletionListener extends CompletionListener{
+
+        public DeleteCompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
+            super(buttonProgress, appDetail);
+        }
+
+        @Override
+        protected void onSuccess() {
+            getAppDetail().setSaved(false);
+            getButtonProgress().setState(ButtonProgress.State.ENABLED);
+        }
+
+        @Override
+        protected void onFail() {
+            super.onFail();
+            getButtonProgress().setState(ButtonProgress.State.DISABLED);
+        }
+    }
+
+    private class SaveCompletionListener extends CompletionListener{
+
+        public SaveCompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
+            super(buttonProgress, appDetail);
+        }
+
+        @Override
+        protected void onSuccess() {
+            getAppDetail().setSaved(true);
+            getButtonProgress().setState(ButtonProgress.State.DISABLED);
+        }
+
+        @Override
+        protected void onFail() {
+            super.onFail();
+            getButtonProgress().setState(ButtonProgress.State.ENABLED);
         }
     }
 }
