@@ -1,6 +1,7 @@
 package io.smileyjoe.applist.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import io.smileyjoe.applist.R;
@@ -31,6 +33,7 @@ public class SaveAppActivity extends BaseActivity {
     private TextInputLayout mInputPackage;
     private TextInputLayout mInputName;
     private boolean mFromShare = false;
+    private ProgressDialog mProgressDialog;
 
     public static Intent getIntent(Context context){
         return new Intent(context, SaveAppActivity.class);
@@ -78,7 +81,23 @@ public class SaveAppActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void showSaveProgress(){
+        if(mProgressDialog == null){
+            mProgressDialog = new ProgressDialog(this);
+        }
+
+        mProgressDialog.setMessage(getString(R.string.progress_saving));
+        mProgressDialog.show();
+    }
+
+    private void hideProgress(){
+        if(mProgressDialog != null){
+            mProgressDialog.hide();
+        }
+    }
+
     private void saveApp(){
+        removeFocus();
         String packageName = mInputPackage.getEditText().getText().toString();
         String appName = mInputName.getEditText().getText().toString();
         boolean showError = false;
@@ -96,11 +115,17 @@ public class SaveAppActivity extends BaseActivity {
         if(showError){
             Notify.error(this, R.string.error_invalid_fields);
         } else {
+            showSaveProgress();
             AppDetail appDetail = new AppDetail();
             appDetail.setName(appName);
             appDetail.setPackage(packageName);
             appDetail.save(this, new OnSaveListener(this, appDetail));
         }
+    }
+
+    private void removeFocus(){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getApplicationWindowToken(), 0);
     }
 
     private void handleSendIntent(){
@@ -136,6 +161,7 @@ public class SaveAppActivity extends BaseActivity {
 
         @Override
         protected void onSuccess() {
+            hideProgress();
             setResult(RESULT_OK);
             finish();
         }

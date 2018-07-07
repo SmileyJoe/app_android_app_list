@@ -3,9 +3,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progress_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"/>
+
+    <TextView
+        android:id="@+id/text_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:text="@string/instruction_empty_app_list"
+        style="@style/ActivityContentWrapper"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_app_details"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </RelativeLayout>

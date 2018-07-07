@@ -31,4 +31,6 @@
     <string name="error_invalid_app_name">Please enter an application name.</string>
     <string name="error_invalid_fields">Please fill in all the fields correctly.</string>
     <string name="success_app_saved">Application saved successfully</string>
+    <string name="instruction_empty_app_list">You have no applications in this category at the moment.</string>
+    <string name="progress_saving">Saving...</string>
 </resources>

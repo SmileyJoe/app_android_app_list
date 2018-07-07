@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +54,10 @@ public class AppListFragment extends Fragment {
     private static final String EXTRA_TYPE = "type";
     private Type mType;
     private AppDetailAdapter mAppDetailAdapter;
+    private TextView mTextEmpty;
+    private ProgressBar mProgressLoading;
+    private RecyclerView mRecyclerAppDetails;
+    private boolean mLoading = true;
 
     public AppListFragment() {
     }
@@ -76,20 +82,40 @@ public class AppListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
 
+        mTextEmpty = (TextView) rootView.findViewById(R.id.text_empty);
+        mProgressLoading = (ProgressBar) rootView.findViewById(R.id.progress_loading);
+
         mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), new AdapterListener());
 
-        RecyclerView recyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
-        recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerAppDetails.setAdapter(mAppDetailAdapter);
-        recyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mRecyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
+        mRecyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerAppDetails.setAdapter(mAppDetailAdapter);
+        mRecyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         populateList();
+        handleDisplayView();
 
         return rootView;
     }
 
     private void populateList(){
         Db.getDetailReference(getActivity()).addValueEventListener(new AppDetailsEventListener());
+    }
+
+    private void handleDisplayView(){
+        if(mLoading){
+            mProgressLoading.setVisibility(View.VISIBLE);
+            mRecyclerAppDetails.setVisibility(View.GONE);
+            mTextEmpty.setVisibility(View.GONE);
+        } else if (mAppDetailAdapter.hasApps()){
+            mProgressLoading.setVisibility(View.GONE);
+            mRecyclerAppDetails.setVisibility(View.VISIBLE);
+            mTextEmpty.setVisibility(View.GONE);
+        } else {
+            mProgressLoading.setVisibility(View.GONE);
+            mRecyclerAppDetails.setVisibility(View.GONE);
+            mTextEmpty.setVisibility(View.VISIBLE);
+        }
     }
 
     private class AppDetailsEventListener implements ValueEventListener{
@@ -113,6 +139,9 @@ public class AppListFragment extends Fragment {
                     mAppDetailAdapter.update(apps);
                     break;
             }
+
+            mLoading = false;
+            handleDisplayView();
         }
 
         @Override
