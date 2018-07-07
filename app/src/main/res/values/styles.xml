@@ -57,4 +57,11 @@
         <item name="android:paddingTop">@dimen/row_vertical_margin</item>
     </style>
 
+    <style name="ActivityContentWrapper">
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+    </style>
+
 </resources>

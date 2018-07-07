@@ -22,4 +22,12 @@
     <string name="error_generic">Something went wrong, please try again later.</string>
     <string name="error_database_read_failed">An error occured reading your data, please try again later.</string>
     <string name="fragment_title_saved_apps">Saved</string>
+    <string name="activity_title_save_app">Save App</string>
+    <string name="error_invalid_url">%1$s is not a valid play store application url</string>
+    <string name="hint_app_package">Application Package</string>
+    <string name="hint_app_name">Application Name</string>
+    <string name="action_save">Save</string>
+    <string name="error_invalid_package">Please enter a package name</string>
+    <string name="error_invalid_app_name">Please enter an application name.</string>
+    <string name="error_invalid_fields">Please fill in all the fields correctly.</string>
 </resources>

@@ -23,6 +23,10 @@ public abstract class DbCompletionListener implements DatabaseReference.Completi
 
     protected abstract void onSuccess();
 
+    public DbCompletionListener(Activity activity, AppDetail appDetail){
+        this(activity, null, appDetail);
+    }
+
     public DbCompletionListener(Activity activity, ButtonProgress buttonProgress, AppDetail appDetail) {
         mActivity = activity;
         mButtonProgress = buttonProgress;

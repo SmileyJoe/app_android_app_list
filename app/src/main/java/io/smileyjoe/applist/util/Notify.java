@@ -30,10 +30,18 @@ public class Notify {
     }
 
     public static void error(Activity activity, int messageResId, DialogInterface.OnClickListener listener) {
+        error(activity, activity.getString(messageResId), listener);
+    }
+
+    public static void error(Activity activity, String message){
+        error(activity, message, null);
+    }
+
+    public static void error(Activity activity, String message, DialogInterface.OnClickListener listener){
         AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle(R.string.dialog_title_error)
                 .setPositiveButton(R.string.button_ok, listener)
-                .setMessage(messageResId)
+                .setMessage(message)
                 .create();
 
         dialog.show();
