@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.List;
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
 import io.smileyjoe.applist.object.AppDetail;
+import io.smileyjoe.applist.util.Db;
+import io.smileyjoe.applist.util.DbCompletionListener;
 import io.smileyjoe.applist.util.Notify;
 import io.smileyjoe.applist.util.PackageUtil;
 import io.smileyjoe.applist.view.ButtonProgress;
@@ -30,7 +35,8 @@ import io.smileyjoe.applist.view.ButtonProgress;
 public class AppListFragment extends Fragment {
 
     public enum Type{
-        INSTALLED(R.string.fragment_title_installed_apps);
+        INSTALLED(R.string.fragment_title_installed_apps),
+        SAVED(R.string.fragment_title_saved_apps);
 
         private int mFragmentTitleResId;
 
@@ -45,6 +51,7 @@ public class AppListFragment extends Fragment {
 
     private static final String EXTRA_TYPE = "type";
     private Type mType;
+    private AppDetailAdapter mAppDetailAdapter;
 
     public AppListFragment() {
     }
@@ -69,87 +76,70 @@ public class AppListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
 
+        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), new AdapterListener());
+
         RecyclerView recyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
         recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerAppDetails.setAdapter(new AppDetailAdapter(getAppDetailList(), new AdapterListener()));
+        recyclerAppDetails.setAdapter(mAppDetailAdapter);
         recyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+
+        populateList();
 
         return rootView;
     }
 
-    private List<AppDetail> getAppDetailList(){
+    private List<AppDetail> populateList(){
         switch (mType){
             case INSTALLED:
-                return PackageUtil.getInstalledApplications(getContext().getPackageManager());
+                mAppDetailAdapter.update(PackageUtil.getInstalledApplications(getContext().getPackageManager()));
+                break;
+            case SAVED:
+                Db.getDetailReference(getActivity()).addValueEventListener(new AppDetailsEventListener());
+                break;
         }
 
         return new ArrayList<>();
+    }
+
+    private class AppDetailsEventListener implements ValueEventListener{
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            ArrayList<AppDetail> apps = new ArrayList<>();
+
+            for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
+                apps.add(new AppDetail(itemSnapshot));
+            }
+
+            mAppDetailAdapter.update(apps);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Notify.error(getActivity(), R.string.error_database_read_failed);
+        }
     }
 
     private class AdapterListener implements AppDetailAdapter.Listener{
 
         @Override
         public void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail) {
-            if(appDetail.save(getActivity(), new SaveCompletionListener(buttonProgress, appDetail))){
+            if(appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), buttonProgress, appDetail))){
                 buttonProgress.setState(ButtonProgress.State.LOADING);
             }
         }
 
         @Override
         public void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail) {
-            if(appDetail.delete(getActivity(), new DeleteCompletionListener(buttonProgress, appDetail))){
+            if(appDetail.delete(getActivity(), new DeleteCompletionListener(getActivity(), buttonProgress, appDetail))){
                 buttonProgress.setState(ButtonProgress.State.LOADING);
             }
         }
     }
 
-    private abstract class CompletionListener implements DatabaseReference.CompletionListener{
-        private ButtonProgress mButtonProgress;
-        private AppDetail mAppDetail;
-        private DatabaseError mDatabaseError;
-        private DatabaseReference mDatabaseReference;
+    private class DeleteCompletionListener extends DbCompletionListener {
 
-        protected abstract void onSuccess();
-
-        public CompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
-            mButtonProgress = buttonProgress;
-            mAppDetail = appDetail;
-        }
-
-        @Override
-        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-            if(databaseError == null){
-                onSuccess();
-            } else {
-                onFail();
-            }
-        }
-
-        protected void onFail(){
-            Notify.error(getActivity(), R.string.error_generic);
-        }
-
-        public ButtonProgress getButtonProgress() {
-            return mButtonProgress;
-        }
-
-        public AppDetail getAppDetail() {
-            return mAppDetail;
-        }
-
-        public DatabaseError getDatabaseError() {
-            return mDatabaseError;
-        }
-
-        public DatabaseReference getDatabaseReference() {
-            return mDatabaseReference;
-        }
-    }
-
-    private class DeleteCompletionListener extends CompletionListener{
-
-        public DeleteCompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
-            super(buttonProgress, appDetail);
+        public DeleteCompletionListener(Activity activity, ButtonProgress buttonProgress, AppDetail appDetail) {
+            super(activity, buttonProgress, appDetail);
         }
 
         @Override
@@ -165,10 +155,10 @@ public class AppListFragment extends Fragment {
         }
     }
 
-    private class SaveCompletionListener extends CompletionListener{
+    private class SaveCompletionListener extends DbCompletionListener{
 
-        public SaveCompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
-            super(buttonProgress, appDetail);
+        public SaveCompletionListener(Activity activity, ButtonProgress buttonProgress, AppDetail appDetail) {
+            super(activity, buttonProgress, appDetail);
         }
 
         @Override

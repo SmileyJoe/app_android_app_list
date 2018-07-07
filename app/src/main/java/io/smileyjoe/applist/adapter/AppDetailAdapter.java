@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,9 +25,13 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
     private Listener mListener;
 
     public AppDetailAdapter(List<AppDetail> items, Listener listener) {
+        setItems(items);
+        mListener = listener;
+    }
+
+    public void setItems(List<AppDetail> items) {
         Collections.sort(items, new AppDetailComparator());
         mItems = items;
-        mListener = listener;
     }
 
     @Override
@@ -45,6 +50,11 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    public void update(List<AppDetail> appDetails){
+        setItems(appDetails);
+        notifyDataSetChanged();
     }
 
     public AppDetail getItem(int position){

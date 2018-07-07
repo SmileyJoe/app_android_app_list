@@ -44,9 +44,15 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     public void bind(AppDetail appDetail){
         mTextTitle.setText(appDetail.getName());
         mTextPackage.setText(appDetail.getPackage());
-        mImageIcon.setImageDrawable(appDetail.getIcon());
         mButtonPlayStore.setOnClickListener(new OnUrlClick(appDetail.getPlayStoreLink()));
         mButtonProgress.setOnClickListener(new OnSaveClick(appDetail, mListener));
+
+        if(appDetail.getIcon() != null){
+            mImageIcon.setVisibility(View.VISIBLE);
+            mImageIcon.setImageDrawable(appDetail.getIcon());
+        } else {
+            mImageIcon.setVisibility(View.GONE);
+        }
 
         if(appDetail.isSaved()){
             mButtonProgress.setState(ButtonProgress.State.DISABLED);

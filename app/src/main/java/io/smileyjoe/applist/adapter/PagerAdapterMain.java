@@ -14,7 +14,7 @@ import io.smileyjoe.applist.fragment.AppListFragment.Type;
 
 public class PagerAdapterMain extends FragmentPagerAdapter {
 
-    private final Type[] mTypes = new Type[]{Type.INSTALLED};
+    private final Type[] mTypes = new Type[]{Type.INSTALLED, Type.SAVED};
     private Context mContext;
 
     public PagerAdapterMain(Context context, FragmentManager fm) {

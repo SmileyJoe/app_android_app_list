@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -29,6 +30,23 @@ public class AppDetail {
     private Intent mLaunchActivity;
     private Drawable mIcon;
     private boolean mSaved;
+
+    public AppDetail(){}
+
+    public AppDetail(DataSnapshot dataSnapshot){
+        if(dataSnapshot != null){
+            setFirebaseKey(dataSnapshot.getKey());
+            setSaved(true);
+
+            if(dataSnapshot.hasChild(DB_KEY_NAME)){
+                setName(dataSnapshot.child(DB_KEY_NAME).getValue(String.class));
+            }
+
+            if(dataSnapshot.hasChild(DB_KEY_PACKAGE)){
+                setPackage(dataSnapshot.child(DB_KEY_PACKAGE).getValue(String.class));
+            }
+        }
+    }
 
     public void setName(String name) {
         mName = name;
