@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.util.Db;
@@ -138,6 +139,21 @@ public class AppDetail {
         } else {
             return false;
         }
+    }
+
+    public boolean onSavedUpdated(List<AppDetail> savedApps){
+        for(AppDetail savedApp:savedApps) {
+            if (getPackage().equals(savedApp.getPackage())) {
+                setSaved(true);
+                setFirebaseKey(savedApp.getFirebaseKey());
+                return true;
+            }
+        }
+
+        setSaved(false);
+        setFirebaseKey(null);
+
+        return false;
     }
 
     @Override

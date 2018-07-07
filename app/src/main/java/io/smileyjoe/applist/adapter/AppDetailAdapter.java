@@ -57,6 +57,18 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
         notifyDataSetChanged();
     }
 
+    public boolean hasApps(){
+        return mItems != null && !mItems.isEmpty();
+    }
+
+    public void onSavedUpdated(List<AppDetail> savedApps){
+        for (AppDetail app:mItems){
+            app.onSavedUpdated(savedApps);
+        }
+
+        notifyDataSetChanged();
+    }
+
     public AppDetail getItem(int position){
         return mItems.get(position);
     }

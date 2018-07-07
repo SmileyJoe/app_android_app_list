@@ -40,4 +40,14 @@ public class PackageUtil {
 
         return appDetails;
     }
+
+    public static List<AppDetail> getInstalledApplications(PackageManager packageManager, List<AppDetail> savedApps){
+        List<AppDetail> installedApps = getInstalledApplications(packageManager);
+
+        for(AppDetail installedApp:installedApps){
+            installedApp.onSavedUpdated(savedApps);
+        }
+
+        return installedApps;
+    }
 }

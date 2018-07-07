@@ -88,17 +88,8 @@ public class AppListFragment extends Fragment {
         return rootView;
     }
 
-    private List<AppDetail> populateList(){
-        switch (mType){
-            case INSTALLED:
-                mAppDetailAdapter.update(PackageUtil.getInstalledApplications(getContext().getPackageManager()));
-                break;
-            case SAVED:
-                Db.getDetailReference(getActivity()).addValueEventListener(new AppDetailsEventListener());
-                break;
-        }
-
-        return new ArrayList<>();
+    private void populateList(){
+        Db.getDetailReference(getActivity()).addValueEventListener(new AppDetailsEventListener());
     }
 
     private class AppDetailsEventListener implements ValueEventListener{
@@ -110,7 +101,18 @@ public class AppListFragment extends Fragment {
                 apps.add(new AppDetail(itemSnapshot));
             }
 
-            mAppDetailAdapter.update(apps);
+            switch (mType){
+                case INSTALLED:
+                    if(mAppDetailAdapter.hasApps()){
+                        mAppDetailAdapter.onSavedUpdated(apps);
+                    } else {
+                        mAppDetailAdapter.update(PackageUtil.getInstalledApplications(getContext().getPackageManager(), apps));
+                    }
+                    break;
+                case SAVED:
+                    mAppDetailAdapter.update(apps);
+                    break;
+            }
         }
 
         @Override
@@ -144,8 +146,10 @@ public class AppListFragment extends Fragment {
 
         @Override
         protected void onSuccess() {
-            getAppDetail().setSaved(false);
-            getButtonProgress().setState(ButtonProgress.State.ENABLED);
+            if(mType == Type.INSTALLED) {
+                getAppDetail().setSaved(false);
+                getButtonProgress().setState(ButtonProgress.State.ENABLED);
+            }
         }
 
         @Override
