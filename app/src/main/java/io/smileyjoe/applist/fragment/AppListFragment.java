@@ -10,13 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
 import io.smileyjoe.applist.object.AppDetail;
+import io.smileyjoe.applist.util.Notify;
 import io.smileyjoe.applist.util.PackageUtil;
+import io.smileyjoe.applist.view.ButtonProgress;
 
 /**
  * Created by cody on 2018/07/03.
@@ -66,7 +71,7 @@ public class AppListFragment extends Fragment {
 
         RecyclerView recyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
         recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerAppDetails.setAdapter(new AppDetailAdapter(getAppDetailList()));
+        recyclerAppDetails.setAdapter(new AppDetailAdapter(getAppDetailList(), new AdapterListener()));
         recyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         return rootView;
@@ -79,5 +84,37 @@ public class AppListFragment extends Fragment {
         }
 
         return new ArrayList<>();
+    }
+
+    private class AdapterListener implements AppDetailAdapter.Listener{
+
+        @Override
+        public void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail) {
+            if(appDetail.save(getActivity(), new SaveCompletionListener(buttonProgress, appDetail))){
+                buttonProgress.setState(ButtonProgress.State.LOADING);
+            }
+        }
+    }
+
+    private class SaveCompletionListener implements DatabaseReference.CompletionListener{
+
+        private ButtonProgress mButtonProgress;
+        private AppDetail mAppDetail;
+
+        public SaveCompletionListener(ButtonProgress buttonProgress, AppDetail appDetail) {
+            mButtonProgress = buttonProgress;
+            mAppDetail = appDetail;
+        }
+
+        @Override
+        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+            if(databaseError == null){
+                mAppDetail.setSaved(true);
+                mButtonProgress.setState(ButtonProgress.State.DISABLED);
+            } else {
+                mButtonProgress.setState(ButtonProgress.State.ENABLED);
+                Notify.error(getActivity(), R.string.error_generic);
+            }
+        }
     }
 }

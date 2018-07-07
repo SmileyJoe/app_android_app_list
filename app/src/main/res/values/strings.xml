@@ -17,4 +17,6 @@
     <string name="button_ok">OK</string>
     <string name="error_sign_in">Something went wrong while signing you in. Please try again</string>
     <string name="activity_title_sign_in">Sign In</string>
+    <string name="error_not_signed_in">You need to sign in to complete this action.</string>
+    <string name="error_generic">Something went wrong, please try again later.</string>
 </resources>

@@ -18,18 +18,23 @@ import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
 public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
 
-    private List<AppDetail> mItems;
+    public interface Listener extends AppDetailViewHolder.Listener{}
 
-    public AppDetailAdapter(List<AppDetail> items) {
+    private List<AppDetail> mItems;
+    private Listener mListener;
+
+    public AppDetailAdapter(List<AppDetail> items, Listener listener) {
         Collections.sort(items, new AppDetailComparator());
         mItems = items;
+        mListener = listener;
     }
 
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new AppDetailViewHolder(
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.row_app_details, parent, false));
+                        .inflate(R.layout.row_app_details, parent, false)
+                , mListener);
     }
 
     @Override

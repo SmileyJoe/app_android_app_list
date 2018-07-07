@@ -17,14 +17,21 @@ import io.smileyjoe.applist.view.ButtonProgress;
 
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
+    public interface Listener{
+        void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail);
+    }
+
     private ImageView mImageIcon;
     private TextView mTextTitle;
     private TextView mTextPackage;
     private Button mButtonPlayStore;
     private ButtonProgress mButtonProgress;
+    private Listener mListener;
 
-    public AppDetailViewHolder(View itemView) {
+    public AppDetailViewHolder(View itemView, Listener listener) {
         super(itemView);
+
+        mListener = listener;
 
         mTextTitle = (TextView) itemView.findViewById(R.id.text_title);
         mTextPackage = (TextView) itemView.findViewById(R.id.text_package);
@@ -38,7 +45,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mTextPackage.setText(appDetail.getPackage());
         mImageIcon.setImageDrawable(appDetail.getIcon());
         mButtonPlayStore.setOnClickListener(new OnUrlClick(appDetail.getPlayStoreLink()));
-        mButtonProgress.setOnClickListener(new OnSaveClick(appDetail));
+        mButtonProgress.setOnClickListener(new OnSaveClick(appDetail, mListener));
 
         if(appDetail.isSaved()){
             mButtonProgress.setState(ButtonProgress.State.DISABLED);
@@ -50,17 +57,18 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     private class OnSaveClick implements View.OnClickListener{
 
         private AppDetail mAppDetail;
+        private Listener mListener;
 
-        public OnSaveClick(AppDetail appDetail) {
+        public OnSaveClick(AppDetail appDetail, Listener listener) {
             mAppDetail = appDetail;
+            mListener = listener;
         }
 
         @Override
         public void onClick(View view) {
-            ((ButtonProgress) view).setState(ButtonProgress.State.DISABLED);
-            mAppDetail.setSaved(true);
-
-            // TODO: Save the app //
+            if(mListener != null){
+                mListener.onSaveClick(((ButtonProgress) view), mAppDetail);
+            }
         }
     }
 }
