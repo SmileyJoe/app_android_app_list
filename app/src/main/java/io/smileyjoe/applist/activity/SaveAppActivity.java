@@ -136,6 +136,7 @@ public class SaveAppActivity extends BaseActivity {
 
         @Override
         protected void onSuccess() {
+            setResult(RESULT_OK);
             finish();
         }
     }

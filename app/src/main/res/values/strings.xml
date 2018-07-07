@@ -30,4 +30,5 @@
     <string name="error_invalid_package">Please enter a package name</string>
     <string name="error_invalid_app_name">Please enter an application name.</string>
     <string name="error_invalid_fields">Please fill in all the fields correctly.</string>
+    <string name="success_app_saved">Application saved successfully</string>
 </resources>
