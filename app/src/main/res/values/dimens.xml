@@ -14,4 +14,5 @@
     <dimen name="button_progress_width">24dp</dimen>
     <dimen name="button_progress_height">@dimen/button_progress_width</dimen>
     <dimen name="margin_bottom_sign_in_description">64dp</dimen>
+    <dimen name="margin_top_input">8dp</dimen>
 </resources>
