@@ -28,7 +28,9 @@ public class PagerAdapterMain extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return AppListFragment.newInstance(mTypes[position], position, mListener);
+        AppListFragment fragment = AppListFragment.newInstance(mTypes[position], position);
+        fragment.setListener(mListener);
+        return fragment;
     }
 
     @Override

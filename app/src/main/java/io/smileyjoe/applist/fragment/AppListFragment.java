@@ -36,7 +36,7 @@ import io.smileyjoe.applist.view.ButtonProgress;
 
 public class AppListFragment extends Fragment {
 
-    public interface Listener extends Serializable{
+    public interface Listener {
         void onLoadComplete(Type type, int position, int appCount);
     }
 
@@ -57,7 +57,6 @@ public class AppListFragment extends Fragment {
 
     private static final String EXTRA_TYPE = "type";
     private static final String EXTRA_POSITION = "position";
-    private static final String EXTRA_LISTENER = "listener";
     private Type mType;
     private AppDetailAdapter mAppDetailAdapter;
     private TextView mTextEmpty;
@@ -70,12 +69,11 @@ public class AppListFragment extends Fragment {
     public AppListFragment() {
     }
 
-    public static AppListFragment newInstance(Type type, int position, Listener listener) {
+    public static AppListFragment newInstance(Type type, int position) {
         AppListFragment fragment = new AppListFragment();
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_TYPE, type);
         args.putInt(EXTRA_POSITION, position);
-        args.putSerializable(EXTRA_LISTENER, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,7 +84,6 @@ public class AppListFragment extends Fragment {
 
         mType = (Type) getArguments().getSerializable(EXTRA_TYPE);
         mPosition = getArguments().getInt(EXTRA_POSITION);
-        mListener = (Listener) getArguments().getSerializable(EXTRA_LISTENER);
     }
 
     @Override
@@ -108,6 +105,10 @@ public class AppListFragment extends Fragment {
         handleDisplayView();
 
         return rootView;
+    }
+
+    public void setListener(Listener listener) {
+        mListener = listener;
     }
 
     private void populateList() {
