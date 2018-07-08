@@ -19,10 +19,14 @@ import za.co.smileyjoedev.lib.debug.Debug;
 
 public class SignInActivity extends BaseActivity implements GoogleLoginListener {
 
-    private Google mGoogle;
+    private static final String EXTRA_RETURN_INTENT = "return_intent";
 
-    public static Intent getIntent(Context context) {
+    private Google mGoogle;
+    private Intent mReturnIntent;
+
+    public static Intent getIntent(Context context, Intent returnIntent) {
         Intent intent = new Intent(context, SignInActivity.class);
+        intent.putExtra(EXTRA_RETURN_INTENT, returnIntent);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
@@ -30,8 +34,25 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // We only have to use this activity if there is no current user //
+        if(User.getCurrent() != null){
+            return;
+        }
+
         setContentView(R.layout.activity_sign_in);
+        handleExtras();
         mGoogle = new Google(this, findViewById(R.id.button_google_sign_in), BuildConfig.SERVER_CLIENT_ID, this);
+    }
+
+    private void handleExtras(){
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null){
+            if(extras.containsKey(EXTRA_RETURN_INTENT)){
+                mReturnIntent = extras.getParcelable(EXTRA_RETURN_INTENT);
+            }
+        }
     }
 
     @Override
@@ -41,7 +62,12 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
 
     private void checkSignIn(boolean showError) {
         if (User.getCurrent() != null) {
-            startActivity(MainActivity.getIntent(getBaseContext()));
+            if(mReturnIntent == null){
+                startActivity(MainActivity.getIntent(getBaseContext()));
+            } else {
+                startActivity(mReturnIntent);
+            }
+
             finish();
         } else if (showError) {
             Notify.error(this, R.string.error_sign_in);
@@ -76,7 +102,7 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
 
     @Override
     public void onLogOut() {
-        Debug.d("SignInThings", "OnLogOut");
+
     }
 
     @Override

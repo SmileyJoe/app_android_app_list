@@ -20,7 +20,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void checkSignIn() {
         if (User.getCurrent() == null) {
-            startActivity(SignInActivity.getIntent(getBaseContext()));
+            startActivity(SignInActivity.getIntent(getBaseContext(), getIntent()));
             finish();
         }
     }
