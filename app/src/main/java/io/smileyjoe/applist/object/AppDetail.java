@@ -27,7 +27,8 @@ public class AppDetail {
     private String mFirebaseKey;
     private Intent mLaunchActivity;
     private Drawable mIcon;
-    private boolean mSaved;
+    private boolean mSaved = false;
+    private boolean mInstalled = false;
 
     public AppDetail() {
     }
@@ -71,6 +72,10 @@ public class AppDetail {
         mFirebaseKey = firebaseKey;
     }
 
+    public void setInstalled(boolean installed) {
+        mInstalled = installed;
+    }
+
     public String getName() {
         return mName;
     }
@@ -101,6 +106,10 @@ public class AppDetail {
         }
 
         return getFirebaseKey();
+    }
+
+    public boolean isInstalled() {
+        return mInstalled;
     }
 
     public String getPlayStoreLink() {
@@ -151,6 +160,18 @@ public class AppDetail {
         setSaved(false);
         setFirebaseKey(null);
 
+        return false;
+    }
+
+    public boolean onInstalledUpdated(List<AppDetail> installedApps){
+        for(AppDetail installedApp:installedApps){
+            if(getPackage().equals(installedApp.getPackage())){
+                setInstalled(true);
+                return true;
+            }
+        }
+
+        setInstalled(false);
         return false;
     }
 

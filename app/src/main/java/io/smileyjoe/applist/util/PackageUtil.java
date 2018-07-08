@@ -50,4 +50,14 @@ public class PackageUtil {
 
         return installedApps;
     }
+
+    public static List<AppDetail> checkInstalled(PackageManager packageManager, List<AppDetail> savedApps){
+        List<AppDetail> installedApps = getInstalledApplications(packageManager);
+
+        for(AppDetail savedApp:savedApps){
+            savedApp.onInstalledUpdated(installedApps);
+        }
+
+        return savedApps;
+    }
 }

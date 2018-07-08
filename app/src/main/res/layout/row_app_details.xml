@@ -31,6 +31,12 @@
             <TextView
                 android:id="@+id/text_package"
                 style="@style/Text"/>
+
+            <TextView
+                android:id="@+id/text_installed"
+                android:text="@string/text_installed"
+                android:textStyle="italic"
+                style="@style/Text"/>
         </LinearLayout>
     </LinearLayout>
 

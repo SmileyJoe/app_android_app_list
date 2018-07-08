@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.comparator.AppDetailComparator;
+import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
@@ -23,9 +24,11 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
 
     private List<AppDetail> mItems;
     private Listener mListener;
+    private AppListFragment.Type mType;
 
-    public AppDetailAdapter(List<AppDetail> items, Listener listener) {
+    public AppDetailAdapter(List<AppDetail> items, AppListFragment.Type type, Listener listener) {
         setItems(items);
+        mType = type;
         mListener = listener;
     }
 
@@ -39,6 +42,7 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
         return new AppDetailViewHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.row_app_details, parent, false)
+                , mType
                 , mListener);
     }
 

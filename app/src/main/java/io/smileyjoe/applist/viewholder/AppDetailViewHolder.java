@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.OnUrlClick;
 import io.smileyjoe.applist.view.ButtonProgress;
@@ -26,17 +27,21 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     private ImageView mImageIcon;
     private TextView mTextTitle;
     private TextView mTextPackage;
+    private TextView mTextInstalled;
     private Button mButtonPlayStore;
     private ButtonProgress mButtonProgress;
     private Listener mListener;
+    private AppListFragment.Type mType;
 
-    public AppDetailViewHolder(View itemView, Listener listener) {
+    public AppDetailViewHolder(View itemView, AppListFragment.Type type, Listener listener) {
         super(itemView);
 
         mListener = listener;
+        mType = type;
 
         mTextTitle = (TextView) itemView.findViewById(R.id.text_title);
         mTextPackage = (TextView) itemView.findViewById(R.id.text_package);
+        mTextInstalled = (TextView) itemView.findViewById(R.id.text_installed);
         mImageIcon = (ImageView) itemView.findViewById(R.id.image_icon);
         mButtonPlayStore = (Button) itemView.findViewById(R.id.button_play_store);
         mButtonProgress = (ButtonProgress) itemView.findViewById(R.id.button_progress);
@@ -59,6 +64,12 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
             mButtonProgress.setState(ButtonProgress.State.DISABLED);
         } else {
             mButtonProgress.setState(ButtonProgress.State.ENABLED);
+        }
+
+        if(mType == AppListFragment.Type.SAVED && appDetail.isInstalled()){
+            mTextInstalled.setVisibility(View.VISIBLE);
+        } else {
+            mTextInstalled.setVisibility(View.GONE);
         }
     }
 

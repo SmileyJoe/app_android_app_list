@@ -83,7 +83,7 @@ public class AppListFragment extends Fragment {
         mTextEmpty = (TextView) rootView.findViewById(R.id.text_empty);
         mProgressLoading = (ProgressBar) rootView.findViewById(R.id.progress_loading);
 
-        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), new AdapterListener());
+        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mType, new AdapterListener());
 
         mRecyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
         mRecyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -134,7 +134,7 @@ public class AppListFragment extends Fragment {
                     }
                     break;
                 case SAVED:
-                    mAppDetailAdapter.update(apps);
+                    mAppDetailAdapter.update(PackageUtil.checkInstalled(getContext().getPackageManager(), apps));
                     break;
             }
 
