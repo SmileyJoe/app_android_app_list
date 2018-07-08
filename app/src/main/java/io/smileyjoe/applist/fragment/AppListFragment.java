@@ -15,11 +15,9 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
@@ -36,7 +34,7 @@ import io.smileyjoe.applist.view.ButtonProgress;
 
 public class AppListFragment extends Fragment {
 
-    public enum Type{
+    public enum Type {
         INSTALLED(R.string.fragment_title_installed_apps),
         SAVED(R.string.fragment_title_saved_apps);
 
@@ -46,7 +44,7 @@ public class AppListFragment extends Fragment {
             mFragmentTitleResId = fragmentTitleResId;
         }
 
-        public String getFragmentTitle(Context context){
+        public String getFragmentTitle(Context context) {
             return context.getString(mFragmentTitleResId);
         }
     }
@@ -98,16 +96,16 @@ public class AppListFragment extends Fragment {
         return rootView;
     }
 
-    private void populateList(){
+    private void populateList() {
         Db.getDetailReference(getActivity()).addValueEventListener(new AppDetailsEventListener());
     }
 
-    private void handleDisplayView(){
-        if(mLoading){
+    private void handleDisplayView() {
+        if (mLoading) {
             mProgressLoading.setVisibility(View.VISIBLE);
             mRecyclerAppDetails.setVisibility(View.GONE);
             mTextEmpty.setVisibility(View.GONE);
-        } else if (mAppDetailAdapter.hasApps()){
+        } else if (mAppDetailAdapter.hasApps()) {
             mProgressLoading.setVisibility(View.GONE);
             mRecyclerAppDetails.setVisibility(View.VISIBLE);
             mTextEmpty.setVisibility(View.GONE);
@@ -118,18 +116,18 @@ public class AppListFragment extends Fragment {
         }
     }
 
-    private class AppDetailsEventListener implements ValueEventListener{
+    private class AppDetailsEventListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             ArrayList<AppDetail> apps = new ArrayList<>();
 
-            for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
+            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
                 apps.add(new AppDetail(itemSnapshot));
             }
 
-            switch (mType){
+            switch (mType) {
                 case INSTALLED:
-                    if(mAppDetailAdapter.hasApps()){
+                    if (mAppDetailAdapter.hasApps()) {
                         mAppDetailAdapter.onSavedUpdated(apps);
                     } else {
                         mAppDetailAdapter.update(PackageUtil.getInstalledApplications(getContext().getPackageManager(), apps));
@@ -150,18 +148,18 @@ public class AppListFragment extends Fragment {
         }
     }
 
-    private class AdapterListener implements AppDetailAdapter.Listener{
+    private class AdapterListener implements AppDetailAdapter.Listener {
 
         @Override
         public void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail) {
-            if(appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), buttonProgress, appDetail))){
+            if (appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), buttonProgress, appDetail))) {
                 buttonProgress.setState(ButtonProgress.State.LOADING);
             }
         }
 
         @Override
         public void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail) {
-            if(appDetail.delete(getActivity(), new DeleteCompletionListener(getActivity(), buttonProgress, appDetail))){
+            if (appDetail.delete(getActivity(), new DeleteCompletionListener(getActivity(), buttonProgress, appDetail))) {
                 buttonProgress.setState(ButtonProgress.State.LOADING);
             }
         }
@@ -175,7 +173,7 @@ public class AppListFragment extends Fragment {
 
         @Override
         protected void onSuccess() {
-            if(mType == Type.INSTALLED) {
+            if (mType == Type.INSTALLED) {
                 getAppDetail().setSaved(false);
                 getButtonProgress().setState(ButtonProgress.State.ENABLED);
             }
@@ -188,7 +186,7 @@ public class AppListFragment extends Fragment {
         }
     }
 
-    private class SaveCompletionListener extends DbCompletionListener{
+    private class SaveCompletionListener extends DbCompletionListener {
 
         public SaveCompletionListener(Activity activity, ButtonProgress buttonProgress, AppDetail appDetail) {
             super(activity, buttonProgress, appDetail);

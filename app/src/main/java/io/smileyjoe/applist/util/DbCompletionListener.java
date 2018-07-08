@@ -23,7 +23,7 @@ public abstract class DbCompletionListener implements DatabaseReference.Completi
 
     protected abstract void onSuccess();
 
-    public DbCompletionListener(Activity activity, AppDetail appDetail){
+    public DbCompletionListener(Activity activity, AppDetail appDetail) {
         this(activity, null, appDetail);
     }
 
@@ -35,14 +35,14 @@ public abstract class DbCompletionListener implements DatabaseReference.Completi
 
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-        if(databaseError == null){
+        if (databaseError == null) {
             onSuccess();
         } else {
             onFail();
         }
     }
 
-    protected void onFail(){
+    protected void onFail() {
         Notify.error(mActivity, R.string.error_generic);
     }
 

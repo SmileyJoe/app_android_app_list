@@ -17,8 +17,9 @@ import io.smileyjoe.applist.view.ButtonProgress;
 
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
-    public interface Listener{
+    public interface Listener {
         void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail);
+
         void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail);
     }
 
@@ -41,27 +42,27 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mButtonProgress = (ButtonProgress) itemView.findViewById(R.id.button_progress);
     }
 
-    public void bind(AppDetail appDetail){
+    public void bind(AppDetail appDetail) {
         mTextTitle.setText(appDetail.getName());
         mTextPackage.setText(appDetail.getPackage());
         mButtonPlayStore.setOnClickListener(new OnUrlClick(appDetail.getPlayStoreLink()));
         mButtonProgress.setOnClickListener(new OnSaveClick(appDetail, mListener));
 
-        if(appDetail.getIcon() != null){
+        if (appDetail.getIcon() != null) {
             mImageIcon.setVisibility(View.VISIBLE);
             mImageIcon.setImageDrawable(appDetail.getIcon());
         } else {
             mImageIcon.setVisibility(View.GONE);
         }
 
-        if(appDetail.isSaved()){
+        if (appDetail.isSaved()) {
             mButtonProgress.setState(ButtonProgress.State.DISABLED);
         } else {
             mButtonProgress.setState(ButtonProgress.State.ENABLED);
         }
     }
 
-    private class OnSaveClick implements View.OnClickListener{
+    private class OnSaveClick implements View.OnClickListener {
 
         private AppDetail mAppDetail;
         private Listener mListener;
@@ -73,10 +74,10 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
         @Override
         public void onClick(View view) {
-            if(mListener != null){
+            if (mListener != null) {
                 ButtonProgress buttonProgress = (ButtonProgress) view;
 
-                switch (buttonProgress.getState()){
+                switch (buttonProgress.getState()) {
                     case ENABLED:
                         mListener.onSaveClick(buttonProgress, mAppDetail);
                         break;

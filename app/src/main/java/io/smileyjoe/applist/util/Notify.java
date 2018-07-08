@@ -33,11 +33,11 @@ public class Notify {
         error(activity, activity.getString(messageResId), listener);
     }
 
-    public static void error(Activity activity, String message){
+    public static void error(Activity activity, String message) {
         error(activity, message, null);
     }
 
-    public static void error(Activity activity, String message, DialogInterface.OnClickListener listener){
+    public static void error(Activity activity, String message, DialogInterface.OnClickListener listener) {
         AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle(R.string.dialog_title_error)
                 .setPositiveButton(R.string.button_ok, listener)
@@ -47,8 +47,8 @@ public class Notify {
         dialog.show();
     }
 
-    public static void success(CoordinatorLayout coordinatorLayout, int messageId){
-        if(coordinatorLayout != null) {
+    public static void success(CoordinatorLayout coordinatorLayout, int messageId) {
+        if (coordinatorLayout != null) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, coordinatorLayout.getContext().getString(messageId), Snackbar.LENGTH_LONG);
             snackbar.show();

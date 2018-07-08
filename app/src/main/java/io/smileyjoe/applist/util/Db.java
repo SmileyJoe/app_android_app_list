@@ -16,12 +16,13 @@ public class Db {
 
     private static final String DB_KEY_APP_DETAIL = "app";
 
-    private Db(){}
+    private Db() {
+    }
 
-    private static DatabaseReference getReference(Activity activity){
+    private static DatabaseReference getReference(Activity activity) {
         User user = User.getCurrent();
 
-        if(user != null){
+        if (user != null) {
             return FirebaseDatabase.getInstance().getReference().child(user.getId());
         } else {
             Notify.error(activity, R.string.error_not_signed_in);
@@ -29,10 +30,10 @@ public class Db {
         }
     }
 
-    public static DatabaseReference getDetailReference(Activity activity){
+    public static DatabaseReference getDetailReference(Activity activity) {
         DatabaseReference databaseReference = getReference(activity);
 
-        if(databaseReference != null){
+        if (databaseReference != null) {
             return databaseReference.child(DB_KEY_APP_DETAIL);
         } else {
             return null;

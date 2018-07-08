@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,9 +16,10 @@ import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
  * Created by cody on 2018/07/03.
  */
 
-public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
+public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> {
 
-    public interface Listener extends AppDetailViewHolder.Listener{}
+    public interface Listener extends AppDetailViewHolder.Listener {
+    }
 
     private List<AppDetail> mItems;
     private Listener mListener;
@@ -52,24 +52,24 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder>{
         return mItems.size();
     }
 
-    public void update(List<AppDetail> appDetails){
+    public void update(List<AppDetail> appDetails) {
         setItems(appDetails);
         notifyDataSetChanged();
     }
 
-    public boolean hasApps(){
+    public boolean hasApps() {
         return mItems != null && !mItems.isEmpty();
     }
 
-    public void onSavedUpdated(List<AppDetail> savedApps){
-        for (AppDetail app:mItems){
+    public void onSavedUpdated(List<AppDetail> savedApps) {
+        for (AppDetail app : mItems) {
             app.onSavedUpdated(savedApps);
         }
 
         notifyDataSetChanged();
     }
 
-    public AppDetail getItem(int position){
+    public AppDetail getItem(int position) {
         return mItems.get(position);
     }
 }

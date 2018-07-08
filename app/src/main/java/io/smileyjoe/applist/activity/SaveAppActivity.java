@@ -16,13 +16,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.DbCompletionListener;
 import io.smileyjoe.applist.util.Notify;
-import io.smileyjoe.applist.view.ButtonProgress;
 
 /**
  * Created by cody on 2018/07/08.
@@ -35,7 +33,7 @@ public class SaveAppActivity extends BaseActivity {
     private boolean mFromShare = false;
     private ProgressDialog mProgressDialog;
 
-    public static Intent getIntent(Context context){
+    public static Intent getIntent(Context context) {
         return new Intent(context, SaveAppActivity.class);
     }
 
@@ -81,8 +79,8 @@ public class SaveAppActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showSaveProgress(){
-        if(mProgressDialog == null){
+    private void showSaveProgress() {
+        if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
         }
 
@@ -90,29 +88,29 @@ public class SaveAppActivity extends BaseActivity {
         mProgressDialog.show();
     }
 
-    private void hideProgress(){
-        if(mProgressDialog != null){
+    private void hideProgress() {
+        if (mProgressDialog != null) {
             mProgressDialog.hide();
         }
     }
 
-    private void saveApp(){
+    private void saveApp() {
         removeFocus();
         String packageName = mInputPackage.getEditText().getText().toString();
         String appName = mInputName.getEditText().getText().toString();
         boolean showError = false;
 
-        if(TextUtils.isEmpty(packageName)){
+        if (TextUtils.isEmpty(packageName)) {
             showError = true;
             mInputPackage.setError(getString(R.string.error_invalid_package));
         }
 
-        if(TextUtils.isEmpty(appName)){
+        if (TextUtils.isEmpty(appName)) {
             showError = true;
             mInputName.setError(getString(R.string.error_invalid_app_name));
         }
 
-        if(showError){
+        if (showError) {
             Notify.error(this, R.string.error_invalid_fields);
         } else {
             showSaveProgress();
@@ -123,12 +121,12 @@ public class SaveAppActivity extends BaseActivity {
         }
     }
 
-    private void removeFocus(){
+    private void removeFocus() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getApplicationWindowToken(), 0);
     }
 
-    private void handleSendIntent(){
+    private void handleSendIntent() {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -137,11 +135,11 @@ public class SaveAppActivity extends BaseActivity {
             if ("text/plain".equals(type)) {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
 
-                if(!TextUtils.isEmpty(sharedText)){
+                if (!TextUtils.isEmpty(sharedText)) {
                     Uri uri = Uri.parse(sharedText);
                     String id = uri.getQueryParameter("id");
 
-                    if(!TextUtils.isEmpty(id)) {
+                    if (!TextUtils.isEmpty(id)) {
                         mFromShare = true;
                         mInputPackage.getEditText().setText(id);
                         mInputPackage.setEnabled(false);
@@ -153,7 +151,7 @@ public class SaveAppActivity extends BaseActivity {
         }
     }
 
-    private class OnSaveListener extends DbCompletionListener{
+    private class OnSaveListener extends DbCompletionListener {
 
         public OnSaveListener(Activity activity, AppDetail appDetail) {
             super(activity, appDetail);

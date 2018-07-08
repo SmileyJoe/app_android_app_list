@@ -34,9 +34,9 @@ public class ButtonProgress extends RelativeLayout {
             return mId;
         }
 
-        public static State fromId(int id){
-            for(State state:values()){
-                if(state.getId() == id){
+        public static State fromId(int id) {
+            for (State state : values()) {
+                if (state.getId() == id) {
                     return state;
                 }
             }
@@ -71,7 +71,7 @@ public class ButtonProgress extends RelativeLayout {
         init(attrs);
     }
 
-    private void init(AttributeSet attrs){
+    private void init(AttributeSet attrs) {
         LayoutInflater.from(getContext()).inflate(R.layout.view_button_progress, this, true);
 
         mTextTitle = (TextView) findViewById(R.id.text_title);
@@ -80,11 +80,11 @@ public class ButtonProgress extends RelativeLayout {
         handleAttributes(attrs);
     }
 
-    private void handleAttributes(AttributeSet attrs){
-        if(attrs != null){
+    private void handleAttributes(AttributeSet attrs) {
+        if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ButtonProgress);
 
-            if(typedArray != null){
+            if (typedArray != null) {
                 setTextEnabled(typedArray.getString(R.styleable.ButtonProgress_text_enabled));
                 setTextDisabled(typedArray.getString(R.styleable.ButtonProgress_text_disabled));
                 setTextColorResEnabled(typedArray.getColor(R.styleable.ButtonProgress_text_color_enabled, 0));
@@ -97,8 +97,8 @@ public class ButtonProgress extends RelativeLayout {
         }
     }
 
-    private void style(){
-        switch (mState){
+    private void style() {
+        switch (mState) {
             case ENABLED:
                 mProgressLoading.setVisibility(GONE);
                 mTextTitle.setVisibility(VISIBLE);

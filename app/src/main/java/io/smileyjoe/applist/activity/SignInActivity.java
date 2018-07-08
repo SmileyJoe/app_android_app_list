@@ -11,7 +11,6 @@ import io.smileyjoe.applist.object.User;
 import io.smileyjoe.applist.util.Notify;
 import za.co.smileyjoedev.firebaseauth.google.Google;
 import za.co.smileyjoedev.firebaseauth.google.GoogleLoginListener;
-import za.co.smileyjoedev.lib.debug.Debug;
 
 /**
  * Created by cody on 2017/04/14.
@@ -36,7 +35,7 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
         super.onCreate(savedInstanceState);
 
         // We only have to use this activity if there is no current user //
-        if(User.getCurrent() != null){
+        if (User.getCurrent() != null) {
             return;
         }
 
@@ -45,11 +44,11 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
         mGoogle = new Google(this, findViewById(R.id.button_google_sign_in), BuildConfig.SERVER_CLIENT_ID, this);
     }
 
-    private void handleExtras(){
+    private void handleExtras() {
         Bundle extras = getIntent().getExtras();
 
-        if(extras != null){
-            if(extras.containsKey(EXTRA_RETURN_INTENT)){
+        if (extras != null) {
+            if (extras.containsKey(EXTRA_RETURN_INTENT)) {
                 mReturnIntent = extras.getParcelable(EXTRA_RETURN_INTENT);
             }
         }
@@ -62,7 +61,7 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
 
     private void checkSignIn(boolean showError) {
         if (User.getCurrent() != null) {
-            if(mReturnIntent == null){
+            if (mReturnIntent == null) {
                 startActivity(MainActivity.getIntent(getBaseContext()));
             } else {
                 startActivity(mReturnIntent);

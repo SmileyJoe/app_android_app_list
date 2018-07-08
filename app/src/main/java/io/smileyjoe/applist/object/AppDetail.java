@@ -7,14 +7,11 @@ import android.text.TextUtils;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.List;
 
-import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.util.Db;
-import io.smileyjoe.applist.util.Notify;
 
 /**
  * Created by cody on 2018/07/03.
@@ -32,18 +29,19 @@ public class AppDetail {
     private Drawable mIcon;
     private boolean mSaved;
 
-    public AppDetail(){}
+    public AppDetail() {
+    }
 
-    public AppDetail(DataSnapshot dataSnapshot){
-        if(dataSnapshot != null){
+    public AppDetail(DataSnapshot dataSnapshot) {
+        if (dataSnapshot != null) {
             setFirebaseKey(dataSnapshot.getKey());
             setSaved(true);
 
-            if(dataSnapshot.hasChild(DB_KEY_NAME)){
+            if (dataSnapshot.hasChild(DB_KEY_NAME)) {
                 setName(dataSnapshot.child(DB_KEY_NAME).getValue(String.class));
             }
 
-            if(dataSnapshot.hasChild(DB_KEY_PACKAGE)){
+            if (dataSnapshot.hasChild(DB_KEY_PACKAGE)) {
                 setPackage(dataSnapshot.child(DB_KEY_PACKAGE).getValue(String.class));
             }
         }
@@ -97,22 +95,22 @@ public class AppDetail {
         return mFirebaseKey;
     }
 
-    private String getFirebaseKey(DatabaseReference databaseReference){
-        if(TextUtils.isEmpty(mFirebaseKey)){
+    private String getFirebaseKey(DatabaseReference databaseReference) {
+        if (TextUtils.isEmpty(mFirebaseKey)) {
             setFirebaseKey(databaseReference.push().getKey());
         }
 
         return getFirebaseKey();
     }
 
-    public String getPlayStoreLink(){
+    public String getPlayStoreLink() {
         return "http://play.google.com/store/apps/details?id=" + getPackage();
     }
 
-    public boolean save(Activity activity, DatabaseReference.CompletionListener listener){
+    public boolean save(Activity activity, DatabaseReference.CompletionListener listener) {
         DatabaseReference databaseReference = Db.getDetailReference(activity);
 
-        if(databaseReference != null){
+        if (databaseReference != null) {
             HashMap<String, Object> data = new HashMap<>();
             data.put(DB_KEY_NAME, getName());
             data.put(DB_KEY_PACKAGE, getPackage());
@@ -127,12 +125,12 @@ public class AppDetail {
         }
     }
 
-    public boolean delete(Activity activity, DatabaseReference.CompletionListener listener){
+    public boolean delete(Activity activity, DatabaseReference.CompletionListener listener) {
         DatabaseReference databaseReference = Db.getDetailReference(activity);
 
-        if(databaseReference != null){
+        if (databaseReference != null) {
             String firebaseKey = getFirebaseKey();
-            if(!TextUtils.isEmpty(firebaseKey)){
+            if (!TextUtils.isEmpty(firebaseKey)) {
                 databaseReference.child(firebaseKey).removeValue(listener);
             }
             return true;
@@ -141,8 +139,8 @@ public class AppDetail {
         }
     }
 
-    public boolean onSavedUpdated(List<AppDetail> savedApps){
-        for(AppDetail savedApp:savedApps) {
+    public boolean onSavedUpdated(List<AppDetail> savedApps) {
+        for (AppDetail savedApp : savedApps) {
             if (getPackage().equals(savedApp.getPackage())) {
                 setSaved(true);
                 setFirebaseKey(savedApp.getFirebaseKey());
