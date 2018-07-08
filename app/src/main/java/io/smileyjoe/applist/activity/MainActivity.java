@@ -3,6 +3,7 @@ package io.smileyjoe.applist.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -12,6 +13,7 @@ import android.view.View;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.PagerAdapterMain;
+import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.util.Notify;
 
 public class MainActivity extends BaseActivity {
@@ -21,6 +23,7 @@ public class MainActivity extends BaseActivity {
     private PagerAdapterMain mPagerAdapterMain;
     private ViewPager mViewPager;
     private CoordinatorLayout mCoordinatorMain;
+    private TabLayout mTabLayout;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, MainActivity.class);
@@ -34,15 +37,15 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mPagerAdapterMain = new PagerAdapterMain(getBaseContext(), getSupportFragmentManager());
+        mPagerAdapterMain = new PagerAdapterMain(getBaseContext(), getSupportFragmentManager(), new OnFragmentLoadComplete());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mPagerAdapterMain);
 
         mCoordinatorMain = (CoordinatorLayout) findViewById(R.id.coordinator_main);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fabCreate = (FloatingActionButton) findViewById(R.id.fab_create);
         fabCreate.setOnClickListener(new OnFabCreateClick());
@@ -66,6 +69,16 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             startActivityForResult(SaveAppActivity.getIntent(view.getContext()), ACTIVITY_SAVE_APP);
+        }
+    }
+
+    private class OnFragmentLoadComplete implements PagerAdapterMain.Listener{
+
+        @Override
+        public void onLoadComplete(AppListFragment.Type type, int position, int appCount) {
+            if(mTabLayout != null){
+                mTabLayout.getTabAt(position).setText(type.getFragmentTitle(getBaseContext()) + " (" + appCount + ")");
+            }
         }
     }
 }

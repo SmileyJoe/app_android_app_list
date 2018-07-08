@@ -14,17 +14,21 @@ import io.smileyjoe.applist.fragment.AppListFragment.Type;
 
 public class PagerAdapterMain extends FragmentPagerAdapter {
 
+    public interface Listener extends AppListFragment.Listener{}
+
     private final Type[] mTypes = new Type[]{Type.INSTALLED, Type.SAVED};
     private Context mContext;
+    private Listener mListener;
 
-    public PagerAdapterMain(Context context, FragmentManager fm) {
+    public PagerAdapterMain(Context context, FragmentManager fm, Listener listener) {
         super(fm);
         mContext = context;
+        mListener = listener;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return AppListFragment.newInstance(mTypes[position]);
+        return AppListFragment.newInstance(mTypes[position], position, mListener);
     }
 
     @Override

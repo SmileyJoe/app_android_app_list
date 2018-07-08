@@ -3,6 +3,7 @@ package io.smileyjoe.applist.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import io.smileyjoe.applist.R;
@@ -34,6 +36,10 @@ import io.smileyjoe.applist.view.ButtonProgress;
 
 public class AppListFragment extends Fragment {
 
+    public interface Listener extends Serializable{
+        void onLoadComplete(Type type, int position, int appCount);
+    }
+
     public enum Type {
         INSTALLED(R.string.fragment_title_installed_apps),
         SAVED(R.string.fragment_title_saved_apps);
@@ -50,20 +56,26 @@ public class AppListFragment extends Fragment {
     }
 
     private static final String EXTRA_TYPE = "type";
+    private static final String EXTRA_POSITION = "position";
+    private static final String EXTRA_LISTENER = "listener";
     private Type mType;
     private AppDetailAdapter mAppDetailAdapter;
     private TextView mTextEmpty;
     private ProgressBar mProgressLoading;
     private RecyclerView mRecyclerAppDetails;
     private boolean mLoading = true;
+    private int mPosition;
+    private Listener mListener;
 
     public AppListFragment() {
     }
 
-    public static AppListFragment newInstance(Type type) {
+    public static AppListFragment newInstance(Type type, int position, Listener listener) {
         AppListFragment fragment = new AppListFragment();
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_TYPE, type);
+        args.putInt(EXTRA_POSITION, position);
+        args.putSerializable(EXTRA_LISTENER, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,6 +85,8 @@ public class AppListFragment extends Fragment {
         super.onAttach(context);
 
         mType = (Type) getArguments().getSerializable(EXTRA_TYPE);
+        mPosition = getArguments().getInt(EXTRA_POSITION);
+        mListener = (Listener) getArguments().getSerializable(EXTRA_LISTENER);
     }
 
     @Override
@@ -140,6 +154,10 @@ public class AppListFragment extends Fragment {
 
             mLoading = false;
             handleDisplayView();
+
+            if(mListener != null){
+                mListener.onLoadComplete(mType, mPosition, mAppDetailAdapter.getItemCount());
+            }
         }
 
         @Override
