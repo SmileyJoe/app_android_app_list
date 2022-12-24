@@ -3,6 +3,7 @@ package io.smileyjoe.applist.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -10,18 +11,17 @@ import io.smileyjoe.applist.BuildConfig;
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.object.User;
 import io.smileyjoe.applist.util.Notify;
-import za.co.smileyjoedev.firebaseauth.google.Google;
-import za.co.smileyjoedev.firebaseauth.google.GoogleLoginListener;
+import za.co.smileyjoedev.firebaseauth.google.GoogleAuth;
 
 /**
  * Created by cody on 2017/04/14.
  */
 
-public class SignInActivity extends BaseActivity implements GoogleLoginListener {
+public class SignInActivity extends BaseActivity {
 
     private static final String EXTRA_RETURN_INTENT = "return_intent";
 
-    private Google mGoogle;
+    private GoogleAuth mGoogleAuth;
     private Intent mReturnIntent;
 
     public static Intent getIntent(Context context, Intent returnIntent) {
@@ -42,7 +42,13 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
 
         setContentView(R.layout.activity_sign_in);
         handleExtras();
-        mGoogle = new Google(this, findViewById(R.id.button_google_sign_in), BuildConfig.SERVER_CLIENT_ID, this);
+        mGoogleAuth = GoogleAuth.Builder.with(this)
+                .on(findViewById(R.id.button_google_sign_in))
+                .serverClientId(BuildConfig.SERVER_CLIENT_ID)
+                .onFail(() -> checkSignIn(true))
+                .onLogIn(() -> checkSignIn(true))
+                .onLogout(() -> Log.d("GoogleAuth", "Logout"))
+                .build();
     }
 
     private void handleExtras() {
@@ -76,7 +82,7 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        boolean consumed = mGoogle.onActivityResult(requestCode, resultCode, data);
+        boolean consumed = mGoogleAuth.onActivityResult(requestCode, resultCode, data);
 
         if (!consumed) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -86,27 +92,12 @@ public class SignInActivity extends BaseActivity implements GoogleLoginListener 
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogle.onStart();
+        mGoogleAuth.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogle.onStop();
-    }
-
-    @Override
-    public void onLogIn() {
-        checkSignIn(true);
-    }
-
-    @Override
-    public void onLogOut() {
-
-    }
-
-    @Override
-    public void onLogInFail() {
-        checkSignIn(true);
+        mGoogleAuth.onStop();
     }
 }
