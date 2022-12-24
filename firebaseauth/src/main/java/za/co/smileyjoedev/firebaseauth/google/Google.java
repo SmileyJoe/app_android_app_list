@@ -3,13 +3,12 @@ package za.co.smileyjoedev.firebaseauth.google;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Debug;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -121,8 +120,9 @@ public class Google implements GoogleApiClient.OnConnectionFailedListener, View.
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d("Google", result.toString());
+        Log.i("Google", "Sign in result: " + result.toString());
         GoogleSignInAccount account = result.getSignInAccount();
+        Log.i("Google", "Account: " + account.toString());
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {

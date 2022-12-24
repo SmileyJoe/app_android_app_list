@@ -2,9 +2,11 @@ package io.smileyjoe.applist.util;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import io.smileyjoe.applist.R;
 

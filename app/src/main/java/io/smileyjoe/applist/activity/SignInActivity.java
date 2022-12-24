@@ -3,7 +3,8 @@ package io.smileyjoe.applist.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import io.smileyjoe.applist.BuildConfig;
 import io.smileyjoe.applist.R;
