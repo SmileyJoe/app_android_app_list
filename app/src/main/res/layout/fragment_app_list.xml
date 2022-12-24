@@ -16,7 +16,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         android:text="@string/instruction_empty_app_list"
-        style="@style/ActivityContentWrapper"/>
+        android:padding="@dimen/activity_padding"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_app_details"

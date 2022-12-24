@@ -17,7 +17,7 @@
         android:id="@+id/progress_loading"
         android:indeterminate="true"
         android:layout_centerInParent="true"
-        android:layout_width="@dimen/button_progress_width"
-        android:layout_height="@dimen/button_progress_height"/>
+        android:layout_width="@dimen/padding_large"
+        android:layout_height="@dimen/padding_large"/>
 
 </RelativeLayout>
