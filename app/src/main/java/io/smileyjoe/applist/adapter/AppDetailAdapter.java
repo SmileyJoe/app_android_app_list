@@ -40,11 +40,7 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
 
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AppDetailViewHolder(
-                LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.row_app_details, parent, false)
-                , mType
-                , mListener);
+        return new AppDetailViewHolder(parent, mType, mListener);
     }
 
     @Override

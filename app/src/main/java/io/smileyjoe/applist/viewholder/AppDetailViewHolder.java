@@ -1,16 +1,17 @@
 package io.smileyjoe.applist.viewholder;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.databinding.RowAppDetailsBinding;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
-import io.smileyjoe.applist.util.OnUrlClick;
 import io.smileyjoe.applist.view.ButtonProgress;
 
 /**
@@ -25,78 +26,63 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail);
     }
 
-    private ImageView mImageIcon;
-    private TextView mTextTitle;
-    private TextView mTextPackage;
-    private TextView mTextInstalled;
-    private Button mButtonPlayStore;
-    private ButtonProgress mButtonProgress;
+    private RowAppDetailsBinding mView;
     private Listener mListener;
     private AppListFragment.Type mType;
 
-    public AppDetailViewHolder(View itemView, AppListFragment.Type type, Listener listener) {
-        super(itemView);
+    public AppDetailViewHolder(ViewGroup parent, AppListFragment.Type type, Listener listener) {
+        this(RowAppDetailsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), type, listener);
+    }
 
+    private AppDetailViewHolder(RowAppDetailsBinding view, AppListFragment.Type type, Listener listener) {
+        super(view.getRoot());
+        mView = view;
         mListener = listener;
         mType = type;
-
-        mTextTitle = (TextView) itemView.findViewById(R.id.text_title);
-        mTextPackage = (TextView) itemView.findViewById(R.id.text_package);
-        mTextInstalled = (TextView) itemView.findViewById(R.id.text_installed);
-        mImageIcon = (ImageView) itemView.findViewById(R.id.image_icon);
-        mButtonPlayStore = (Button) itemView.findViewById(R.id.button_play_store);
-        mButtonProgress = (ButtonProgress) itemView.findViewById(R.id.button_progress);
     }
 
     public void bind(AppDetail appDetail) {
-        mTextTitle.setText(appDetail.getName());
-        mTextPackage.setText(appDetail.getPackage());
-        mButtonPlayStore.setOnClickListener(new OnUrlClick(appDetail.getPlayStoreLink()));
-        mButtonProgress.setOnClickListener(new OnSaveClick(appDetail, mListener));
+        mView.textTitle.setText(appDetail.getName());
+        mView.textPackage.setText(appDetail.getPackage());
+        mView.getRoot().setOnClickListener(v -> openUrl(v, appDetail.getPlayStoreLink()));
+        mView.buttonProgress.setOnClickListener(v -> onSaveClick(v, appDetail));
 
         if (appDetail.getIcon() != null) {
-            mImageIcon.setVisibility(View.VISIBLE);
-            mImageIcon.setImageDrawable(appDetail.getIcon());
+            mView.imageIcon.setVisibility(View.VISIBLE);
+            mView.imageIcon.setImageDrawable(appDetail.getIcon());
         } else {
-            mImageIcon.setVisibility(View.GONE);
+            mView.imageIcon.setVisibility(View.GONE);
         }
 
         if (appDetail.isSaved()) {
-            mButtonProgress.setState(ButtonProgress.State.DISABLED);
+            mView.buttonProgress.setState(ButtonProgress.State.DISABLED);
         } else {
-            mButtonProgress.setState(ButtonProgress.State.ENABLED);
+            mView.buttonProgress.setState(ButtonProgress.State.ENABLED);
         }
 
         if(mType == AppListFragment.Type.SAVED && appDetail.isInstalled()){
-            mTextInstalled.setVisibility(View.VISIBLE);
+            mView.textInstalled.setVisibility(View.VISIBLE);
         } else {
-            mTextInstalled.setVisibility(View.GONE);
+            mView.textInstalled.setVisibility(View.GONE);
         }
     }
 
-    private class OnSaveClick implements View.OnClickListener {
+    private void openUrl(View view, String url){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        view.getContext().startActivity(browserIntent);
+    }
 
-        private AppDetail mAppDetail;
-        private Listener mListener;
+    private void onSaveClick(View view, AppDetail appDetail){
+        if (mListener != null) {
+            ButtonProgress buttonProgress = (ButtonProgress) view;
 
-        public OnSaveClick(AppDetail appDetail, Listener listener) {
-            mAppDetail = appDetail;
-            mListener = listener;
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (mListener != null) {
-                ButtonProgress buttonProgress = (ButtonProgress) view;
-
-                switch (buttonProgress.getState()) {
-                    case ENABLED:
-                        mListener.onSaveClick(buttonProgress, mAppDetail);
-                        break;
-                    case DISABLED:
-                        mListener.onDeleteClick(buttonProgress, mAppDetail);
-                        break;
-                }
+            switch (buttonProgress.getState()) {
+                case ENABLED:
+                    mListener.onSaveClick(buttonProgress, appDetail);
+                    break;
+                case DISABLED:
+                    mListener.onDeleteClick(buttonProgress, appDetail);
+                    break;
             }
         }
     }
