@@ -20,6 +20,7 @@ import androidx.core.app.TaskStackBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.databinding.ActivitySaveAppBinding;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.DbCompletionListener;
 import io.smileyjoe.applist.util.Notify;
@@ -30,10 +31,9 @@ import io.smileyjoe.applist.util.Notify;
 
 public class SaveAppActivity extends BaseActivity {
 
-    private TextInputLayout mInputPackage;
-    private TextInputLayout mInputName;
     private boolean mFromShare = false;
     private ProgressDialog mProgressDialog;
+    private ActivitySaveAppBinding mView;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, SaveAppActivity.class);
@@ -42,14 +42,11 @@ public class SaveAppActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save_app);
+        mView = ActivitySaveAppBinding.inflate(getLayoutInflater());
+        setContentView(mView.getRoot());
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mView.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mInputPackage = (TextInputLayout) findViewById(R.id.input_package);
-        mInputName = (TextInputLayout) findViewById(R.id.input_name);
 
         handleSendIntent();
     }
@@ -98,18 +95,18 @@ public class SaveAppActivity extends BaseActivity {
 
     private void saveApp() {
         removeFocus();
-        String packageName = mInputPackage.getEditText().getText().toString();
-        String appName = mInputName.getEditText().getText().toString();
+        String packageName = mView.inputPackage.getEditText().getText().toString();
+        String appName = mView.inputName.getEditText().getText().toString();
         boolean showError = false;
 
         if (TextUtils.isEmpty(packageName)) {
             showError = true;
-            mInputPackage.setError(getString(R.string.error_invalid_package));
+            mView.inputPackage.setError(getString(R.string.error_invalid_package));
         }
 
         if (TextUtils.isEmpty(appName)) {
             showError = true;
-            mInputName.setError(getString(R.string.error_invalid_app_name));
+            mView.inputName.setError(getString(R.string.error_invalid_app_name));
         }
 
         if (showError) {
@@ -143,8 +140,8 @@ public class SaveAppActivity extends BaseActivity {
 
                     if (!TextUtils.isEmpty(id)) {
                         mFromShare = true;
-                        mInputPackage.getEditText().setText(id);
-                        mInputPackage.setEnabled(false);
+                        mView.inputPackage.getEditText().setText(id);
+                        mView.inputPackage.setEnabled(false);
                     } else {
                         Notify.error(this, getString(R.string.error_invalid_url, sharedText), new Notify.FinishOnClick(this));
                     }
