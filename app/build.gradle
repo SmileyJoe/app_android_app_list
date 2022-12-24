@@ -22,6 +22,10 @@ android {
             buildConfigField "String", "SERVER_CLIENT_ID", findProperty("app_list.firebase_server_client_id")
         }
     }
+
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {

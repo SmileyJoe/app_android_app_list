@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import io.smileyjoe.applist.BuildConfig;
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.databinding.ActivitySignInBinding;
 import io.smileyjoe.applist.object.User;
 import io.smileyjoe.applist.util.Notify;
 import za.co.smileyjoedev.firebaseauth.google.GoogleAuth;
@@ -23,6 +24,7 @@ public class SignInActivity extends BaseActivity {
 
     private GoogleAuth mGoogleAuth;
     private Intent mReturnIntent;
+    private ActivitySignInBinding mView;
 
     public static Intent getIntent(Context context, Intent returnIntent) {
         Intent intent = new Intent(context, SignInActivity.class);
@@ -40,10 +42,11 @@ public class SignInActivity extends BaseActivity {
             return;
         }
 
-        setContentView(R.layout.activity_sign_in);
+        mView = ActivitySignInBinding.inflate(getLayoutInflater());
+        setContentView(mView.getRoot());
         handleExtras();
         mGoogleAuth = GoogleAuth.Builder.with(this)
-                .on(findViewById(R.id.button_google_sign_in))
+                .on(mView.buttonGoogleSignIn)
                 .serverClientId(BuildConfig.SERVER_CLIENT_ID)
                 .onFail(() -> checkSignIn(true))
                 .onLogIn(() -> checkSignIn(true))
