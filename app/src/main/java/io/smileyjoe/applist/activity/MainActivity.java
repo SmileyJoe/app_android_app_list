@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.badge.BadgeDrawable;
 
@@ -18,7 +19,7 @@ import io.smileyjoe.applist.databinding.ActivityMainBinding;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.util.Notify;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity {
 
     private static final int ACTIVITY_SAVE_APP = 1;
 
@@ -34,10 +35,10 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         mView = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mView.getRoot());
 
-        PagerAdapterMain pagerAdapterMain = new PagerAdapterMain(getBaseContext(), getSupportFragmentManager(), this::onFragmentLoadComplete);
+        PagerAdapterMain pagerAdapterMain = new PagerAdapterMain(this, this::onFragmentLoadComplete);
 
         mView.pagerApps.setAdapter(pagerAdapterMain);
-        mView.pagerApps.addOnPageChangeListener(this);
+        mView.pagerApps.registerOnPageChangeCallback(new OnPageChangeListener());
         mView.textTitle.setText(Nav.fromId(0).getTitle(getBaseContext()));
         mView.bottomNavigation.setOnItemSelectedListener(item -> {
             mView.pagerApps.setCurrentItem(Nav.fromId(item.getItemId()).getPosition());
@@ -45,21 +46,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         });
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        Nav nav = Nav.fromPosition(position);
-        mView.textTitle.setText(nav.getTitle(getBaseContext()));
-        mView.bottomNavigation.setSelectedItemId(nav.getId());
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
+    private class OnPageChangeListener extends ViewPager2.OnPageChangeCallback{
+        @Override
+        public void onPageSelected(int position) {
+            Nav nav = Nav.fromPosition(position);
+            mView.textTitle.setText(nav.getTitle(getBaseContext()));
+            mView.bottomNavigation.setSelectedItemId(nav.getId());
+        }
     }
 
     @Override

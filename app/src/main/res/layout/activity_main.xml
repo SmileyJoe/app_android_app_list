@@ -21,7 +21,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/pager_apps"/>
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager_apps"
         android:layout_width="match_parent"
         android:layout_height="0dp"
