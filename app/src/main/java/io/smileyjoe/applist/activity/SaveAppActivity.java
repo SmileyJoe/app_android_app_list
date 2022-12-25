@@ -45,17 +45,12 @@ public class SaveAppActivity extends BaseActivity {
         mView = ActivitySaveAppBinding.inflate(getLayoutInflater());
         setContentView(mView.getRoot());
 
+        mView.buttonSave.setOnClickListener(v -> saveApp());
+
         setSupportActionBar(mView.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handleSendIntent();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_save_app, menu);
-        return true;
     }
 
     @Override
@@ -70,9 +65,6 @@ public class SaveAppActivity extends BaseActivity {
                 } else {
                     onBackPressed();
                 }
-                return true;
-            case R.id.action_save:
-                saveApp();
                 return true;
         }
         return super.onOptionsItemSelected(item);

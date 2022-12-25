@@ -25,8 +25,8 @@
     <string name="fragment_title_saved_apps">Saved</string>
     <string name="activity_title_save_app">Save App</string>
     <string name="error_invalid_url">%1$s is not a valid play store application url</string>
-    <string name="hint_app_package">Application Package</string>
-    <string name="hint_app_name">Application Name</string>
+    <string name="hint_app_package">Package</string>
+    <string name="hint_app_name">Name</string>
     <string name="action_save">Save</string>
     <string name="error_invalid_package">Please enter a package name</string>
     <string name="error_invalid_app_name">Please enter an application name.</string>
@@ -35,4 +35,6 @@
     <string name="instruction_empty_app_list">You have no applications in this category at the moment.</string>
     <string name="progress_saving">Saving...</string>
     <string name="text_installed">Installed</string>
+    <string name="text_details">Details</string>
+    <string name="hint_app_note">Note</string>
 </resources>
