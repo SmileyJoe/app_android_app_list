@@ -20,17 +20,14 @@ import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
 public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> {
 
-    public interface Listener extends AppDetailViewHolder.Listener {
-    }
-
     private List<AppDetail> mItems;
-    private Listener mListener;
+    private AppDetailViewHolder.Listener mSaveClick;
+    private AppDetailViewHolder.Listener mDeleteClick;
     private AppListFragment.Type mType;
 
-    public AppDetailAdapter(List<AppDetail> items, AppListFragment.Type type, Listener listener) {
+    public AppDetailAdapter(List<AppDetail> items, AppListFragment.Type type) {
         setItems(items);
         mType = type;
-        mListener = listener;
     }
 
     public void setItems(List<AppDetail> items) {
@@ -38,9 +35,20 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
         mItems = items;
     }
 
+    public void onSaveClick(AppDetailViewHolder.Listener listener){
+        mSaveClick = listener;
+    }
+
+    public void onDeleteClick(AppDetailViewHolder.Listener listener){
+        mDeleteClick = listener;
+    }
+
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AppDetailViewHolder(parent, mType, mListener);
+        AppDetailViewHolder holder = new AppDetailViewHolder(parent, mType);
+        holder.onSaveClick(mSaveClick);
+        holder.onDeleteClick(mDeleteClick);
+        return holder;
     }
 
     @Override

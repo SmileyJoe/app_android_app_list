@@ -21,32 +21,38 @@ import io.smileyjoe.applist.view.ButtonProgress;
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     public interface Listener {
-        void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail);
-
-        void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail);
+        void onClick(ButtonProgress buttonProgress, AppDetail appDetail);
     }
 
     private RowAppDetailsBinding mView;
-    private Listener mListener;
+    private Listener mSaveClick;
+    private Listener mDeleteClick;
     private AppListFragment.Type mType;
 
-    public AppDetailViewHolder(ViewGroup parent, AppListFragment.Type type, Listener listener) {
-        this(RowAppDetailsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), type, listener);
+    public AppDetailViewHolder(ViewGroup parent, AppListFragment.Type type) {
+        this(RowAppDetailsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), type);
     }
 
-    private AppDetailViewHolder(RowAppDetailsBinding view, AppListFragment.Type type, Listener listener) {
+    private AppDetailViewHolder(RowAppDetailsBinding view, AppListFragment.Type type) {
         super(view.getRoot());
         mView = view;
-        mListener = listener;
         mType = type;
+    }
+
+    public void onSaveClick(Listener listener){
+        mSaveClick = listener;
+    }
+
+    public void onDeleteClick(Listener listener){
+        mDeleteClick = listener;
     }
 
     public void bind(AppDetail appDetail) {
         mView.textTitle.setText(appDetail.getName());
         mView.textPackage.setText(appDetail.getPackage());
         mView.getRoot().setOnClickListener(v -> openUrl(v, appDetail.getPlayStoreLink()));
-        mView.buttonProgress.onEnabledClick(v -> mListener.onSaveClick(mView.buttonProgress, appDetail));
-        mView.buttonProgress.onDisabledClick(v -> mListener.onDeleteClick(mView.buttonProgress, appDetail));
+        mView.buttonProgress.onEnabledClick(v -> mSaveClick.onClick(mView.buttonProgress, appDetail));
+        mView.buttonProgress.onDisabledClick(v -> mDeleteClick.onClick(mView.buttonProgress, appDetail));
 
         if (appDetail.getIcon() != null) {
             mView.imageIcon.setVisibility(View.VISIBLE);

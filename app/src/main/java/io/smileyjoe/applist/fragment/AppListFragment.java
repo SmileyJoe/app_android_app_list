@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
+import io.smileyjoe.applist.databinding.FragmentAppListBinding;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.DbCompletionListener;
@@ -59,12 +60,10 @@ public class AppListFragment extends Fragment {
     private static final String EXTRA_POSITION = "position";
     private Type mType;
     private AppDetailAdapter mAppDetailAdapter;
-    private TextView mTextEmpty;
-    private CircularProgressIndicator mProgressLoading;
-    private RecyclerView mRecyclerAppDetails;
     private boolean mLoading = true;
     private int mPosition;
     private Listener mListener;
+    private FragmentAppListBinding mView;
 
     public AppListFragment() {
     }
@@ -89,22 +88,31 @@ public class AppListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
+        mView = FragmentAppListBinding.inflate(getLayoutInflater(), container, false);
 
-        mTextEmpty = (TextView) rootView.findViewById(R.id.text_empty);
-        mProgressLoading = (CircularProgressIndicator) rootView.findViewById(R.id.progress_loading);
+        setupAdapter();
 
-        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mType, new AdapterListener());
-
-        mRecyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
-        mRecyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerAppDetails.setAdapter(mAppDetailAdapter);
-//        mRecyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mView.recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
+        mView.recyclerAppDetails.setAdapter(mAppDetailAdapter);
 
         populateList();
         handleDisplayView();
 
-        return rootView;
+        return mView.getRoot();
+    }
+
+    public void setupAdapter(){
+        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mType);
+        mAppDetailAdapter.onSaveClick((button, appDetail) -> {
+            if (appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), button, appDetail))) {
+                button.setState(ButtonProgress.State.LOADING);
+            }
+        });
+        mAppDetailAdapter.onDeleteClick((button, appDetail) -> {
+            if (appDetail.delete(getActivity(), new DeleteCompletionListener(getActivity(), button, appDetail))) {
+                button.setState(ButtonProgress.State.LOADING);
+            }
+        });
     }
 
     public void setListener(Listener listener) {
@@ -117,17 +125,17 @@ public class AppListFragment extends Fragment {
 
     private void handleDisplayView() {
         if (mLoading) {
-            mProgressLoading.setVisibility(View.VISIBLE);
-            mRecyclerAppDetails.setVisibility(View.GONE);
-            mTextEmpty.setVisibility(View.GONE);
+            mView.progressLoading.setVisibility(View.VISIBLE);
+            mView.recyclerAppDetails.setVisibility(View.GONE);
+            mView.textEmpty.setVisibility(View.GONE);
         } else if (mAppDetailAdapter.hasApps()) {
-            mProgressLoading.setVisibility(View.GONE);
-            mRecyclerAppDetails.setVisibility(View.VISIBLE);
-            mTextEmpty.setVisibility(View.GONE);
+            mView.progressLoading.setVisibility(View.GONE);
+            mView.recyclerAppDetails.setVisibility(View.VISIBLE);
+            mView.textEmpty.setVisibility(View.GONE);
         } else {
-            mProgressLoading.setVisibility(View.GONE);
-            mRecyclerAppDetails.setVisibility(View.GONE);
-            mTextEmpty.setVisibility(View.VISIBLE);
+            mView.progressLoading.setVisibility(View.GONE);
+            mView.recyclerAppDetails.setVisibility(View.GONE);
+            mView.textEmpty.setVisibility(View.VISIBLE);
         }
     }
 
@@ -164,23 +172,6 @@ public class AppListFragment extends Fragment {
         @Override
         public void onCancelled(DatabaseError databaseError) {
             Notify.error(getActivity(), R.string.error_database_read_failed);
-        }
-    }
-
-    private class AdapterListener implements AppDetailAdapter.Listener {
-
-        @Override
-        public void onSaveClick(ButtonProgress buttonProgress, AppDetail appDetail) {
-            if (appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), buttonProgress, appDetail))) {
-                buttonProgress.setState(ButtonProgress.State.LOADING);
-            }
-        }
-
-        @Override
-        public void onDeleteClick(ButtonProgress buttonProgress, AppDetail appDetail) {
-            if (appDetail.delete(getActivity(), new DeleteCompletionListener(getActivity(), buttonProgress, appDetail))) {
-                buttonProgress.setState(ButtonProgress.State.LOADING);
-            }
         }
     }
 
