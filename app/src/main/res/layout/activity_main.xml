@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="?android:colorPrimary"
-        style="@style/Heading.Medium"
+        style="@style/Text.Heading.Medium"
         android:padding="@dimen/activity_padding"
         tools:text="Title"
         app:layout_constraintTop_toTopOf="parent"

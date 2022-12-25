@@ -45,7 +45,8 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mView.textTitle.setText(appDetail.getName());
         mView.textPackage.setText(appDetail.getPackage());
         mView.getRoot().setOnClickListener(v -> openUrl(v, appDetail.getPlayStoreLink()));
-        mView.buttonProgress.setOnClickListener(v -> onSaveClick(v, appDetail));
+        mView.buttonProgress.onEnabledClick(v -> mListener.onSaveClick(mView.buttonProgress, appDetail));
+        mView.buttonProgress.onDisabledClick(v -> mListener.onDeleteClick(mView.buttonProgress, appDetail));
 
         if (appDetail.getIcon() != null) {
             mView.imageIcon.setVisibility(View.VISIBLE);
@@ -70,20 +71,5 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     private void openUrl(View view, String url){
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         view.getContext().startActivity(browserIntent);
-    }
-
-    private void onSaveClick(View view, AppDetail appDetail){
-        if (mListener != null) {
-            ButtonProgress buttonProgress = (ButtonProgress) view;
-
-            switch (buttonProgress.getState()) {
-                case ENABLED:
-                    mListener.onSaveClick(buttonProgress, appDetail);
-                    break;
-                case DISABLED:
-                    mListener.onDeleteClick(buttonProgress, appDetail);
-                    break;
-            }
-        }
     }
 }

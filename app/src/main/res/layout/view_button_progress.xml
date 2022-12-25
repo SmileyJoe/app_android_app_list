@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_title"
-        android:textStyle="bold"
-        android:gravity="center"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_enabled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="@dimen/button_padding"
-        android:textAllCaps="true"/>
+        android:visibility="gone"
+        tools:text="Enabled"/>
 
-    <ProgressBar
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_disabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        style="@style/Button.Alt"
+        tools:text="Disabled"/>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_loading"
         android:indeterminate="true"
         android:layout_centerInParent="true"
         android:layout_width="@dimen/padding_large"
-        android:layout_height="@dimen/padding_large"/>
+        android:layout_height="@dimen/padding_large"
+        android:visibility="gone"/>
 
 </RelativeLayout>

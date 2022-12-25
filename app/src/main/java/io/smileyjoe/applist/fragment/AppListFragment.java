@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -59,7 +60,7 @@ public class AppListFragment extends Fragment {
     private Type mType;
     private AppDetailAdapter mAppDetailAdapter;
     private TextView mTextEmpty;
-    private ProgressBar mProgressLoading;
+    private CircularProgressIndicator mProgressLoading;
     private RecyclerView mRecyclerAppDetails;
     private boolean mLoading = true;
     private int mPosition;
@@ -91,7 +92,7 @@ public class AppListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
 
         mTextEmpty = (TextView) rootView.findViewById(R.id.text_empty);
-        mProgressLoading = (ProgressBar) rootView.findViewById(R.id.progress_loading);
+        mProgressLoading = (CircularProgressIndicator) rootView.findViewById(R.id.progress_loading);
 
         mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mType, new AdapterListener());
 

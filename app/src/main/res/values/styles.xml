@@ -5,6 +5,7 @@
         <item name="android:statusBarColor">?android:colorBackground</item>
         <item name="materialButtonStyle">@style/Widget.Material3.Button</item>
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
+        <item name="android:textViewStyle">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,29 +17,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="Button">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/button_padding</item>
-        <item name="android:paddingRight">@dimen/button_padding</item>
-    </style>
+    <style name="Button.Alt" parent="@style/Widget.Material3.Button.OutlinedButton"/>
 
-    <style name="Text">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">14sp</item>
-    </style>
+    <style name="Text.Title" parent="@style/TextAppearance.Material3.TitleMedium"/>
 
-    <style name="Text.Title">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="Heading.Large" parent="TextAppearance.Material3.DisplayLarge">
+    <style name="Text.Heading.Large" parent="TextAppearance.Material3.DisplayLarge">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Heading.Medium" parent="TextAppearance.Material3.DisplayMedium">
+    <style name="Text.Heading.Medium" parent="TextAppearance.Material3.DisplayMedium">
         <item name="android:textStyle">bold</item>
     </style>
 

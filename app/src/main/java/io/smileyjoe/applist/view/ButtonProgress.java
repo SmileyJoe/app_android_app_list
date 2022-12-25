@@ -12,7 +12,10 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Arrays;
+
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.databinding.ViewButtonProgressBinding;
 
 /**
  * Created by cody on 2018/07/04.
@@ -36,26 +39,15 @@ public class ButtonProgress extends RelativeLayout {
         }
 
         public static State fromId(int id) {
-            for (State state : values()) {
-                if (state.getId() == id) {
-                    return state;
-                }
-            }
-
-            return State.ENABLED;
+            return Arrays.stream(values())
+                    .filter(state -> state.getId() == id)
+                    .findFirst()
+                    .orElse(State.ENABLED);
         }
     }
 
-    private TextView mTextTitle;
-    private String mTextEnabled;
-    private String mTextDisabled;
-    private int mTextColorResEnabled;
-    private int mTextColorResDisabled;
-    private int mColorResEnabled;
-    private int mColorResDisabled;
-    private int mColorResLoading;
     private State mState;
-    private ProgressBar mProgressLoading;
+    private ViewButtonProgressBinding mView;
 
     public ButtonProgress(@NonNull Context context) {
         super(context);
@@ -73,10 +65,7 @@ public class ButtonProgress extends RelativeLayout {
     }
 
     private void init(AttributeSet attrs) {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_button_progress, this, true);
-
-        mTextTitle = (TextView) findViewById(R.id.text_title);
-        mProgressLoading = (ProgressBar) findViewById(R.id.progress_loading);
+        mView = ViewButtonProgressBinding.inflate(LayoutInflater.from(getContext()), this, true);
 
         handleAttributes(attrs);
     }
@@ -86,39 +75,37 @@ public class ButtonProgress extends RelativeLayout {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ButtonProgress);
 
             if (typedArray != null) {
-                setTextEnabled(typedArray.getString(R.styleable.ButtonProgress_text_enabled));
-                setTextDisabled(typedArray.getString(R.styleable.ButtonProgress_text_disabled));
-                setTextColorResEnabled(typedArray.getColor(R.styleable.ButtonProgress_text_color_enabled, 0));
-                setTextColorResDisabled(typedArray.getColor(R.styleable.ButtonProgress_text_color_disabled, 0));
-                setColorResEnabled(typedArray.getColor(R.styleable.ButtonProgress_background_enabled, 0));
-                setColorResDisabled(typedArray.getColor(R.styleable.ButtonProgress_background_disabled, 0));
-                setColorResLoading(typedArray.getColor(R.styleable.ButtonProgress_background_loading, 0));
+                mView.buttonEnabled.setText(typedArray.getString(R.styleable.ButtonProgress_text_enabled));
+                mView.buttonDisabled.setText(typedArray.getString(R.styleable.ButtonProgress_text_disabled));
                 setState(State.fromId(typedArray.getInt(R.styleable.ButtonProgress_state, State.ENABLED.getId())));
             }
         }
     }
 
+    public void onEnabledClick(OnClickListener listener){
+        mView.buttonEnabled.setOnClickListener(listener);
+    }
+
+    public void onDisabledClick(OnClickListener listener){
+        mView.buttonDisabled.setOnClickListener(listener);
+    }
+
     private void style() {
         switch (mState) {
             case ENABLED:
-                mProgressLoading.setVisibility(GONE);
-                mTextTitle.setVisibility(VISIBLE);
-                mTextTitle.setText(mTextEnabled);
-                mTextTitle.setTextColor(mTextColorResEnabled);
-                setBackgroundColor(mColorResEnabled);
+                mView.buttonEnabled.setVisibility(VISIBLE);
+                mView.buttonDisabled.setVisibility(GONE);
+                mView.progressLoading.setVisibility(GONE);
                 break;
             case DISABLED:
-                mProgressLoading.setVisibility(GONE);
-                mTextTitle.setVisibility(VISIBLE);
-                mTextTitle.setText(mTextDisabled);
-                mTextTitle.setTextColor(mTextColorResDisabled);
-                setBackgroundColor(mColorResDisabled);
+                mView.buttonEnabled.setVisibility(GONE);
+                mView.buttonDisabled.setVisibility(VISIBLE);
+                mView.progressLoading.setVisibility(GONE);
                 break;
             case LOADING:
-                mTextTitle.setText(mTextEnabled);
-                mProgressLoading.setVisibility(VISIBLE);
-                mTextTitle.setVisibility(INVISIBLE);
-                setBackgroundColor(mColorResLoading);
+                mView.buttonEnabled.setVisibility(GONE);
+                mView.buttonDisabled.setVisibility(GONE);
+                mView.progressLoading.setVisibility(VISIBLE);
                 break;
         }
     }
@@ -126,37 +113,5 @@ public class ButtonProgress extends RelativeLayout {
     public void setState(State state) {
         mState = state;
         style();
-    }
-
-    public State getState() {
-        return mState;
-    }
-
-    public void setTextEnabled(String textEnabled) {
-        mTextEnabled = textEnabled;
-    }
-
-    public void setTextDisabled(String textDisabled) {
-        mTextDisabled = textDisabled;
-    }
-
-    public void setTextColorResEnabled(int textColorResEnabled) {
-        mTextColorResEnabled = textColorResEnabled;
-    }
-
-    public void setTextColorResDisabled(int textColorResDisabled) {
-        mTextColorResDisabled = textColorResDisabled;
-    }
-
-    public void setColorResEnabled(int colorResEnabled) {
-        mColorResEnabled = colorResEnabled;
-    }
-
-    public void setColorResDisabled(int colorResDisabled) {
-        mColorResDisabled = colorResDisabled;
-    }
-
-    public void setColorResLoading(int colorResLoading) {
-        mColorResLoading = colorResLoading;
     }
 }
