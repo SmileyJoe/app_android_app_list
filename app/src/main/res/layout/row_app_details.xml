@@ -1,77 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/activity_padding">
+    android:layout_marginStart="@dimen/padding_medium"
+    android:layout_marginEnd="@dimen/padding_medium"
+    android:layout_marginTop="@dimen/padding_small"
+    android:layout_marginBottom="@dimen/padding_small">
 
-    <ImageView
-        android:id="@+id/image_icon"
-        android:layout_width="@dimen/icon_medium"
-        android:layout_height="@dimen/icon_medium"
-        app:layout_constraintBottom_toTopOf="@id/barrier_content_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_icon_details"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:barrierDirection="end"
-        app:constraint_referenced_ids="image_icon" />
+        android:padding="@dimen/activity_padding">
 
-    <LinearLayout
-        android:id="@+id/layout_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:layout_marginStart="@dimen/padding_medium"
-        app:layout_constraintBottom_toTopOf="@id/barrier_content_button"
-        app:layout_constraintLeft_toRightOf="@id/barrier_icon_details"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/image_icon"
+            android:layout_width="@dimen/icon_medium"
+            android:layout_height="@dimen/icon_medium"
+            app:layout_constraintBottom_toTopOf="@id/barrier_content_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/text_title"
-            style="@style/Text.Title"
-            tools:text="Title" />
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_icon_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="image_icon" />
 
-        <TextView
-            android:id="@+id/text_package"
-            style="@style/Text"
-            tools:text="io.smileyjoe.test_package" />
+        <LinearLayout
+            android:id="@+id/layout_details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/barrier_content_button"
+            app:layout_constraintLeft_toRightOf="@id/barrier_icon_details"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/text_installed"
-            style="@style/Text"
-            android:text="@string/text_installed"
-            android:textStyle="italic"
-            tools:text="Installed" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/text_title"
+                style="@style/Text.Title"
+                tools:text="Title" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_content_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="image_icon, layout_details" />
+            <TextView
+                android:id="@+id/text_package"
+                style="@style/Text"
+                tools:text="io.smileyjoe.test_package" />
 
-    <io.smileyjoe.applist.view.ButtonProgress
-        android:id="@+id/button_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:background_disabled="@color/transparent"
-        app:background_enabled="@color/colorPrimary"
-        app:background_loading="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_content_button"
-        app:state="enabled"
-        app:text_color_disabled="@color/red"
-        app:text_color_enabled="@color/white"
-        app:text_disabled="@string/button_delete"
-        app:text_enabled="@string/button_save" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/text_installed"
+                style="@style/Text"
+                android:text="@string/text_installed"
+                android:textStyle="italic"
+                tools:text="Installed" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_content_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="image_icon, layout_details" />
+
+        <io.smileyjoe.applist.view.ButtonProgress
+            android:id="@+id/button_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:background_disabled="@color/transparent"
+            app:background_enabled="@color/colorPrimary"
+            app:background_loading="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_content_button"
+            app:state="enabled"
+            app:text_color_disabled="@color/red"
+            app:text_color_enabled="@color/white"
+            app:text_disabled="@string/button_delete"
+            app:text_enabled="@string/button_save" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

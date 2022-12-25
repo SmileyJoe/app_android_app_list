@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.Material3.DynamicColors.DayNight">
         <item name="android:statusBarColor">?android:colorBackground</item>
         <item name="materialButtonStyle">@style/Widget.Material3.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

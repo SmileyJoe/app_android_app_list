@@ -98,7 +98,7 @@ public class AppListFragment extends Fragment {
         mRecyclerAppDetails = (RecyclerView) rootView.findViewById(R.id.recycler_app_details);
         mRecyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerAppDetails.setAdapter(mAppDetailAdapter);
-        mRecyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+//        mRecyclerAppDetails.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         populateList();
         handleDisplayView();

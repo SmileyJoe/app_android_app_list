@@ -22,6 +22,8 @@
         android:id="@+id/recycler_app_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/padding_small"
+        android:clipToPadding="false"
         android:visibility="gone"/>
 
 </RelativeLayout>

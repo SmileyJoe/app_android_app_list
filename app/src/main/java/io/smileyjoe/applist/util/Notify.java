@@ -2,6 +2,7 @@ package io.smileyjoe.applist.util;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -49,10 +50,10 @@ public class Notify {
         dialog.show();
     }
 
-    public static void success(CoordinatorLayout coordinatorLayout, int messageId) {
-        if (coordinatorLayout != null) {
+    public static void success(View view, int messageId) {
+        if (view != null) {
             Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, coordinatorLayout.getContext().getString(messageId), Snackbar.LENGTH_LONG);
+                    .make(view, view.getContext().getString(messageId), Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }
