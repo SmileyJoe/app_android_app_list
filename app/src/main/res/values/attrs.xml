@@ -11,4 +11,13 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="ImageSelected">
+        <attr name="src_selected" format="reference"/>
+        <attr name="src_deselected" format="reference"/>
+        <attr name="image_selected_state" format="enum">
+            <enum name="selected" value="0"/>
+            <enum name="deselected" value="1"/>
+        </attr>
+    </declare-styleable>
+
 </resources>

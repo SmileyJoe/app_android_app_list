@@ -13,6 +13,7 @@ import io.smileyjoe.applist.databinding.RowAppDetailsBinding;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.view.ButtonProgress;
+import io.smileyjoe.applist.view.ImageSelected;
 
 /**
  * Created by cody on 2018/07/03.
@@ -21,12 +22,14 @@ import io.smileyjoe.applist.view.ButtonProgress;
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     public interface Listener {
-        void onClick(ButtonProgress buttonProgress, AppDetail appDetail);
+        void onClick(AppDetailViewHolder viewHolder, AppDetail appDetail);
     }
 
     private RowAppDetailsBinding mView;
     private Listener mSaveClick;
     private Listener mDeleteClick;
+    private Listener mFavouriteSelected;
+    private Listener mFavouriteDeselected;
     private AppListFragment.Type mType;
 
     public AppDetailViewHolder(ViewGroup parent, AppListFragment.Type type) {
@@ -47,12 +50,22 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mDeleteClick = listener;
     }
 
+    public void onFavouriteSelected(Listener listener){
+        mFavouriteSelected = listener;
+    }
+
+    public void onFavouriteDeselected(Listener listener){
+        mFavouriteDeselected = listener;
+    }
+
     public void bind(AppDetail appDetail) {
         mView.textTitle.setText(appDetail.getName());
         mView.textPackage.setText(appDetail.getPackage());
         mView.getRoot().setOnClickListener(v -> openUrl(v, appDetail.getPlayStoreLink()));
-        mView.buttonProgress.onEnabledClick(v -> mSaveClick.onClick(mView.buttonProgress, appDetail));
-        mView.buttonProgress.onDisabledClick(v -> mDeleteClick.onClick(mView.buttonProgress, appDetail));
+        mView.buttonProgress.onEnabledClick(v -> mSaveClick.onClick(this, appDetail));
+        mView.buttonProgress.onDisabledClick(v -> mDeleteClick.onClick(this, appDetail));
+        mView.imageFavourite.onSelected(v -> mFavouriteSelected.onClick(this, appDetail));
+        mView.imageFavourite.onDeselected(v -> mFavouriteDeselected.onClick(this, appDetail));
 
         if (appDetail.getIcon() != null) {
             mView.imageIcon.setVisibility(View.VISIBLE);
@@ -61,10 +74,17 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
             mView.imageIcon.setVisibility(View.GONE);
         }
 
+        updateState(appDetail);
+    }
+
+    public void updateState(AppDetail appDetail){
         if (appDetail.isSaved()) {
             mView.buttonProgress.setState(ButtonProgress.State.DISABLED);
+            mView.imageFavourite.setVisibility(View.VISIBLE);
+            mView.imageFavourite.setState(appDetail.isFavourite() ? ImageSelected.State.SELECTED : ImageSelected.State.DESELECTED);
         } else {
             mView.buttonProgress.setState(ButtonProgress.State.ENABLED);
+            mView.imageFavourite.setVisibility(View.GONE);
         }
 
         if(mType == AppListFragment.Type.SAVED && appDetail.isInstalled()){
@@ -72,6 +92,10 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         } else {
             mView.textInstalled.setVisibility(View.GONE);
         }
+    }
+
+    public void setLoading(){
+        mView.buttonProgress.setState(ButtonProgress.State.LOADING);
     }
 
     private void openUrl(View view, String url){

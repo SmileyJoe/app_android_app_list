@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.view.ButtonProgress;
+import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
 /**
  * Created by cody on 2018/07/07.
@@ -16,7 +17,7 @@ import io.smileyjoe.applist.view.ButtonProgress;
 public abstract class DbCompletionListener implements DatabaseReference.CompletionListener {
 
     private Activity mActivity;
-    private ButtonProgress mButtonProgress;
+    private AppDetailViewHolder mViewHolder;
     private AppDetail mAppDetail;
     private DatabaseError mDatabaseError;
     private DatabaseReference mDatabaseReference;
@@ -27,9 +28,9 @@ public abstract class DbCompletionListener implements DatabaseReference.Completi
         this(activity, null, appDetail);
     }
 
-    public DbCompletionListener(Activity activity, ButtonProgress buttonProgress, AppDetail appDetail) {
+    public DbCompletionListener(Activity activity, AppDetailViewHolder viewHolder, AppDetail appDetail) {
         mActivity = activity;
-        mButtonProgress = buttonProgress;
+        mViewHolder = viewHolder;
         mAppDetail = appDetail;
     }
 
@@ -46,8 +47,8 @@ public abstract class DbCompletionListener implements DatabaseReference.Completi
         Notify.error(mActivity, R.string.error_generic);
     }
 
-    public ButtonProgress getButtonProgress() {
-        return mButtonProgress;
+    public AppDetailViewHolder getViewHolder() {
+        return mViewHolder;
     }
 
     public AppDetail getAppDetail() {

@@ -29,6 +29,17 @@
             app:barrierDirection="end"
             app:constraint_referenced_ids="image_icon" />
 
+        <io.smileyjoe.applist.view.ImageSelected
+            android:id="@+id/image_favourite"
+            android:layout_width="@dimen/icon_small"
+            android:layout_height="@dimen/icon_small"
+            app:tint="?android:colorPrimary"
+            app:image_selected_state="deselected"
+            app:src_selected="@drawable/ic_favourite"
+            app:src_deselected="@drawable/ic_favourite_outline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
         <LinearLayout
             android:id="@+id/layout_details"
             android:layout_width="0dp"

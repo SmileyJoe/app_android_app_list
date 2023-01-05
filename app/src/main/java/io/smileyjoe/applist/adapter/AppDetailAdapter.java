@@ -12,6 +12,7 @@ import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.comparator.AppDetailComparator;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
+import io.smileyjoe.applist.view.ImageSelected;
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
 /**
@@ -23,6 +24,8 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
     private List<AppDetail> mItems;
     private AppDetailViewHolder.Listener mSaveClick;
     private AppDetailViewHolder.Listener mDeleteClick;
+    private AppDetailViewHolder.Listener mFavouriteSelected;
+    private AppDetailViewHolder.Listener mFavouriteDeselected;
     private AppListFragment.Type mType;
 
     public AppDetailAdapter(List<AppDetail> items, AppListFragment.Type type) {
@@ -43,11 +46,21 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
         mDeleteClick = listener;
     }
 
+    public void onFavouriteSelected(AppDetailViewHolder.Listener listener){
+        mFavouriteSelected = listener;
+    }
+
+    public void onFavouriteDeselected(AppDetailViewHolder.Listener listener){
+        mFavouriteDeselected = listener;
+    }
+
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         AppDetailViewHolder holder = new AppDetailViewHolder(parent, mType);
         holder.onSaveClick(mSaveClick);
         holder.onDeleteClick(mDeleteClick);
+        holder.onFavouriteSelected(mFavouriteSelected);
+        holder.onFavouriteDeselected(mFavouriteDeselected);
         return holder;
     }
 

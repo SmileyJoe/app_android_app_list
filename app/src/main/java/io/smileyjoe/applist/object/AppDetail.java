@@ -21,9 +21,11 @@ public class AppDetail {
 
     private static final String DB_KEY_NAME = "name";
     private static final String DB_KEY_PACKAGE = "package";
+    private static final String DB_KEY_IS_FAVOURITE = "is_favourite";
 
     private String mName;
     private String mPackage;
+    private boolean mIsFavourite = false;
     private String mFirebaseKey;
     private Intent mLaunchActivity;
     private Drawable mIcon;
@@ -45,6 +47,10 @@ public class AppDetail {
             if (dataSnapshot.hasChild(DB_KEY_PACKAGE)) {
                 setPackage(dataSnapshot.child(DB_KEY_PACKAGE).getValue(String.class));
             }
+
+            if(dataSnapshot.hasChild(DB_KEY_IS_FAVOURITE)){
+                isFavourite(dataSnapshot.child(DB_KEY_IS_FAVOURITE).getValue(Boolean.class));
+            }
         }
     }
 
@@ -54,6 +60,10 @@ public class AppDetail {
 
     public void setPackage(String aPackage) {
         mPackage = aPackage;
+    }
+
+    public void isFavourite(boolean isFavourite) {
+        mIsFavourite = isFavourite;
     }
 
     public void setLaunchActivity(Intent launchActivity) {
@@ -82,6 +92,10 @@ public class AppDetail {
 
     public String getPackage() {
         return mPackage;
+    }
+
+    public boolean isFavourite() {
+        return mIsFavourite;
     }
 
     public Intent getLaunchActivity() {
@@ -123,6 +137,7 @@ public class AppDetail {
             HashMap<String, Object> data = new HashMap<>();
             data.put(DB_KEY_NAME, getName());
             data.put(DB_KEY_PACKAGE, getPackage());
+            data.put(DB_KEY_IS_FAVOURITE, isFavourite());
 
             databaseReference
                     .child(getFirebaseKey(databaseReference))
@@ -178,10 +193,14 @@ public class AppDetail {
     @Override
     public String toString() {
         return "AppDetail{" +
-                "name='" + getName() + '\'' +
-                ", package='" + getPackage() + '\'' +
-                ", launchActivity=" + (getLaunchActivity() != null) +
-                ", icon=" + (getIcon() != null) +
+                "mName='" + mName + '\'' +
+                ", mPackage='" + mPackage + '\'' +
+                ", mIsFavourite=" + mIsFavourite +
+                ", mFirebaseKey='" + mFirebaseKey + '\'' +
+                ", mLaunchActivity=" + mLaunchActivity +
+                ", mIcon=" + mIcon +
+                ", mSaved=" + mSaved +
+                ", mInstalled=" + mInstalled +
                 '}';
     }
 }
