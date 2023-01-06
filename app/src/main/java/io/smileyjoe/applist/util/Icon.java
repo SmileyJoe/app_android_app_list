@@ -54,19 +54,7 @@ public class Icon {
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
             byte[] data = output.toByteArray();
 
-            UploadTask uploadTask = storageReference.putBytes(data);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                    // ...
-                }
-            });
+            storageReference.putBytes(data);
         });
 
     }
@@ -80,9 +68,7 @@ public class Icon {
                     .into(imageView);
 
             imageView.setVisibility(View.VISIBLE);
-        }).addOnFailureListener(e -> {
-            imageView.setVisibility(View.GONE);
-        });
+        }).addOnFailureListener(e -> imageView.setVisibility(View.GONE));
     }
 
     /**

@@ -9,10 +9,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.databinding.ViewButtonProgressBinding;
@@ -24,18 +26,26 @@ import io.smileyjoe.applist.databinding.ViewButtonProgressBinding;
 public class ButtonProgress extends RelativeLayout {
 
     public enum State {
-        ENABLED(0),
-        DISABLED(1),
-        LOADING(2);
+        ENABLED(0, R.id.button_enabled),
+        DISABLED(1, R.id.button_disabled),
+        LOADING(2, R.id.progress_loading);
 
         private int mId;
+        @IdRes
+        private int mVisibleView;
 
-        State(int id) {
+        State(int id, @IdRes int visibleView) {
             mId = id;
+            mVisibleView = visibleView;
         }
 
         public int getId() {
             return mId;
+        }
+
+        @IdRes
+        public int getVisibleView() {
+            return mVisibleView;
         }
 
         public static State fromId(int id) {
@@ -91,23 +101,14 @@ public class ButtonProgress extends RelativeLayout {
     }
 
     private void style() {
-        switch (mState) {
-            case ENABLED:
-                mView.buttonEnabled.setVisibility(VISIBLE);
-                mView.buttonDisabled.setVisibility(GONE);
-                mView.progressLoading.setVisibility(GONE);
-                break;
-            case DISABLED:
-                mView.buttonEnabled.setVisibility(GONE);
-                mView.buttonDisabled.setVisibility(VISIBLE);
-                mView.progressLoading.setVisibility(GONE);
-                break;
-            case LOADING:
-                mView.buttonEnabled.setVisibility(GONE);
-                mView.buttonDisabled.setVisibility(GONE);
-                mView.progressLoading.setVisibility(VISIBLE);
-                break;
-        }
+        Stream.of(mView.buttonEnabled, mView.buttonDisabled, mView.progressLoading)
+                .forEach(v -> {
+                    if(v.getId() == mState.getVisibleView()){
+                        v.setVisibility(VISIBLE);
+                    } else {
+                        v.setVisibility(GONE);
+                    }
+                });
     }
 
     public void setState(State state) {
