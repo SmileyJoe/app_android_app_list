@@ -9,10 +9,6 @@ import io.smileyjoe.applist.BuildConfig;
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.object.User;
 
-/**
- * Created by cody on 2018/07/07.
- */
-
 public class Db {
 
     private static final String DB_KEY_APP_DETAIL = BuildConfig.DEBUG ? "app-debug" : "app";

@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.IdRes;
@@ -18,10 +16,6 @@ import java.util.stream.Stream;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.databinding.ViewButtonProgressBinding;
-
-/**
- * Created by cody on 2018/07/04.
- */
 
 public class ButtonProgress extends RelativeLayout {
 
@@ -92,18 +86,18 @@ public class ButtonProgress extends RelativeLayout {
         }
     }
 
-    public void onEnabledClick(OnClickListener listener){
+    public void onEnabledClick(OnClickListener listener) {
         mView.buttonEnabled.setOnClickListener(listener);
     }
 
-    public void onDisabledClick(OnClickListener listener){
+    public void onDisabledClick(OnClickListener listener) {
         mView.buttonDisabled.setOnClickListener(listener);
     }
 
     private void style() {
         Stream.of(mView.buttonEnabled, mView.buttonDisabled, mView.progressLoading)
                 .forEach(v -> {
-                    if(v.getId() == mState.getVisibleView()){
+                    if (v.getId() == mState.getVisibleView()) {
                         v.setVisibility(VISIBLE);
                     } else {
                         v.setVisibility(GONE);

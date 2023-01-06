@@ -7,10 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import io.smileyjoe.applist.object.User;
 
-/**
- * Created by cody on 2018/07/05.
- */
-
 public class BaseActivity extends AppCompatActivity {
 
     @Override

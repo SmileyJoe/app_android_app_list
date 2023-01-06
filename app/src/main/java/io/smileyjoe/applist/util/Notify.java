@@ -5,15 +5,10 @@ import android.content.DialogInterface;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import io.smileyjoe.applist.R;
-
-/**
- * Created by cody on 2017/05/14.
- */
 
 public class Notify {
 

@@ -1,18 +1,12 @@
 package io.smileyjoe.applist.util;
 
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import io.smileyjoe.applist.object.AppDetail;
-
-/**
- * Created by cody on 2018/07/03.
- */
 
 public class PackageUtil {
 
@@ -46,7 +40,7 @@ public class PackageUtil {
         return installedApps;
     }
 
-    public static List<AppDetail> checkInstalled(PackageManager packageManager, List<AppDetail> savedApps){
+    public static List<AppDetail> checkInstalled(PackageManager packageManager, List<AppDetail> savedApps) {
         List<AppDetail> installedApps = getInstalledApplications(packageManager);
 
         savedApps.forEach(savedApp -> {

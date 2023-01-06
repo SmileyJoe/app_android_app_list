@@ -1,6 +1,5 @@
 package io.smileyjoe.applist.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,10 +17,6 @@ import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Notify;
-
-/**
- * Created by cody on 2018/07/08.
- */
 
 public class SaveAppActivity extends BaseActivity {
 

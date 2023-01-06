@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.DrawableRes;
@@ -16,7 +15,7 @@ import io.smileyjoe.applist.R;
 
 public class ImageSelected extends androidx.appcompat.widget.AppCompatImageView implements View.OnClickListener {
 
-    public enum State{
+    public enum State {
         SELECTED(0),
         DESELECTED(1);
 
@@ -30,7 +29,7 @@ public class ImageSelected extends androidx.appcompat.widget.AppCompatImageView 
             return mId;
         }
 
-        public static State fromId(int id){
+        public static State fromId(int id) {
             return Arrays.stream(values())
                     .filter(state -> state.getId() == id)
                     .findFirst()
@@ -61,8 +60,8 @@ public class ImageSelected extends androidx.appcompat.widget.AppCompatImageView 
         init(attrs);
     }
 
-    private void init(AttributeSet attrs){
-        if(attrs != null){
+    private void init(AttributeSet attrs) {
+        if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ImageSelected);
 
             if (typedArray != null) {
@@ -77,7 +76,7 @@ public class ImageSelected extends androidx.appcompat.widget.AppCompatImageView 
 
     public void setState(State state) {
         mState = state;
-        switch (mState){
+        switch (mState) {
             case SELECTED:
                 setImageResource(mSrcSelected);
                 break;
@@ -87,11 +86,11 @@ public class ImageSelected extends androidx.appcompat.widget.AppCompatImageView 
         }
     }
 
-    public void onSelected(View.OnClickListener listener){
+    public void onSelected(View.OnClickListener listener) {
         mOnSelected = listener;
     }
 
-    public void onDeselected(View.OnClickListener listener){
+    public void onDeselected(View.OnClickListener listener) {
         mOnDeselected = listener;
     }
 
@@ -99,7 +98,7 @@ public class ImageSelected extends androidx.appcompat.widget.AppCompatImageView 
     public void onClick(View view) {
         setState(mState == State.SELECTED ? State.DESELECTED : State.SELECTED);
 
-        switch (mState){
+        switch (mState) {
             case SELECTED:
                 mOnSelected.onClick(this);
                 break;

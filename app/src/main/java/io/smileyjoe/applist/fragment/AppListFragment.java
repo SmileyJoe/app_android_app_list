@@ -23,10 +23,6 @@ import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.Notify;
 
-/**
- * Created by cody on 2018/07/03.
- */
-
 public class AppListFragment extends Fragment {
 
     public interface Listener {
@@ -78,7 +74,7 @@ public class AppListFragment extends Fragment {
         return mView.getRoot();
     }
 
-    public void setupAdapter(){
+    public void setupAdapter() {
         mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mPage);
         mAppDetailAdapter.onSave(appDetail -> appDetail.save(getActivity()));
         mAppDetailAdapter.onDelete(appDetail -> appDetail.delete(getActivity()));
@@ -116,7 +112,7 @@ public class AppListFragment extends Fragment {
             mLoading = false;
             handleDisplayView();
 
-            if(mListener != null){
+            if (mListener != null) {
                 mListener.onLoadComplete(mPage, mPosition, mAppDetailAdapter.getItemCount());
             }
         }

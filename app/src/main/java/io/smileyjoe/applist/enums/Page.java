@@ -45,14 +45,14 @@ public enum Page {
         return context.getString(mTitle);
     }
 
-    public List<AppDetail> getApps(Context context, DataSnapshot dataSnapshot){
+    public List<AppDetail> getApps(Context context, DataSnapshot dataSnapshot) {
         ArrayList<AppDetail> apps = new ArrayList<>();
 
         for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
             apps.add(new AppDetail(itemSnapshot));
         }
 
-        switch (this){
+        switch (this) {
             case INSTALLED:
                 return PackageUtil.getInstalledApplications(context.getPackageManager(), apps);
             case FAVOURITE:

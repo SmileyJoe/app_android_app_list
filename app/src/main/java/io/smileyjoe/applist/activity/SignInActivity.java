@@ -14,10 +14,6 @@ import io.smileyjoe.applist.object.User;
 import io.smileyjoe.applist.util.Notify;
 import za.co.smileyjoedev.firebaseauth.google.GoogleAuth;
 
-/**
- * Created by cody on 2017/04/14.
- */
-
 public class SignInActivity extends BaseActivity {
 
     private static final String EXTRA_RETURN_INTENT = "return_intent";

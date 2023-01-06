@@ -1,6 +1,5 @@
 package io.smileyjoe.applist.viewholder;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -11,15 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding;
 import io.smileyjoe.applist.enums.Page;
-import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Icon;
 import io.smileyjoe.applist.view.ButtonProgress;
 import io.smileyjoe.applist.view.ImageSelected;
-
-/**
- * Created by cody on 2018/07/03.
- */
 
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
@@ -42,11 +36,11 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mPage = page;
     }
 
-    public void onSave(Listener listener){
+    public void onSave(Listener listener) {
         mSaveListener = listener;
     }
 
-    public void onDelete(Listener listener){
+    public void onDelete(Listener listener) {
         mDeleteListener = listener;
     }
 
@@ -69,18 +63,18 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         updateState(appDetail);
     }
 
-    private void save(AppDetail appDetail){
+    private void save(AppDetail appDetail) {
         mView.buttonProgress.setState(ButtonProgress.State.LOADING);
         appDetail.setSaved(true);
         mSaveListener.onUpdate(appDetail);
     }
 
-    private void favourite(AppDetail appDetail, boolean isFavourite){
+    private void favourite(AppDetail appDetail, boolean isFavourite) {
         appDetail.isFavourite(isFavourite);
         mSaveListener.onUpdate(appDetail);
     }
 
-    public void updateState(AppDetail appDetail){
+    public void updateState(AppDetail appDetail) {
         if (appDetail.isSaved()) {
             mView.buttonProgress.setState(ButtonProgress.State.DISABLED);
             mView.imageFavourite.setVisibility(View.VISIBLE);
@@ -90,14 +84,14 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
             mView.imageFavourite.setVisibility(View.GONE);
         }
 
-        if(mPage != Page.INSTALLED && appDetail.isInstalled()){
+        if (mPage != Page.INSTALLED && appDetail.isInstalled()) {
             mView.textInstalled.setVisibility(View.VISIBLE);
         } else {
             mView.textInstalled.setVisibility(View.GONE);
         }
     }
 
-    private void openUrl(View view, String url){
+    private void openUrl(View view, String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         view.getContext().startActivity(browserIntent);
     }

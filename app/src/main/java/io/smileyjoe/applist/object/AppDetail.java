@@ -19,10 +19,6 @@ import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.Icon;
 import io.smileyjoe.applist.util.Notify;
 
-/**
- * Created by cody on 2018/07/03.
- */
-
 public class AppDetail {
 
     private static final String DB_KEY_NAME = "name";
@@ -54,7 +50,7 @@ public class AppDetail {
                 setPackage(dataSnapshot.child(DB_KEY_PACKAGE).getValue(String.class));
             }
 
-            if(dataSnapshot.hasChild(DB_KEY_IS_FAVOURITE)){
+            if (dataSnapshot.hasChild(DB_KEY_IS_FAVOURITE)) {
                 isFavourite(dataSnapshot.child(DB_KEY_IS_FAVOURITE).getValue(Boolean.class));
             }
         }
@@ -152,7 +148,7 @@ public class AppDetail {
             databaseReference
                     .child(getFirebaseKey(databaseReference))
                     .updateChildren(data, ((error, ref) -> {
-                        if(error == null){
+                        if (error == null) {
                             Icon.upload(getPackage(), getIcon());
                         } else {
                             Notify.error(activity, R.string.error_generic);
@@ -187,22 +183,22 @@ public class AppDetail {
 
     public boolean onSavedUpdated(List<AppDetail> savedApps) {
         return savedApps.stream()
-            .filter(app -> getPackage().equals(app.getPackage()))
-            .findFirst()
-            .map(app -> {
-                setSaved(true);
-                isFavourite(app.isFavourite());
-                setFirebaseKey(app.getFirebaseKey());
-                return true;
-            })
-            .orElseGet(() -> {
-                setSaved(false);
-                setFirebaseKey(null);
-                return false;
-            });
+                .filter(app -> getPackage().equals(app.getPackage()))
+                .findFirst()
+                .map(app -> {
+                    setSaved(true);
+                    isFavourite(app.isFavourite());
+                    setFirebaseKey(app.getFirebaseKey());
+                    return true;
+                })
+                .orElseGet(() -> {
+                    setSaved(false);
+                    setFirebaseKey(null);
+                    return false;
+                });
     }
 
-    public boolean onInstalledUpdated(List<AppDetail> installedApps){
+    public boolean onInstalledUpdated(List<AppDetail> installedApps) {
         return installedApps.stream()
                 .filter(app -> getPackage().equals(app.getPackage()))
                 .findFirst()

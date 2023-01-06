@@ -12,7 +12,6 @@ import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.PagerAdapterMain;
 import io.smileyjoe.applist.databinding.ActivityMainBinding;
 import io.smileyjoe.applist.enums.Page;
-import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.util.Notify;
 
 public class MainActivity extends BaseActivity {
@@ -42,7 +41,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private class OnPageChangeListener extends ViewPager2.OnPageChangeCallback{
+    private class OnPageChangeListener extends ViewPager2.OnPageChangeCallback {
         @Override
         public void onPageSelected(int position) {
             Page nav = Page.fromPosition(position);

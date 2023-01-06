@@ -5,10 +5,6 @@ import android.net.Uri;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-/**
- * Created by cody on 2017/04/15.
- */
-
 public class User {
 
     private String mId;

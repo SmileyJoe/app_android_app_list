@@ -1,6 +1,5 @@
 package io.smileyjoe.applist.adapter;
 
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,17 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 
-import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.comparator.AppDetailComparator;
 import io.smileyjoe.applist.enums.Page;
-import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
-import io.smileyjoe.applist.view.ImageSelected;
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
-
-/**
- * Created by cody on 2018/07/03.
- */
 
 public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> {
 
@@ -37,11 +29,11 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
         mItems = items;
     }
 
-    public void onSave(AppDetailViewHolder.Listener listener){
+    public void onSave(AppDetailViewHolder.Listener listener) {
         mSaveListener = listener;
     }
 
-    public void onDelete(AppDetailViewHolder.Listener listener){
+    public void onDelete(AppDetailViewHolder.Listener listener) {
         mDeleteListener = listener;
     }
 
