@@ -7,22 +7,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.core.app.TaskStackBuilder;
-
-import com.google.android.material.textfield.TextInputLayout;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding;
 import io.smileyjoe.applist.object.AppDetail;
-import io.smileyjoe.applist.util.DbCompletionListener;
 import io.smileyjoe.applist.util.Notify;
 
 /**
@@ -108,7 +102,7 @@ public class SaveAppActivity extends BaseActivity {
             AppDetail appDetail = new AppDetail();
             appDetail.setName(appName);
             appDetail.setPackage(packageName);
-            appDetail.save(this, new OnSaveListener(this, appDetail));
+//            appDetail.save(this, new OnSaveListener(this, appDetail));
         }
     }
 
@@ -142,17 +136,17 @@ public class SaveAppActivity extends BaseActivity {
         }
     }
 
-    private class OnSaveListener extends DbCompletionListener {
-
-        public OnSaveListener(Activity activity, AppDetail appDetail) {
-            super(activity, appDetail);
-        }
-
-        @Override
-        protected void onSuccess() {
-            hideProgress();
-            setResult(RESULT_OK);
-            finish();
-        }
-    }
+//    private class OnSaveListener extends DbCompletionListener {
+//
+//        public OnSaveListener(Activity activity, AppDetail appDetail) {
+//            super(activity, appDetail);
+//        }
+//
+//        @Override
+//        protected void onSuccess() {
+//            hideProgress();
+//            setResult(RESULT_OK);
+//            finish();
+//        }
+//    }
 }

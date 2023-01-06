@@ -1,27 +1,19 @@
 package io.smileyjoe.applist.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
@@ -29,12 +21,7 @@ import io.smileyjoe.applist.databinding.FragmentAppListBinding;
 import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Db;
-import io.smileyjoe.applist.util.DbCompletionListener;
 import io.smileyjoe.applist.util.Notify;
-import io.smileyjoe.applist.util.PackageUtil;
-import io.smileyjoe.applist.view.ButtonProgress;
-import io.smileyjoe.applist.view.ImageSelected;
-import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
 /**
  * Created by cody on 2018/07/03.
@@ -93,24 +80,8 @@ public class AppListFragment extends Fragment {
 
     public void setupAdapter(){
         mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mPage);
-        mAppDetailAdapter.onSaveClick((viewHolder, appDetail) -> {
-            if (appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), viewHolder, appDetail))) {
-                viewHolder.setLoading();
-            }
-        });
-        mAppDetailAdapter.onDeleteClick((viewHolder, appDetail) -> {
-            if (appDetail.delete(getActivity(), new DeleteCompletionListener(getActivity(), viewHolder, appDetail))) {
-                viewHolder.setLoading();
-            }
-        });
-        mAppDetailAdapter.onFavouriteSelected(((viewHolder, appDetail) -> {
-            appDetail.isFavourite(true);
-            appDetail.save(getActivity(), new OnFavouriteUpdate(getActivity(), viewHolder, appDetail));
-        }));
-        mAppDetailAdapter.onFavouriteDeselected(((viewHolder, appDetail) -> {
-            appDetail.isFavourite(false);
-            appDetail.save(getActivity(), new OnFavouriteUpdate(getActivity(), viewHolder, appDetail));
-        }));
+        mAppDetailAdapter.onSave(appDetail -> appDetail.save(getActivity()));
+        mAppDetailAdapter.onDelete(appDetail -> appDetail.delete(getActivity()));
     }
 
     public void setListener(Listener listener) {
@@ -153,65 +124,6 @@ public class AppListFragment extends Fragment {
         @Override
         public void onCancelled(DatabaseError databaseError) {
             Notify.error(getActivity(), R.string.error_database_read_failed);
-        }
-    }
-
-    private class DeleteCompletionListener extends DbCompletionListener {
-
-        public DeleteCompletionListener(Activity activity, AppDetailViewHolder viewHolder, AppDetail appDetail) {
-            super(activity, viewHolder, appDetail);
-        }
-
-        @Override
-        protected void onSuccess() {
-            if (mPage == Page.INSTALLED) {
-                getAppDetail().setSaved(false);
-                getViewHolder().updateState(getAppDetail());
-            }
-        }
-
-        @Override
-        protected void onFail() {
-            super.onFail();
-            getViewHolder().updateState(getAppDetail());
-        }
-    }
-
-    private class SaveCompletionListener extends DbCompletionListener {
-
-        public SaveCompletionListener(Activity activity, AppDetailViewHolder viewHolder, AppDetail appDetail) {
-            super(activity, viewHolder, appDetail);
-        }
-
-        @Override
-        protected void onSuccess() {
-            getAppDetail().setSaved(true);
-            getViewHolder().updateState(getAppDetail());
-        }
-
-        @Override
-        protected void onFail() {
-            super.onFail();
-            getViewHolder().updateState(getAppDetail());
-        }
-    }
-
-    private class OnFavouriteUpdate extends DbCompletionListener{
-
-        public OnFavouriteUpdate(Activity activity, AppDetailViewHolder viewHolder, AppDetail appDetail) {
-            super(activity, viewHolder, appDetail);
-        }
-
-        @Override
-        protected void onSuccess() {
-            getViewHolder().updateState(getAppDetail());
-        }
-
-        @Override
-        protected void onFail() {
-            super.onFail();
-            getAppDetail().isFavourite(!getAppDetail().isFavourite());
-            getViewHolder().updateState(getAppDetail());
         }
     }
 }

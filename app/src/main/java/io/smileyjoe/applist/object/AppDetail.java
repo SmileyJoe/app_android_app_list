@@ -5,14 +5,19 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
+import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.Icon;
+import io.smileyjoe.applist.util.Notify;
 
 /**
  * Created by cody on 2018/07/03.
@@ -131,7 +136,11 @@ public class AppDetail {
         return "http://play.google.com/store/apps/details?id=" + getPackage();
     }
 
-    public boolean save(Activity activity, DatabaseReference.CompletionListener listener) {
+    public boolean save(Activity activity) {
+        return save(activity, Optional.empty());
+    }
+
+    public boolean save(Activity activity, @NonNull Optional<DatabaseReference.CompletionListener> listener) {
         DatabaseReference databaseReference = Db.getDetailReference(activity);
 
         if (databaseReference != null) {
@@ -145,15 +154,21 @@ public class AppDetail {
                     .updateChildren(data, ((error, ref) -> {
                         if(error == null){
                             Icon.upload(getPackage(), getIcon());
+                        } else {
+                            Notify.error(activity, R.string.error_generic);
                         }
 
-                        listener.onComplete(error, ref);
+                        listener.ifPresent(l -> l.onComplete(error, ref));
                     }));
 
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean delete(Activity activity) {
+        return delete(activity, null);
     }
 
     public boolean delete(Activity activity, DatabaseReference.CompletionListener listener) {

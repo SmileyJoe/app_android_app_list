@@ -23,10 +23,8 @@ import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> {
 
     private List<AppDetail> mItems;
-    private AppDetailViewHolder.Listener mSaveClick;
-    private AppDetailViewHolder.Listener mDeleteClick;
-    private AppDetailViewHolder.Listener mFavouriteSelected;
-    private AppDetailViewHolder.Listener mFavouriteDeselected;
+    private AppDetailViewHolder.Listener mSaveListener;
+    private AppDetailViewHolder.Listener mDeleteListener;
     private Page mPage;
 
     public AppDetailAdapter(List<AppDetail> items, Page page) {
@@ -39,29 +37,19 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
         mItems = items;
     }
 
-    public void onSaveClick(AppDetailViewHolder.Listener listener){
-        mSaveClick = listener;
+    public void onSave(AppDetailViewHolder.Listener listener){
+        mSaveListener = listener;
     }
 
-    public void onDeleteClick(AppDetailViewHolder.Listener listener){
-        mDeleteClick = listener;
-    }
-
-    public void onFavouriteSelected(AppDetailViewHolder.Listener listener){
-        mFavouriteSelected = listener;
-    }
-
-    public void onFavouriteDeselected(AppDetailViewHolder.Listener listener){
-        mFavouriteDeselected = listener;
+    public void onDelete(AppDetailViewHolder.Listener listener){
+        mDeleteListener = listener;
     }
 
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         AppDetailViewHolder holder = new AppDetailViewHolder(parent, mPage);
-        holder.onSaveClick(mSaveClick);
-        holder.onDeleteClick(mDeleteClick);
-        holder.onFavouriteSelected(mFavouriteSelected);
-        holder.onFavouriteDeselected(mFavouriteDeselected);
+        holder.onSave(mSaveListener);
+        holder.onDelete(mDeleteListener);
         return holder;
     }
 

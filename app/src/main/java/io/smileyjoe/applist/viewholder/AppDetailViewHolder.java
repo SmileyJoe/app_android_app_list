@@ -24,14 +24,12 @@ import io.smileyjoe.applist.view.ImageSelected;
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     public interface Listener {
-        void onClick(AppDetailViewHolder viewHolder, AppDetail appDetail);
+        void onUpdate(AppDetail appDetail);
     }
 
     private RowAppDetailsBinding mView;
-    private Listener mSaveClick;
-    private Listener mDeleteClick;
-    private Listener mFavouriteSelected;
-    private Listener mFavouriteDeselected;
+    private Listener mSaveListener;
+    private Listener mDeleteListener;
     private Page mPage;
 
     public AppDetailViewHolder(ViewGroup parent, Page page) {
@@ -44,30 +42,22 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mPage = page;
     }
 
-    public void onSaveClick(Listener listener){
-        mSaveClick = listener;
+    public void onSave(Listener listener){
+        mSaveListener = listener;
     }
 
-    public void onDeleteClick(Listener listener){
-        mDeleteClick = listener;
-    }
-
-    public void onFavouriteSelected(Listener listener){
-        mFavouriteSelected = listener;
-    }
-
-    public void onFavouriteDeselected(Listener listener){
-        mFavouriteDeselected = listener;
+    public void onDelete(Listener listener){
+        mDeleteListener = listener;
     }
 
     public void bind(AppDetail appDetail) {
         mView.textTitle.setText(appDetail.getName());
         mView.textPackage.setText(appDetail.getPackage());
         mView.getRoot().setOnClickListener(v -> openUrl(v, appDetail.getPlayStoreLink()));
-        mView.buttonProgress.onEnabledClick(v -> mSaveClick.onClick(this, appDetail));
-        mView.buttonProgress.onDisabledClick(v -> mDeleteClick.onClick(this, appDetail));
-        mView.imageFavourite.onSelected(v -> mFavouriteSelected.onClick(this, appDetail));
-        mView.imageFavourite.onDeselected(v -> mFavouriteDeselected.onClick(this, appDetail));
+        mView.buttonProgress.onEnabledClick(v -> save(appDetail));
+        mView.buttonProgress.onDisabledClick(v -> mDeleteListener.onUpdate(appDetail));
+        mView.imageFavourite.onSelected(v -> favourite(appDetail, true));
+        mView.imageFavourite.onDeselected(v -> favourite(appDetail, false));
 
         if (appDetail.getIcon() != null) {
             mView.imageIcon.setVisibility(View.VISIBLE);
@@ -77,6 +67,17 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         }
 
         updateState(appDetail);
+    }
+
+    private void save(AppDetail appDetail){
+        mView.buttonProgress.setState(ButtonProgress.State.LOADING);
+        appDetail.setSaved(true);
+        mSaveListener.onUpdate(appDetail);
+    }
+
+    private void favourite(AppDetail appDetail, boolean isFavourite){
+        appDetail.isFavourite(isFavourite);
+        mSaveListener.onUpdate(appDetail);
     }
 
     public void updateState(AppDetail appDetail){
@@ -94,10 +95,6 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         } else {
             mView.textInstalled.setVisibility(View.GONE);
         }
-    }
-
-    public void setLoading(){
-        mView.buttonProgress.setState(ButtonProgress.State.LOADING);
     }
 
     private void openUrl(View view, String url){
