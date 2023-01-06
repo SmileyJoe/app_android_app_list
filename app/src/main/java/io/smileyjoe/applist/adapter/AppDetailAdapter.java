@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.comparator.AppDetailComparator;
+import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.view.ImageSelected;
@@ -26,11 +27,11 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
     private AppDetailViewHolder.Listener mDeleteClick;
     private AppDetailViewHolder.Listener mFavouriteSelected;
     private AppDetailViewHolder.Listener mFavouriteDeselected;
-    private AppListFragment.Type mType;
+    private Page mPage;
 
-    public AppDetailAdapter(List<AppDetail> items, AppListFragment.Type type) {
+    public AppDetailAdapter(List<AppDetail> items, Page page) {
         setItems(items);
-        mType = type;
+        mPage = page;
     }
 
     public void setItems(List<AppDetail> items) {
@@ -56,7 +57,7 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
 
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        AppDetailViewHolder holder = new AppDetailViewHolder(parent, mType);
+        AppDetailViewHolder holder = new AppDetailViewHolder(parent, mPage);
         holder.onSaveClick(mSaveClick);
         holder.onDeleteClick(mDeleteClick);
         holder.onFavouriteSelected(mFavouriteSelected);
@@ -81,14 +82,6 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
 
     public boolean hasApps() {
         return mItems != null && !mItems.isEmpty();
-    }
-
-    public void onSavedUpdated(List<AppDetail> savedApps) {
-        for (AppDetail app : mItems) {
-            app.onSavedUpdated(savedApps);
-        }
-
-        notifyDataSetChanged();
     }
 
     public AppDetail getItem(int position) {

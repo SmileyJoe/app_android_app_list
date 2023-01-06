@@ -171,31 +171,34 @@ public class AppDetail {
     }
 
     public boolean onSavedUpdated(List<AppDetail> savedApps) {
-        for (AppDetail savedApp : savedApps) {
-            if (getPackage().equals(savedApp.getPackage())) {
+        return savedApps.stream()
+            .filter(app -> getPackage().equals(app.getPackage()))
+            .findFirst()
+            .map(app -> {
                 setSaved(true);
-                isFavourite(savedApp.isFavourite());
-                setFirebaseKey(savedApp.getFirebaseKey());
+                isFavourite(app.isFavourite());
+                setFirebaseKey(app.getFirebaseKey());
                 return true;
-            }
-        }
-
-        setSaved(false);
-        setFirebaseKey(null);
-
-        return false;
+            })
+            .orElseGet(() -> {
+                setSaved(false);
+                setFirebaseKey(null);
+                return false;
+            });
     }
 
     public boolean onInstalledUpdated(List<AppDetail> installedApps){
-        for(AppDetail installedApp:installedApps){
-            if(getPackage().equals(installedApp.getPackage())){
-                setInstalled(true);
-                return true;
-            }
-        }
-
-        setInstalled(false);
-        return false;
+        return installedApps.stream()
+                .filter(app -> getPackage().equals(app.getPackage()))
+                .findFirst()
+                .map(app -> {
+                    setInstalled(true);
+                    return true;
+                })
+                .orElseGet(() -> {
+                    setInstalled(false);
+                    return false;
+                });
     }
 
     @Override

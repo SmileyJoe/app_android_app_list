@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding;
+import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Icon;
@@ -31,16 +32,16 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     private Listener mDeleteClick;
     private Listener mFavouriteSelected;
     private Listener mFavouriteDeselected;
-    private AppListFragment.Type mType;
+    private Page mPage;
 
-    public AppDetailViewHolder(ViewGroup parent, AppListFragment.Type type) {
-        this(RowAppDetailsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), type);
+    public AppDetailViewHolder(ViewGroup parent, Page page) {
+        this(RowAppDetailsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), page);
     }
 
-    private AppDetailViewHolder(RowAppDetailsBinding view, AppListFragment.Type type) {
+    private AppDetailViewHolder(RowAppDetailsBinding view, Page page) {
         super(view.getRoot());
         mView = view;
-        mType = type;
+        mPage = page;
     }
 
     public void onSaveClick(Listener listener){
@@ -88,7 +89,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
             mView.imageFavourite.setVisibility(View.GONE);
         }
 
-        if(mType != AppListFragment.Type.INSTALLED && appDetail.isInstalled()){
+        if(mPage != Page.INSTALLED && appDetail.isInstalled()){
             mView.textInstalled.setVisibility(View.VISIBLE);
         } else {
             mView.textInstalled.setVisibility(View.GONE);

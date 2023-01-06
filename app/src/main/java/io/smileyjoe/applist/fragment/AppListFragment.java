@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
 import io.smileyjoe.applist.databinding.FragmentAppListBinding;
+import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.DbCompletionListener;
@@ -42,28 +43,12 @@ import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 public class AppListFragment extends Fragment {
 
     public interface Listener {
-        void onLoadComplete(Type type, int position, int appCount);
+        void onLoadComplete(Page page, int position, int appCount);
     }
 
-    public enum Type {
-        INSTALLED(R.string.fragment_title_installed_apps),
-        SAVED(R.string.fragment_title_saved_apps),
-        FAVOURITE(R.string.fragment_title_favourite_apps);
-
-        private int mFragmentTitleResId;
-
-        Type(int fragmentTitleResId) {
-            mFragmentTitleResId = fragmentTitleResId;
-        }
-
-        public String getFragmentTitle(Context context) {
-            return context.getString(mFragmentTitleResId);
-        }
-    }
-
-    private static final String EXTRA_TYPE = "type";
+    private static final String EXTRA_PAGE = "page";
     private static final String EXTRA_POSITION = "position";
-    private Type mType;
+    private Page mPage;
     private AppDetailAdapter mAppDetailAdapter;
     private boolean mLoading = true;
     private int mPosition;
@@ -73,10 +58,10 @@ public class AppListFragment extends Fragment {
     public AppListFragment() {
     }
 
-    public static AppListFragment newInstance(Type type, int position) {
+    public static AppListFragment newInstance(Page page, int position) {
         AppListFragment fragment = new AppListFragment();
         Bundle args = new Bundle();
-        args.putSerializable(EXTRA_TYPE, type);
+        args.putSerializable(EXTRA_PAGE, page);
         args.putInt(EXTRA_POSITION, position);
         fragment.setArguments(args);
         return fragment;
@@ -86,7 +71,7 @@ public class AppListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        mType = (Type) getArguments().getSerializable(EXTRA_TYPE);
+        mPage = (Page) getArguments().getSerializable(EXTRA_PAGE);
         mPosition = getArguments().getInt(EXTRA_POSITION);
     }
 
@@ -107,7 +92,7 @@ public class AppListFragment extends Fragment {
     }
 
     public void setupAdapter(){
-        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mType);
+        mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mPage);
         mAppDetailAdapter.onSaveClick((viewHolder, appDetail) -> {
             if (appDetail.save(getActivity(), new SaveCompletionListener(getActivity(), viewHolder, appDetail))) {
                 viewHolder.setLoading();
@@ -155,36 +140,13 @@ public class AppListFragment extends Fragment {
     private class AppDetailsEventListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            ArrayList<AppDetail> apps = new ArrayList<>();
-
-            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-                apps.add(new AppDetail(itemSnapshot));
-            }
-
-            switch (mType) {
-                case INSTALLED:
-                    if (mAppDetailAdapter.hasApps()) {
-                        mAppDetailAdapter.onSavedUpdated(apps);
-                    } else {
-                        mAppDetailAdapter.update(PackageUtil.getInstalledApplications(getContext().getPackageManager(), apps));
-                    }
-                    break;
-                case FAVOURITE:
-                    mAppDetailAdapter.update(PackageUtil.checkInstalled(getContext().getPackageManager(),
-                            apps.stream()
-                            .filter(app -> app.isFavourite())
-                            .collect(Collectors.toList())));
-                    break;
-                case SAVED:
-                    mAppDetailAdapter.update(PackageUtil.checkInstalled(getContext().getPackageManager(), apps));
-                    break;
-            }
+            mAppDetailAdapter.update(mPage.getApps(getContext(), dataSnapshot));
 
             mLoading = false;
             handleDisplayView();
 
             if(mListener != null){
-                mListener.onLoadComplete(mType, mPosition, mAppDetailAdapter.getItemCount());
+                mListener.onLoadComplete(mPage, mPosition, mAppDetailAdapter.getItemCount());
             }
         }
 
@@ -202,7 +164,7 @@ public class AppListFragment extends Fragment {
 
         @Override
         protected void onSuccess() {
-            if (mType == Type.INSTALLED) {
+            if (mPage == Page.INSTALLED) {
                 getAppDetail().setSaved(false);
                 getViewHolder().updateState(getAppDetail());
             }

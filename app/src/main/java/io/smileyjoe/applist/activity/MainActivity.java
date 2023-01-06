@@ -4,18 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.StringRes;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.badge.BadgeDrawable;
 
-import java.util.Arrays;
-
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.PagerAdapterMain;
 import io.smileyjoe.applist.databinding.ActivityMainBinding;
+import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.util.Notify;
 
@@ -39,9 +35,9 @@ public class MainActivity extends BaseActivity {
 
         mView.pagerApps.setAdapter(pagerAdapterMain);
         mView.pagerApps.registerOnPageChangeCallback(new OnPageChangeListener());
-        mView.textTitle.setText(Nav.fromId(0).getTitle(getBaseContext()));
+        mView.textTitle.setText(Page.fromId(0).getTitle(getBaseContext()));
         mView.bottomNavigation.setOnItemSelectedListener(item -> {
-            mView.pagerApps.setCurrentItem(Nav.fromId(item.getItemId()).getPosition());
+            mView.pagerApps.setCurrentItem(Page.fromId(item.getItemId()).getPosition());
             return true;
         });
     }
@@ -49,7 +45,7 @@ public class MainActivity extends BaseActivity {
     private class OnPageChangeListener extends ViewPager2.OnPageChangeCallback{
         @Override
         public void onPageSelected(int position) {
-            Nav nav = Nav.fromPosition(position);
+            Page nav = Page.fromPosition(position);
             mView.textTitle.setText(nav.getTitle(getBaseContext()));
             mView.bottomNavigation.setSelectedItemId(nav.getId());
         }
@@ -69,53 +65,9 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void onFragmentLoadComplete(AppListFragment.Type type, int position, int appCount) {
-        BadgeDrawable badge = mView.bottomNavigation.getOrCreateBadge(Nav.fromPosition(position).getId());
+    public void onFragmentLoadComplete(Page page, int position, int appCount) {
+        BadgeDrawable badge = mView.bottomNavigation.getOrCreateBadge(page.getId());
         badge.setVisible(true);
         badge.setNumber(appCount);
-    }
-
-    private enum Nav {
-        INSTALLED(0, R.id.nav_installed, R.string.fragment_title_installed_apps),
-        SAVED(1, R.id.nav_saved, R.string.fragment_title_saved_apps),
-        FAVOURITE(2, R.id.nav_favourite, R.string.fragment_title_favourite_apps);
-
-        private int mPosition;
-        @IdRes
-        private int mId;
-        @StringRes
-        private int mTitle;
-
-        Nav(int position, int id, int title) {
-            mPosition = position;
-            mId = id;
-            mTitle = title;
-        }
-
-        public int getPosition() {
-            return mPosition;
-        }
-
-        public int getId() {
-            return mId;
-        }
-
-        public String getTitle(Context context) {
-            return context.getString(mTitle);
-        }
-
-        public static Nav fromId(@IdRes int id) {
-            return Arrays.stream(values())
-                    .filter(nav -> nav.getId() == id)
-                    .findFirst()
-                    .orElse(Nav.INSTALLED);
-        }
-
-        public static Nav fromPosition(int position) {
-            return Arrays.stream(values())
-                    .filter(nav -> nav.getPosition() == position)
-                    .findFirst()
-                    .orElse(Nav.INSTALLED);
-        }
     }
 }
