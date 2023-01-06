@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
@@ -46,7 +47,8 @@ public class AppListFragment extends Fragment {
 
     public enum Type {
         INSTALLED(R.string.fragment_title_installed_apps),
-        SAVED(R.string.fragment_title_saved_apps);
+        SAVED(R.string.fragment_title_saved_apps),
+        FAVOURITE(R.string.fragment_title_favourite_apps);
 
         private int mFragmentTitleResId;
 
@@ -166,6 +168,12 @@ public class AppListFragment extends Fragment {
                     } else {
                         mAppDetailAdapter.update(PackageUtil.getInstalledApplications(getContext().getPackageManager(), apps));
                     }
+                    break;
+                case FAVOURITE:
+                    mAppDetailAdapter.update(PackageUtil.checkInstalled(getContext().getPackageManager(),
+                            apps.stream()
+                            .filter(app -> app.isFavourite())
+                            .collect(Collectors.toList())));
                     break;
                 case SAVED:
                     mAppDetailAdapter.update(PackageUtil.checkInstalled(getContext().getPackageManager(), apps));

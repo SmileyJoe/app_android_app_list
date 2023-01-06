@@ -77,7 +77,8 @@ public class MainActivity extends BaseActivity {
 
     private enum Nav {
         INSTALLED(0, R.id.nav_installed, R.string.fragment_title_installed_apps),
-        SAVED(1, R.id.nav_saved, R.string.fragment_title_saved_apps);
+        SAVED(1, R.id.nav_saved, R.string.fragment_title_saved_apps),
+        FAVOURITE(2, R.id.nav_favourite, R.string.fragment_title_favourite_apps);
 
         private int mPosition;
         @IdRes

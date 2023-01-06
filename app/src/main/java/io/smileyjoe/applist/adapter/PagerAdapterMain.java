@@ -19,7 +19,7 @@ public class PagerAdapterMain extends FragmentStateAdapter {
 
     public interface Listener extends AppListFragment.Listener{}
 
-    private final Type[] mTypes = new Type[]{Type.INSTALLED, Type.SAVED};
+    private final Type[] mTypes = new Type[]{Type.INSTALLED, Type.SAVED, Type.FAVOURITE};
     private Context mContext;
     private Listener mListener;
 

@@ -10,4 +10,9 @@
         android:enabled="true"
         android:icon="@drawable/ic_saved"
         android:title="@string/fragment_title_saved_apps"/>
+    <item
+        android:id="@+id/nav_favourite"
+        android:enabled="true"
+        android:icon="@drawable/ic_favourite"
+        android:title="@string/fragment_title_saved_apps"/>
 </menu>

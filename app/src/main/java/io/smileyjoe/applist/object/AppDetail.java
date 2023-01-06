@@ -167,6 +167,7 @@ public class AppDetail {
         for (AppDetail savedApp : savedApps) {
             if (getPackage().equals(savedApp.getPackage())) {
                 setSaved(true);
+                isFavourite(savedApp.isFavourite());
                 setFirebaseKey(savedApp.getFirebaseKey());
                 return true;
             }
