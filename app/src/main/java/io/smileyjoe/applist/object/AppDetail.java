@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.smileyjoe.applist.util.Db;
+import io.smileyjoe.applist.util.Icon;
 
 /**
  * Created by cody on 2018/07/03.
@@ -141,7 +142,13 @@ public class AppDetail {
 
             databaseReference
                     .child(getFirebaseKey(databaseReference))
-                    .updateChildren(data, listener);
+                    .updateChildren(data, ((error, ref) -> {
+                        if(error == null){
+                            Icon.upload(getPackage(), getIcon());
+                        }
+
+                        listener.onComplete(error, ref);
+                    }));
 
             return true;
         } else {

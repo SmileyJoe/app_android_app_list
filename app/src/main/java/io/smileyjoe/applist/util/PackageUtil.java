@@ -56,6 +56,11 @@ public class PackageUtil {
 
         for(AppDetail savedApp:savedApps){
             savedApp.onInstalledUpdated(installedApps);
+            try {
+                savedApp.setIcon(packageManager.getApplicationIcon(savedApp.getPackage()));
+            } catch (PackageManager.NameNotFoundException e) {
+                // do nothing, just don't add an icon //
+            }
         }
 
         return savedApps;

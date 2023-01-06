@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding;
 import io.smileyjoe.applist.fragment.AppListFragment;
 import io.smileyjoe.applist.object.AppDetail;
+import io.smileyjoe.applist.util.Icon;
 import io.smileyjoe.applist.view.ButtonProgress;
 import io.smileyjoe.applist.view.ImageSelected;
 
@@ -71,7 +72,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
             mView.imageIcon.setVisibility(View.VISIBLE);
             mView.imageIcon.setImageDrawable(appDetail.getIcon());
         } else {
-            mView.imageIcon.setVisibility(View.GONE);
+            Icon.load(mView.imageIcon, appDetail.getPackage());
         }
 
         updateState(appDetail);
@@ -87,7 +88,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
             mView.imageFavourite.setVisibility(View.GONE);
         }
 
-        if(mType == AppListFragment.Type.SAVED && appDetail.isInstalled()){
+        if(mType != AppListFragment.Type.INSTALLED && appDetail.isInstalled()){
             mView.textInstalled.setVisibility(View.VISIBLE);
         } else {
             mView.textInstalled.setVisibility(View.GONE);
