@@ -15,6 +15,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 
 import io.smileyjoe.applist.BuildConfig;
+import io.smileyjoe.applist.object.AppDetail;
 
 public class Icon {
 
@@ -52,16 +53,21 @@ public class Icon {
 
     }
 
-    public static void load(ImageView imageView, String packageName) {
-        StorageReference storageReference = getIconReference(packageName);
-
-        storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
-            Glide.with(imageView.getContext())
-                    .load(storageReference)
-                    .into(imageView);
-
+    public static void load(ImageView imageView, AppDetail appDetail) {
+        if (appDetail.getIcon() != null) {
             imageView.setVisibility(View.VISIBLE);
-        }).addOnFailureListener(e -> imageView.setVisibility(View.GONE));
+            imageView.setImageDrawable(appDetail.getIcon());
+        } else {
+            StorageReference storageReference = getIconReference(appDetail.getPackage());
+
+            storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                Glide.with(imageView.getContext())
+                        .load(storageReference)
+                        .into(imageView);
+
+                imageView.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(e -> imageView.setVisibility(View.GONE));
+        }
     }
 
     /**

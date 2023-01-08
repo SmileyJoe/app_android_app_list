@@ -8,7 +8,7 @@
     <item
         android:id="@+id/nav_saved"
         android:enabled="true"
-        android:icon="@drawable/ic_saved"
+        android:icon="@drawable/ic_save"
         android:title="@string/fragment_title_saved_apps"/>
     <item
         android:id="@+id/nav_favourite"

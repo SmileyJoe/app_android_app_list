@@ -22,12 +22,15 @@ import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.Notify;
+import io.smileyjoe.applist.viewholder.AppDetailViewHolder;
 
 public class AppListFragment extends Fragment {
 
     public interface Listener {
         void onLoadComplete(Page page, int position, int appCount);
     }
+
+    public interface ItemSelectedListener extends AppDetailViewHolder.ItemSelectedListener{}
 
     private static final String EXTRA_PAGE = "page";
     private static final String EXTRA_POSITION = "position";
@@ -36,6 +39,7 @@ public class AppListFragment extends Fragment {
     private boolean mLoading = true;
     private int mPosition;
     private Listener mListener;
+    private ItemSelectedListener mItemSelectedListener;
     private FragmentAppListBinding mView;
 
     public AppListFragment() {
@@ -78,10 +82,15 @@ public class AppListFragment extends Fragment {
         mAppDetailAdapter = new AppDetailAdapter(new ArrayList<AppDetail>(), mPage);
         mAppDetailAdapter.onSave(appDetail -> appDetail.save(getActivity()));
         mAppDetailAdapter.onDelete(appDetail -> appDetail.delete(getActivity()));
+        mAppDetailAdapter.onItemSelected(mItemSelectedListener);
     }
 
     public void setListener(Listener listener) {
         mListener = listener;
+    }
+
+    public void onItemSelected(ItemSelectedListener listener){
+        mItemSelectedListener = listener;
     }
 
     private void populateList() {

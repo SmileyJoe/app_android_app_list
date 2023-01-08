@@ -17,6 +17,7 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
     private List<AppDetail> mItems;
     private AppDetailViewHolder.Listener mSaveListener;
     private AppDetailViewHolder.Listener mDeleteListener;
+    private AppDetailViewHolder.ItemSelectedListener mItemSelectedListener;
     private Page mPage;
 
     public AppDetailAdapter(List<AppDetail> items, Page page) {
@@ -37,11 +38,16 @@ public class AppDetailAdapter extends RecyclerView.Adapter<AppDetailViewHolder> 
         mDeleteListener = listener;
     }
 
+    public void onItemSelected(AppDetailViewHolder.ItemSelectedListener listener){
+        mItemSelectedListener = listener;
+    }
+
     @Override
     public AppDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         AppDetailViewHolder holder = new AppDetailViewHolder(parent, mPage);
         holder.onSave(mSaveListener);
         holder.onDelete(mDeleteListener);
+        holder.onItemSelected(mItemSelectedListener);
         return holder;
     }
 

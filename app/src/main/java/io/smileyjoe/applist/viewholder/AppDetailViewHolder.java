@@ -17,6 +17,10 @@ import io.smileyjoe.applist.view.ImageSelected;
 
 public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
+    public interface ItemSelectedListener{
+        void onSelected(AppDetail appDetail);
+    }
+
     public interface Listener {
         void onUpdate(AppDetail appDetail);
     }
@@ -24,6 +28,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     private RowAppDetailsBinding mView;
     private Listener mSaveListener;
     private Listener mDeleteListener;
+    private ItemSelectedListener mItemSelectedListener;
     private Page mPage;
 
     public AppDetailViewHolder(ViewGroup parent, Page page) {
@@ -44,21 +49,20 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         mDeleteListener = listener;
     }
 
+    public void onItemSelected(ItemSelectedListener listener){
+        mItemSelectedListener = listener;
+    }
+
     public void bind(AppDetail appDetail) {
         mView.textTitle.setText(appDetail.getName());
         mView.textPackage.setText(appDetail.getPackage());
-        mView.getRoot().setOnClickListener(v -> openUrl(v, appDetail.getPlayStoreLink()));
+        mView.getRoot().setOnClickListener(v -> mItemSelectedListener.onSelected(appDetail));
         mView.buttonProgress.onEnabledClick(v -> save(appDetail));
         mView.buttonProgress.onDisabledClick(v -> mDeleteListener.onUpdate(appDetail));
         mView.imageFavourite.onSelected(v -> favourite(appDetail, true));
         mView.imageFavourite.onDeselected(v -> favourite(appDetail, false));
 
-        if (appDetail.getIcon() != null) {
-            mView.imageIcon.setVisibility(View.VISIBLE);
-            mView.imageIcon.setImageDrawable(appDetail.getIcon());
-        } else {
-            Icon.load(mView.imageIcon, appDetail.getPackage());
-        }
+        Icon.load(mView.imageIcon, appDetail);
 
         updateState(appDetail);
     }
@@ -89,10 +93,5 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
         } else {
             mView.textInstalled.setVisibility(View.GONE);
         }
-    }
-
-    private void openUrl(View view, String url) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        view.getContext().startActivity(browserIntent);
     }
 }

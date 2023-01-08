@@ -164,16 +164,21 @@ public class AppDetail {
     }
 
     public boolean delete(Activity activity) {
-        return delete(activity, null);
+        return delete(activity, Optional.empty());
     }
 
-    public boolean delete(Activity activity, DatabaseReference.CompletionListener listener) {
+    public boolean delete(Activity activity, @NonNull Optional<DatabaseReference.CompletionListener> listener) {
         DatabaseReference databaseReference = Db.getDetailReference(activity);
 
         if (databaseReference != null) {
             String firebaseKey = getFirebaseKey();
             if (!TextUtils.isEmpty(firebaseKey)) {
-                databaseReference.child(firebaseKey).removeValue(listener);
+                databaseReference.child(firebaseKey)
+                        .removeValue((error, ref) -> {
+                            isFavourite(false);
+                            setSaved(false);
+                            listener.ifPresent(l -> l.onComplete(error, ref));
+                        });
             }
             return true;
         } else {

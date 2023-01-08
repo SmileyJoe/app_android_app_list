@@ -12,17 +12,23 @@ public class PagerAdapterMain extends FragmentStateAdapter {
     public interface Listener extends AppListFragment.Listener {
     }
 
-    private Listener mListener;
+    public interface ItemSelectedListener extends AppListFragment.ItemSelectedListener{
+    }
 
-    public PagerAdapterMain(FragmentActivity activity, Listener listener) {
+    private Listener mListener;
+    private ItemSelectedListener mItemSelectedListener;
+
+    public PagerAdapterMain(FragmentActivity activity, Listener listener, ItemSelectedListener itemSelectedListener) {
         super(activity);
         mListener = listener;
+        mItemSelectedListener = itemSelectedListener;
     }
 
     @Override
     public Fragment createFragment(int position) {
         AppListFragment fragment = AppListFragment.newInstance(Page.fromPosition(position), position);
         fragment.setListener(mListener);
+        fragment.onItemSelected(mItemSelectedListener);
         return fragment;
     }
 

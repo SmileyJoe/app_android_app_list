@@ -12,6 +12,8 @@ import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.PagerAdapterMain;
 import io.smileyjoe.applist.databinding.ActivityMainBinding;
 import io.smileyjoe.applist.enums.Page;
+import io.smileyjoe.applist.fragment.AppDetailsBottomSheet;
+import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Notify;
 
 public class MainActivity extends BaseActivity {
@@ -30,7 +32,7 @@ public class MainActivity extends BaseActivity {
         mView = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mView.getRoot());
 
-        PagerAdapterMain pagerAdapterMain = new PagerAdapterMain(this, this::onFragmentLoadComplete);
+        PagerAdapterMain pagerAdapterMain = new PagerAdapterMain(this, this::onFragmentLoadComplete, this::onItemSelected);
 
         mView.pagerApps.setAdapter(pagerAdapterMain);
         mView.pagerApps.registerOnPageChangeCallback(new OnPageChangeListener());
@@ -68,5 +70,10 @@ public class MainActivity extends BaseActivity {
         BadgeDrawable badge = mView.bottomNavigation.getOrCreateBadge(page.getId());
         badge.setVisible(true);
         badge.setNumber(appCount);
+    }
+
+    public void onItemSelected(AppDetail appDetail){
+        AppDetailsBottomSheet sheet = new AppDetailsBottomSheet(appDetail);
+        sheet.show(getSupportFragmentManager(), "TAG");
     }
 }
