@@ -9,9 +9,15 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NavUtils;
 import androidx.core.app.TaskStackBuilder;
+
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.Optional;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding;
@@ -20,12 +26,21 @@ import io.smileyjoe.applist.util.Notify;
 
 public class SaveAppActivity extends BaseActivity {
 
+    private static final String EXTRA_APP_DETAIL = "app_details";
+
     private boolean mFromShare = false;
     private ProgressDialog mProgressDialog;
     private ActivitySaveAppBinding mView;
+    private AppDetail mAppDetail;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, SaveAppActivity.class);
+    }
+
+    public static Intent getIntent(Context context, AppDetail appDetail) {
+        Intent intent = new Intent(context, SaveAppActivity.class);
+        intent.putExtra(EXTRA_APP_DETAIL, appDetail);
+        return intent;
     }
 
     @Override
@@ -39,7 +54,28 @@ public class SaveAppActivity extends BaseActivity {
         setSupportActionBar(mView.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        handleSendIntent();
+        boolean fromSend = handleSendIntent();
+
+        if(!fromSend){
+            handleExtras();
+        }
+    }
+
+    private void handleExtras(){
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null){
+            if(extras.containsKey(EXTRA_APP_DETAIL)){
+                mAppDetail = extras.getParcelable(EXTRA_APP_DETAIL);
+            }
+        }
+
+        if(mAppDetail != null){
+            mView.inputName.getEditText().setText(mAppDetail.getName());
+            mView.inputPackage.getEditText().setText(mAppDetail.getPackage());
+            mView.inputPackage.setEnabled(false);
+            mView.switchFavourite.setChecked(mAppDetail.isFavourite());
+        }
     }
 
     @Override
@@ -94,10 +130,21 @@ public class SaveAppActivity extends BaseActivity {
             Notify.error(this, R.string.error_invalid_fields);
         } else {
             showSaveProgress();
-            AppDetail appDetail = new AppDetail();
-            appDetail.setName(appName);
-            appDetail.setPackage(packageName);
-//            appDetail.save(this, new OnSaveListener(this, appDetail));
+            if(mAppDetail == null){
+                mAppDetail = new AppDetail();
+            }
+            mAppDetail.setName(appName);
+            mAppDetail.setPackage(packageName);
+            mAppDetail.isFavourite(mView.switchFavourite.isChecked());
+            mAppDetail.save(this, Optional.of((error, ref) -> {
+                hideProgress();
+                if(error == null){
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    Notify.error(this, R.string.error_generic);
+                }
+            }));
         }
     }
 
@@ -106,7 +153,7 @@ public class SaveAppActivity extends BaseActivity {
         imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getApplicationWindowToken(), 0);
     }
 
-    private void handleSendIntent() {
+    private boolean handleSendIntent() {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -123,25 +170,14 @@ public class SaveAppActivity extends BaseActivity {
                         mFromShare = true;
                         mView.inputPackage.getEditText().setText(id);
                         mView.inputPackage.setEnabled(false);
+                        return true;
                     } else {
                         Notify.error(this, getString(R.string.error_invalid_url, sharedText), new Notify.FinishOnClick(this));
                     }
                 }
             }
         }
-    }
 
-//    private class OnSaveListener extends DbCompletionListener {
-//
-//        public OnSaveListener(Activity activity, AppDetail appDetail) {
-//            super(activity, appDetail);
-//        }
-//
-//        @Override
-//        protected void onSuccess() {
-//            hideProgress();
-//            setResult(RESULT_OK);
-//            finish();
-//        }
-//    }
+        return false;
+    }
 }

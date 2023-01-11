@@ -21,7 +21,6 @@ public class PackageUtil {
                     AppDetail app = new AppDetail();
                     app.setPackage(packageInfo.packageName);
                     app.setName(packageInfo.applicationInfo.loadLabel(packageManager).toString());
-                    app.setLaunchActivity(packageManager.getLaunchIntentForPackage(packageInfo.packageName));
                     app.setInstalled(true);
                     try {
                         app.setIcon(packageManager.getApplicationIcon(app.getPackage()));

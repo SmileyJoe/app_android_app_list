@@ -2,7 +2,11 @@ package io.smileyjoe.applist.object;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -19,7 +23,7 @@ import io.smileyjoe.applist.util.Db;
 import io.smileyjoe.applist.util.Icon;
 import io.smileyjoe.applist.util.Notify;
 
-public class AppDetail {
+public class AppDetail implements Parcelable {
 
     private static final String DB_KEY_NAME = "name";
     private static final String DB_KEY_PACKAGE = "package";
@@ -29,7 +33,6 @@ public class AppDetail {
     private String mPackage;
     private boolean mIsFavourite = false;
     private String mFirebaseKey;
-    private Intent mLaunchActivity;
     private Drawable mIcon;
     private boolean mSaved = false;
     private boolean mInstalled = false;
@@ -68,10 +71,6 @@ public class AppDetail {
         mIsFavourite = isFavourite;
     }
 
-    public void setLaunchActivity(Intent launchActivity) {
-        mLaunchActivity = launchActivity;
-    }
-
     public void setIcon(Drawable icon) {
         mIcon = icon;
     }
@@ -98,10 +97,6 @@ public class AppDetail {
 
     public boolean isFavourite() {
         return mIsFavourite;
-    }
-
-    public Intent getLaunchActivity() {
-        return mLaunchActivity;
     }
 
     public Drawable getIcon() {
@@ -224,10 +219,50 @@ public class AppDetail {
                 ", mPackage='" + mPackage + '\'' +
                 ", mIsFavourite=" + mIsFavourite +
                 ", mFirebaseKey='" + mFirebaseKey + '\'' +
-                ", mLaunchActivity=" + mLaunchActivity +
                 ", mIcon=" + mIcon +
                 ", mSaved=" + mSaved +
                 ", mInstalled=" + mInstalled +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mName);
+        dest.writeString(this.mPackage);
+        dest.writeByte(this.mIsFavourite ? (byte) 1 : (byte) 0);
+        dest.writeString(this.mFirebaseKey);
+        dest.writeParcelable(Icon.getBitmapFromDrawable(this.mIcon), flags);
+        dest.writeByte(this.mSaved ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.mInstalled ? (byte) 1 : (byte) 0);
+    }
+
+    protected AppDetail(Parcel in) {
+        this.mName = in.readString();
+        this.mPackage = in.readString();
+        this.mIsFavourite = in.readByte() != 0;
+        this.mFirebaseKey = in.readString();
+        Bitmap icon = in.readParcelable(getClass().getClassLoader());
+        if(icon != null) {
+            this.mIcon = new BitmapDrawable(icon);
+        }
+        this.mSaved = in.readByte() != 0;
+        this.mInstalled = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<AppDetail> CREATOR = new Parcelable.Creator<AppDetail>() {
+        @Override
+        public AppDetail createFromParcel(Parcel source) {
+            return new AppDetail(source);
+        }
+
+        @Override
+        public AppDetail[] newArray(int size) {
+            return new AppDetail[size];
+        }
+    };
 }

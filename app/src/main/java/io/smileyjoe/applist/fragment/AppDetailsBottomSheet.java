@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.Optional;
 
 import io.smileyjoe.applist.R;
+import io.smileyjoe.applist.activity.SaveAppActivity;
 import io.smileyjoe.applist.databinding.FragmentBottomSheetDetailsBinding;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Icon;
@@ -69,8 +70,7 @@ public class AppDetailsBottomSheet extends BottomSheetDialogFragment {
                 case DELETE:
                     return appDetail.isSaved();
                 case EDIT:
-                    // todo: implement edit //
-                    return false;
+                    return appDetail.isSaved();
                 default:
                     return true;
             }
@@ -110,6 +110,9 @@ public class AppDetailsBottomSheet extends BottomSheetDialogFragment {
 
     private void onActionClick(Action action){
         switch (action){
+            case EDIT:
+                startActivity(SaveAppActivity.getIntent(getContext(), mAppDetail));
+                break;
             case PLAY_STORE:
                 openUrl();
                 break;

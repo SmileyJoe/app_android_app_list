@@ -39,18 +39,19 @@ public class Icon {
     }
 
     public static void upload(String packageName, Drawable icon) {
-        StorageReference storageReference = getIconReference(packageName);
+        if(icon != null) {
+            StorageReference storageReference = getIconReference(packageName);
 
-        // only upload if there is no icon //
-        storageReference.getDownloadUrl().addOnFailureListener(e -> {
-            Bitmap iconBitmap = getBitmapFromDrawable(icon);
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
-            byte[] data = output.toByteArray();
+            // only upload if there is no icon //
+            storageReference.getDownloadUrl().addOnFailureListener(e -> {
+                Bitmap iconBitmap = getBitmapFromDrawable(icon);
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
+                byte[] data = output.toByteArray();
 
-            storageReference.putBytes(data);
-        });
-
+                storageReference.putBytes(data);
+            });
+        }
     }
 
     public static void load(ImageView imageView, AppDetail appDetail) {
@@ -76,12 +77,16 @@ public class Icon {
      * @param drawable
      * @return
      */
-    private static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
-        final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(bmp);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bmp;
+    public static Bitmap getBitmapFromDrawable(Drawable drawable) {
+        if(drawable != null) {
+            final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            final Canvas canvas = new Canvas(bmp);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bmp;
+        }
+
+        return null;
     }
 
 }
