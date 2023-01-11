@@ -1,6 +1,7 @@
 package io.smileyjoe.applist.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -80,7 +82,9 @@ public class ButtonProgress extends RelativeLayout {
 
             if (typedArray != null) {
                 mView.buttonEnabled.setText(typedArray.getString(R.styleable.ButtonProgress_text_enabled));
+                mView.buttonEnabled.setIcon(ContextCompat.getDrawable(getContext(), typedArray.getResourceId(R.styleable.ButtonProgress_src_enabled, Resources.ID_NULL)));
                 mView.buttonDisabled.setText(typedArray.getString(R.styleable.ButtonProgress_text_disabled));
+                mView.buttonDisabled.setIcon(ContextCompat.getDrawable(getContext(), typedArray.getResourceId(R.styleable.ButtonProgress_src_disabled, Resources.ID_NULL)));
                 setState(State.fromId(typedArray.getInt(R.styleable.ButtonProgress_state, State.ENABLED.getId())));
             }
         }

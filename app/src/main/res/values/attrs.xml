@@ -4,6 +4,8 @@
     <declare-styleable name="ButtonProgress">
         <attr name="text_enabled" format="reference"/>
         <attr name="text_disabled" format="reference"/>
+        <attr name="src_enabled" format="reference"/>
+        <attr name="src_disabled" format="reference"/>
         <attr name="state" format="enum">
             <enum name="enabled" value="0"/>
             <enum name="disabled" value="1"/>

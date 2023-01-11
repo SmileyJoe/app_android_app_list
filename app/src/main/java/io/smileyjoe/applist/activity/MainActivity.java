@@ -11,6 +11,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.PagerAdapterMain;
 import io.smileyjoe.applist.databinding.ActivityMainBinding;
+import io.smileyjoe.applist.enums.Direction;
 import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.fragment.AppDetailsBottomSheet;
 import io.smileyjoe.applist.object.AppDetail;
@@ -32,7 +33,7 @@ public class MainActivity extends BaseActivity {
         mView = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mView.getRoot());
 
-        PagerAdapterMain pagerAdapterMain = new PagerAdapterMain(this, this::onFragmentLoadComplete, this::onItemSelected);
+        PagerAdapterMain pagerAdapterMain = new PagerAdapterMain(this, this::onFragmentLoadComplete, this::onItemSelected, this::onFragmentScroll);
 
         mView.pagerApps.setAdapter(pagerAdapterMain);
         mView.pagerApps.registerOnPageChangeCallback(new OnPageChangeListener());
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity {
             mView.pagerApps.setCurrentItem(Page.fromId(item.getItemId()).getPosition());
             return true;
         });
+        mView.fabAdd.setOnClickListener(v -> startActivity(SaveAppActivity.getIntent(getBaseContext())));
     }
 
     private class OnPageChangeListener extends ViewPager2.OnPageChangeCallback {
@@ -62,6 +64,21 @@ public class MainActivity extends BaseActivity {
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+
+    public void onFragmentScroll(Direction direction){
+        switch (direction){
+            case UP:
+                if(!mView.fabAdd.isShown()) {
+                    mView.fabAdd.show();
+                }
+                break;
+            case DOWN:
+                if(mView.fabAdd.isShown()) {
+                    mView.fabAdd.hide();
+                }
                 break;
         }
     }

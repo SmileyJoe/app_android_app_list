@@ -14,10 +14,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.adapter.AppDetailAdapter;
 import io.smileyjoe.applist.databinding.FragmentAppListBinding;
+import io.smileyjoe.applist.enums.Direction;
 import io.smileyjoe.applist.enums.Page;
 import io.smileyjoe.applist.object.AppDetail;
 import io.smileyjoe.applist.util.Db;
@@ -30,6 +32,10 @@ public class AppListFragment extends Fragment {
         void onLoadComplete(Page page, int position, int appCount);
     }
 
+    public interface ScrollListener {
+        void onScroll(Direction direction);
+    }
+
     public interface ItemSelectedListener extends AppDetailViewHolder.ItemSelectedListener{}
 
     private static final String EXTRA_PAGE = "page";
@@ -38,7 +44,8 @@ public class AppListFragment extends Fragment {
     private AppDetailAdapter mAppDetailAdapter;
     private boolean mLoading = true;
     private int mPosition;
-    private Listener mListener;
+    private Optional<Listener> mListener;
+    private Optional<ScrollListener> mScrollListener;
     private ItemSelectedListener mItemSelectedListener;
     private FragmentAppListBinding mView;
 
@@ -71,11 +78,20 @@ public class AppListFragment extends Fragment {
 
         mView.recyclerAppDetails.setLayoutManager(new LinearLayoutManager(getContext()));
         mView.recyclerAppDetails.setAdapter(mAppDetailAdapter);
+        mView.recyclerAppDetails.setOnScrollChangeListener(this::dispatchScroll);
 
         populateList();
         handleDisplayView();
 
         return mView.getRoot();
+    }
+
+    private void dispatchScroll(View view, int scrollX, int scrollY, int oldScrollX, int oldScrollY){
+        if (scrollY > oldScrollY) {
+            mScrollListener.ifPresent(l -> l.onScroll(Direction.DOWN));
+        } else if (scrollY < oldScrollY) {
+            mScrollListener.ifPresent(l -> l.onScroll(Direction.UP));
+        }
     }
 
     public void setupAdapter() {
@@ -86,7 +102,11 @@ public class AppListFragment extends Fragment {
     }
 
     public void setListener(Listener listener) {
-        mListener = listener;
+        mListener = Optional.of(listener);
+    }
+
+    public void setScrollListener(ScrollListener scrollListener) {
+        mScrollListener = Optional.of(scrollListener);
     }
 
     public void onItemSelected(ItemSelectedListener listener){
@@ -121,9 +141,7 @@ public class AppListFragment extends Fragment {
             mLoading = false;
             handleDisplayView();
 
-            if (mListener != null) {
-                mListener.onLoadComplete(mPage, mPosition, mAppDetailAdapter.getItemCount());
-            }
+            mListener.ifPresent(listener -> listener.onLoadComplete(mPage, mPosition, mAppDetailAdapter.getItemCount()));
         }
 
         @Override
