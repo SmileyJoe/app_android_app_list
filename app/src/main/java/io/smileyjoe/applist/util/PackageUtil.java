@@ -19,11 +19,11 @@ public class PackageUtil {
                 .filter(packageInfo -> (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
                 .map(packageInfo -> {
                     AppDetail app = new AppDetail();
-                    app.setPackage(packageInfo.packageName);
+                    app.setAppPackage(packageInfo.packageName);
                     app.setName(packageInfo.applicationInfo.loadLabel(packageManager).toString());
                     app.setInstalled(true);
                     try {
-                        app.setIcon(packageManager.getApplicationIcon(app.getPackage()));
+                        app.setIcon(packageManager.getApplicationIcon(app.getAppPackage()));
                     } catch (PackageManager.NameNotFoundException e) {
                         // do nothing, just don't add an icon //
                     }
@@ -46,7 +46,7 @@ public class PackageUtil {
         savedApps.forEach(savedApp -> {
             savedApp.onInstalledUpdated(installedApps);
             try {
-                savedApp.setIcon(packageManager.getApplicationIcon(savedApp.getPackage()));
+                savedApp.setIcon(packageManager.getApplicationIcon(savedApp.getAppPackage()));
             } catch (PackageManager.NameNotFoundException e) {
                 // do nothing, just don't add an icon //
             }

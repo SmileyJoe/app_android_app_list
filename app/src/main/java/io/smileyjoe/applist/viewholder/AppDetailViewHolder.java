@@ -1,7 +1,5 @@
 package io.smileyjoe.applist.viewholder;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +53,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(AppDetail appDetail) {
         mView.textTitle.setText(appDetail.getName());
-        mView.textPackage.setText(appDetail.getPackage());
+        mView.textPackage.setText(appDetail.getAppPackage());
         mView.getRoot().setOnClickListener(v -> mItemSelectedListener.onSelected(appDetail));
         mView.buttonProgress.onEnabledClick(v -> save(appDetail));
         mView.buttonProgress.onDisabledClick(v -> mDeleteListener.onUpdate(appDetail));
@@ -74,7 +72,7 @@ public class AppDetailViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void favourite(AppDetail appDetail, boolean isFavourite) {
-        appDetail.isFavourite(isFavourite);
+        appDetail.setFavourite(isFavourite);
         mSaveListener.onUpdate(appDetail);
     }
 

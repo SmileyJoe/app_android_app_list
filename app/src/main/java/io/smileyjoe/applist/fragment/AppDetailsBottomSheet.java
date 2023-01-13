@@ -15,10 +15,6 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.Optional;
 
 import io.smileyjoe.applist.R;
 import io.smileyjoe.applist.activity.SaveAppActivity;
@@ -89,7 +85,7 @@ public class AppDetailsBottomSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = FragmentBottomSheetDetailsBinding.inflate(inflater, container, false);
         mView.textTitle.setText(mAppDetail.getName());
-        mView.textPackage.setText(mAppDetail.getPackage());
+        mView.textPackage.setText(mAppDetail.getAppPackage());
         mView.textInstalled.setVisibility(mAppDetail.isInstalled() ? View.VISIBLE : View.GONE);
         Icon.load(mView.imageIcon, mAppDetail);
         addActions();
@@ -120,36 +116,36 @@ public class AppDetailsBottomSheet extends BottomSheetDialogFragment {
                 share();
                 break;
             case FAVOURITE:
-                mAppDetail.isFavourite(true);
-                mAppDetail.save(getActivity(), Optional.of((error, ref) -> {
+                mAppDetail.setFavourite(true);
+                mAppDetail.save(getActivity(), (error, ref) -> {
                     hide(Action.FAVOURITE);
                     show(Action.UNFAVOURITE);
-                }));
+                });
                 break;
             case UNFAVOURITE:
-                mAppDetail.isFavourite(false);
-                mAppDetail.save(getActivity(), Optional.of((error, ref) -> {
+                mAppDetail.setFavourite(false);
+                mAppDetail.save(getActivity(), (error, ref) -> {
                     show(Action.FAVOURITE);
                     hide(Action.UNFAVOURITE);
-                }));
+                });
                 break;
             case SAVE:
                 mAppDetail.setSaved(true);
-                mAppDetail.save(getActivity(), Optional.of((error, ref) -> {
+                mAppDetail.save(getActivity(), (error, ref) -> {
                     if(error == null){
                         hide(Action.SAVE);
                         show(Action.DELETE, Action.FAVOURITE);
                     }
-                }));
+                });
                 break;
             case DELETE:
-                mAppDetail.delete(getActivity(), Optional.of((error, ref) -> {
+                mAppDetail.delete(getActivity(), (error, ref) -> {
                     if(error == null){
-                        mAppDetail.isFavourite(false);
+                        mAppDetail.setFavourite(false);
                         hide(Action.DELETE, Action.FAVOURITE, Action.UNFAVOURITE);
                         show(Action.SAVE);
                     }
-                }));
+                });
                 break;
         }
     }
@@ -167,14 +163,14 @@ public class AppDetailsBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void openUrl() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mAppDetail.getPlayStoreLink()));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mAppDetail.getPlaystoreLink()));
         startActivity(browserIntent);
     }
 
     private void share(){
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, mAppDetail.getPlayStoreLink());
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mAppDetail.getPlaystoreLink());
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);

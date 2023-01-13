@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -59,7 +57,7 @@ public class Icon {
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(appDetail.getIcon());
         } else {
-            StorageReference storageReference = getIconReference(appDetail.getPackage());
+            StorageReference storageReference = getIconReference(appDetail.getAppPackage());
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                 Glide.with(imageView.getContext())
