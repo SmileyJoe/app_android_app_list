@@ -26,28 +26,30 @@ class AppDetail() : Parcelable {
         const val DB_KEY_IS_FAVOURITE: String = "is_favourite"
 
         override fun AppDetail.write(parcel: Parcel, flags: Int) {
-            parcel.writeString(name)
-            parcel.writeString(appPackage)
-            parcel.writeBoolean(isFavourite)
-            parcel.writeString(firebaseKey)
-            parcel.writeParcelable(Icon.getBitmapFromDrawable(icon), flags)
-            parcel.writeBoolean(isSaved)
-            parcel.writeBoolean(isInstalled)
+            parcel.apply {
+                writeString(name)
+                writeString(appPackage)
+                writeBoolean(isFavourite)
+                writeString(firebaseKey)
+                writeParcelable(Icon.getBitmapFromDrawable(icon), flags)
+                writeBoolean(isSaved)
+                writeBoolean(isInstalled)
+            }
         }
 
         override fun create(parcel: Parcel): AppDetail {
-            var app = AppDetail()
-            app.name = parcel.readString()
-            app.appPackage = parcel.readString()
-            app.isFavourite = parcel.readBoolean()
-            app.firebaseKey = parcel.readString()
-            var icon: Bitmap? = parcel.readParcelable(ClassLoader.getSystemClassLoader()) as Bitmap?
-            if (icon != null) {
-                app.icon = BitmapDrawable(icon);
+            return AppDetail().apply {
+                name = parcel.readString()
+                appPackage = parcel.readString()
+                isFavourite = parcel.readBoolean()
+                firebaseKey = parcel.readString()
+                var bitmap: Bitmap? = parcel.readParcelable(ClassLoader.getSystemClassLoader()) as Bitmap?
+                if (bitmap != null) {
+                    icon = BitmapDrawable(bitmap)
+                }
+                isSaved = parcel.readBoolean()
+                isInstalled = parcel.readBoolean()
             }
-            app.isSaved = parcel.readBoolean()
-            app.isInstalled = parcel.readBoolean()
-            return app
         }
     }
 
@@ -91,7 +93,7 @@ class AppDetail() : Parcelable {
         }
     }
 
-    fun getFirebaseKey(reference: DatabaseReference): String? {
+    private fun getFirebaseKey(reference: DatabaseReference): String? {
         if (TextUtils.isEmpty(firebaseKey)) {
             firebaseKey = reference.push().key
         }

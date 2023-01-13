@@ -59,9 +59,10 @@ class MainActivity : BaseActivity() {
     }
 
     fun onFragmentLoadComplete(page: Page, position: Int, appCount: Int) {
-        var badge: BadgeDrawable = view.bottomNavigation.getOrCreateBadge(page.id)
-        badge.isVisible = true
-        badge.number = appCount
+        view.bottomNavigation.getOrCreateBadge(page.id).apply {
+            isVisible = true
+            number = appCount
+        }
     }
 
     fun onItemSelected(appDetail: AppDetail) {

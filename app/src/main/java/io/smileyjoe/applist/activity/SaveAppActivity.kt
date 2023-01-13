@@ -137,9 +137,11 @@ class SaveAppActivity : BaseActivity() {
             Notify.error(this, R.string.error_invalid_fields)
         } else {
             showSaveProgress()
-            appDetail.name = appName
-            appDetail.appPackage = packageName
-            appDetail.isFavourite = view.switchFavourite.isChecked
+            appDetail.apply {
+                name = appName
+                appPackage = packageName
+                isFavourite = view.switchFavourite.isChecked
+            }
             appDetail.save(this) { error, ref ->
                 hideProgress()
                 if (error == null) {
