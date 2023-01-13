@@ -35,6 +35,7 @@ class MainActivity : BaseActivity() {
         var pagerAdapterMain = PagerAdapterMain(this, this::onFragmentLoadComplete, this::onItemSelected, this::onFragmentScroll)
 
         view.pagerApps.adapter = pagerAdapterMain
+        view.pagerApps.offscreenPageLimit = Page.values().size
         view.pagerApps.registerOnPageChangeCallback(OnPageChangeListener())
         view.textTitle.setText(Page.fromId(0).getTitle(baseContext))
         view.bottomNavigation.setOnItemSelectedListener { item ->
