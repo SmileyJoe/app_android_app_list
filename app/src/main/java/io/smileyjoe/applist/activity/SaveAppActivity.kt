@@ -12,6 +12,7 @@ import androidx.core.app.TaskStackBuilder
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding
+import io.smileyjoe.applist.util.BundleUtil
 import io.smileyjoe.applist.util.Notify
 
 class SaveAppActivity : BaseActivity() {
@@ -77,7 +78,7 @@ class SaveAppActivity : BaseActivity() {
     private fun handleExtras() {
         intent.extras?.let { extras ->
             if (extras.containsKey(EXTRA_APP_DETAIL)) {
-                appDetail = getParcelable(extras, EXTRA_APP_DETAIL, AppDetail::class.java)
+                appDetail = BundleUtil.getParcelable(extras, EXTRA_APP_DETAIL, AppDetail::class.java)
             }
         }
 

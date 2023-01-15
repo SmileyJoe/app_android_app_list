@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.badge.BadgeDrawable
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.adapter.PagerAdapterMain
@@ -59,7 +58,7 @@ class MainActivity : BaseActivity() {
 
     }
 
-    fun onFragmentLoadComplete(page: Page, position: Int, appCount: Int) {
+    fun onFragmentLoadComplete(page: Page, appCount: Int) {
         view.bottomNavigation.getOrCreateBadge(page.id).apply {
             isVisible = true
             number = appCount

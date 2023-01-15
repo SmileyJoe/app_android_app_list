@@ -30,9 +30,9 @@ public class PagerAdapterMain extends FragmentStateAdapter {
 
     @Override
     public Fragment createFragment(int position) {
-        AppListFragment fragment = AppListFragment.newInstance(Page.fromPosition(position), position);
+        AppListFragment fragment = AppListFragment.newInstance(Page.fromPosition(position));
         fragment.setListener(mListener);
-        fragment.onItemSelected(mItemSelectedListener);
+        fragment.setItemSelectedListener(mItemSelectedListener);
         fragment.setScrollListener(mScrollListener);
         return fragment;
     }
