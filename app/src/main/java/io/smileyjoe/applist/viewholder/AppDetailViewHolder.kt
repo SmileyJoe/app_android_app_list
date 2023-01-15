@@ -41,8 +41,8 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
             root.setOnClickListener { itemSelectedListener?.onSelected(app) }
             buttonProgress.onEnabledClick { save(app) }
             buttonProgress.onDisabledClick { deleteListener?.onUpdate(app) }
-            imageFavourite.onSelected { favourite(app, true) }
-            imageFavourite.onDeselected { favourite(app, false) }
+            imageFavourite.selectedListener = View.OnClickListener { favourite(app, true) }
+            imageFavourite.deselectedListener = View.OnClickListener { favourite(app, false) }
         }
 
         Icon.load(view.imageIcon, app)
@@ -51,7 +51,7 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
     }
 
     fun save(app: AppDetail) {
-        view.buttonProgress.setState(ButtonProgress.State.LOADING)
+        view.buttonProgress.state = ButtonProgress.State.LOADING
         app.isSaved = true
         saveListener?.onUpdate(app)
     }
@@ -64,15 +64,15 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
     fun updateState(app: AppDetail) {
         if (app.isSaved) {
             view.apply {
-                buttonProgress.setState(ButtonProgress.State.DISABLED)
+                buttonProgress.state = ButtonProgress.State.DISABLED
                 imageFavourite.visibility = View.VISIBLE
-                imageFavourite.setState(if (app.isFavourite) ImageSelected.State.SELECTED else ImageSelected.State.DESELECTED)
+                imageFavourite.state = if (app.isFavourite) ImageSelected.State.SELECTED else ImageSelected.State.DESELECTED
             }
         } else {
             view.apply {
-                buttonProgress.setState(ButtonProgress.State.ENABLED)
+                buttonProgress.state = ButtonProgress.State.ENABLED
                 imageFavourite.visibility = View.GONE
-                imageFavourite.setState(ImageSelected.State.DESELECTED)
+                imageFavourite.state = ImageSelected.State.DESELECTED
             }
         }
 
