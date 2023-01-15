@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.navigation.NavigationBarView
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.adapter.PagerAdapterMain
 import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Direction
@@ -26,22 +26,56 @@ class MainActivity : BaseActivity() {
 
     lateinit var view: ActivityMainBinding
 
+    var onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
+        view.bottomNavigation.getOrCreateBadge(page.id).apply {
+            isVisible = true
+            number = appCount
+        }
+    }
+
+    var onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
+        AppDetailsBottomSheet(appDetail).show(supportFragmentManager, "TAG")
+    }
+
+    var onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
+        when (direction) {
+            Direction.UP -> {
+                if (!view.fabAdd.isShown) {
+                    view.fabAdd.show()
+                }
+            }
+            Direction.DOWN -> {
+                if (view.fabAdd.isShown) {
+                    view.fabAdd.hide()
+                }
+            }
+        }
+    }
+
+    var onNavSelected = NavigationBarView.OnItemSelectedListener { item ->
+        view.pagerApps.currentItem = Page.fromId(item.itemId).position
+        true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         view = ActivityMainBinding.inflate(layoutInflater)
         setContentView(view.root)
 
-        var pagerAdapterMain = PagerAdapterMain(this, this::onFragmentLoadComplete, this::onItemSelected, this::onFragmentScroll)
-
-        view.pagerApps.adapter = pagerAdapterMain
-        view.pagerApps.offscreenPageLimit = Page.values().size
-        view.pagerApps.registerOnPageChangeCallback(OnPageChangeListener())
-        view.textTitle.setText(Page.fromId(0).getTitle(baseContext))
-        view.bottomNavigation.setOnItemSelectedListener { item ->
-            view.pagerApps.currentItem = Page.fromId(item.itemId).position
-            true
+        var pagerAdapterMain = PagerAdapterMain(this).apply {
+            listener = this@MainActivity.onFragmentLoadComplete
+            itemSelectedListener = this@MainActivity.onItemSelected
+            scrollListener = this@MainActivity.onFragmentScroll
         }
-        view.fabAdd.setOnClickListener { startActivity(SaveAppActivity.getIntent(baseContext)) }
+
+        view.apply {
+            pagerApps.adapter = pagerAdapterMain
+            pagerApps.offscreenPageLimit = Page.values().size
+            pagerApps.registerOnPageChangeCallback(OnPageChangeListener())
+            textTitle.text = Page.fromId(0).getTitle(baseContext)
+            bottomNavigation.setOnItemSelectedListener(this@MainActivity.onNavSelected)
+            fabAdd.setOnClickListener { startActivity(SaveAppActivity.getIntent(baseContext)) }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -53,33 +87,6 @@ class MainActivity : BaseActivity() {
             }
             else -> {
                 super.onActivityResult(requestCode, resultCode, data)
-            }
-        }
-
-    }
-
-    fun onFragmentLoadComplete(page: Page, appCount: Int) {
-        view.bottomNavigation.getOrCreateBadge(page.id).apply {
-            isVisible = true
-            number = appCount
-        }
-    }
-
-    fun onItemSelected(appDetail: AppDetail) {
-        AppDetailsBottomSheet(appDetail).show(supportFragmentManager, "TAG")
-    }
-
-    fun onFragmentScroll(direction: Direction) {
-        when (direction) {
-            Direction.UP -> {
-                if (!view.fabAdd.isShown) {
-                    view.fabAdd.show()
-                }
-            }
-            Direction.DOWN -> {
-                if (view.fabAdd.isShown) {
-                    view.fabAdd.hide()
-                }
             }
         }
     }
