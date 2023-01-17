@@ -93,7 +93,7 @@ class AppListFragment : Fragment() {
     }
 
     private fun populateList() {
-        Db.getDetailReference(activity).addValueEventListener(AppDetailsEventListener())
+        Db.getDetailReference(requireActivity())?.addValueEventListener(AppDetailsEventListener())
     }
 
     private fun handleDisplayView() {
