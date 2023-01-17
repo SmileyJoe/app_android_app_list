@@ -1,14 +1,24 @@
 package io.smileyjoe.applist.util
 
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
 import io.smileyjoe.applist.`object`.AppDetail
 
 object PackageUtil {
 
     fun getInstalledApplications(packageManager: PackageManager): List<AppDetail> {
-        return packageManager.getInstalledPackages(0)
+        var packages: List<PackageInfo>
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packages = packageManager.getInstalledPackages(PackageManager.PackageInfoFlags.of(0))
+        } else {
+            packages = packageManager.getInstalledPackages(0)
+        }
+
+        return packages
                 .filter { packageInfo -> packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 }
                 .map { packageInfo ->
                     return@map AppDetail().apply {
