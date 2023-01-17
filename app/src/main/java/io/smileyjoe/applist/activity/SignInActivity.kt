@@ -9,6 +9,7 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.User
 import io.smileyjoe.applist.databinding.ActivitySignInBinding
 import io.smileyjoe.applist.util.BundleUtil
+import io.smileyjoe.applist.util.BundleUtil.getParcelableCompat
 import io.smileyjoe.applist.util.Notify
 import za.co.smileyjoedev.firebaseauth.google.GoogleAuth
 
@@ -53,7 +54,7 @@ class SignInActivity : BaseActivity() {
     private fun handleExtras() {
         intent.extras?.let { extras ->
             if (extras.containsKey(EXTRA_RETURN_INTENT)) {
-                returnIntent = BundleUtil.getParcelable(extras, EXTRA_RETURN_INTENT, Intent::class.java)
+                returnIntent = extras.getParcelableCompat(EXTRA_RETURN_INTENT, Intent::class.java)
             }
         }
     }

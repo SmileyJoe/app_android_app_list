@@ -16,6 +16,7 @@ import io.smileyjoe.applist.databinding.FragmentAppListBinding
 import io.smileyjoe.applist.enums.Direction
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.util.BundleUtil
+import io.smileyjoe.applist.util.BundleUtil.getSerializableCompat
 import io.smileyjoe.applist.util.Db
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
@@ -56,7 +57,7 @@ class AppListFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        page = BundleUtil.getSerializable(arguments, EXTRA_PAGE, Page::class.java)
+        page = requireArguments().getSerializableCompat(EXTRA_PAGE, Page::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
