@@ -15,8 +15,7 @@ import io.smileyjoe.applist.adapter.AppDetailAdapter
 import io.smileyjoe.applist.databinding.FragmentAppListBinding
 import io.smileyjoe.applist.enums.Direction
 import io.smileyjoe.applist.enums.Page
-import io.smileyjoe.applist.util.BundleUtil
-import io.smileyjoe.applist.util.BundleUtil.getSerializableCompat
+import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
 import io.smileyjoe.applist.util.Db
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder

@@ -12,8 +12,7 @@ import androidx.core.app.TaskStackBuilder
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding
-import io.smileyjoe.applist.util.BundleUtil
-import io.smileyjoe.applist.util.BundleUtil.getParcelableCompat
+import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.util.Notify
 
 class SaveAppActivity : BaseActivity() {
