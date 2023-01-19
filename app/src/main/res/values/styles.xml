@@ -6,6 +6,7 @@
         <item name="materialButtonStyle">@style/Widget.Material3.Button</item>
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
         <item name="android:textViewStyle">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

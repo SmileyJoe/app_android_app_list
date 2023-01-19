@@ -6,14 +6,20 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NavUtils
 import androidx.core.app.TaskStackBuilder
+import androidx.core.transition.addListener
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.util.Notify
+import io.smileyjoe.applist.util.ThemeUtil
+
 
 class SaveAppActivity : BaseActivity() {
 
@@ -39,8 +45,30 @@ class SaveAppActivity : BaseActivity() {
     lateinit var view: ActivitySaveAppBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        findViewById<View>(android.R.id.content).transitionName = "transition_fab"
+        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementEnterTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+            duration = 1000L
+            startContainerColor = ThemeUtil.getColor(this@SaveAppActivity, R.attr.colorPrimaryContainer)
+            endContainerColor = ThemeUtil.getColor(this@SaveAppActivity, R.attr.colorSurface)
+            addListener(
+                    onStart = { view.buttonSave.hide() },
+                    onEnd = { view.buttonSave.show() }
+            )
+        }
+        window.sharedElementReturnTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+            duration = 1000L
+            startContainerColor = ThemeUtil.getColor(this@SaveAppActivity, R.attr.colorSurface)
+            endContainerColor = ThemeUtil.getColor(this@SaveAppActivity, R.attr.colorPrimaryContainer)
+            addListener(
+                    onStart = { view.buttonSave.show() }
+            )
+        }
 
+        super.onCreate(savedInstanceState)
+        window.allowEnterTransitionOverlap = true
         view = ActivitySaveAppBinding.inflate(layoutInflater)
         setContentView(view.root)
 

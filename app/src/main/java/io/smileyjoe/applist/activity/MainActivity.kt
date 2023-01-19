@@ -1,10 +1,14 @@
 package io.smileyjoe.applist.activity
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterMain
 import io.smileyjoe.applist.databinding.ActivityMainBinding
@@ -26,18 +30,18 @@ class MainActivity : BaseActivity() {
 
     lateinit var view: ActivityMainBinding
 
-    var onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
+    private var onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
         view.bottomNavigation.getOrCreateBadge(page.id).apply {
             isVisible = true
             number = appCount
         }
     }
 
-    var onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
+    private var onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
         AppDetailsBottomSheet(appDetail).show(supportFragmentManager, "TAG")
     }
 
-    var onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
+    private var onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
         when (direction) {
             Direction.UP -> {
                 if (!view.fabAdd.isShown) {
@@ -52,15 +56,25 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    var onNavSelected = NavigationBarView.OnItemSelectedListener { item ->
+    private var onNavSelected = NavigationBarView.OnItemSelectedListener { item ->
         view.pagerApps.currentItem = Page.fromId(item.itemId).position
         true
     }
 
+    private var onFabAddClick = View.OnClickListener { view ->
+        var options = ActivityOptions
+                .makeSceneTransitionAnimation(this, view, "transition_fab");
+        startActivity(SaveAppActivity.getIntent(baseContext), options.toBundle())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
         view = ActivityMainBinding.inflate(layoutInflater)
         setContentView(view.root)
+
+        Log.i("AnimThings", "Oncreate")
 
         var pagerAdapterMain = PagerAdapterMain(this).apply {
             listener = this@MainActivity.onFragmentLoadComplete
@@ -74,7 +88,7 @@ class MainActivity : BaseActivity() {
             pagerApps.registerOnPageChangeCallback(OnPageChangeListener())
             textTitle.text = Page.fromId(0).getTitle(baseContext)
             bottomNavigation.setOnItemSelectedListener(this@MainActivity.onNavSelected)
-            fabAdd.setOnClickListener { startActivity(SaveAppActivity.getIntent(baseContext)) }
+            fabAdd.setOnClickListener(this@MainActivity.onFabAddClick)
         }
     }
 

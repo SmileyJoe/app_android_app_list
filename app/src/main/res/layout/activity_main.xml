@@ -39,6 +39,7 @@
         android:layout_marginBottom="@dimen/activity_padding"
         android:layout_marginEnd="@dimen/activity_padding"
         android:text="@string/action_add"
+        android:transitionName="transition_fab"
         app:icon="@drawable/ic_add"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
