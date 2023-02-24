@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -29,8 +30,11 @@ class MainActivity : BaseActivity() {
     }
 
     lateinit var view: ActivityMainBinding
+    var loaded = false
 
     private var onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
+        if(page == Page.INSTALLED) loaded = true
+
         view.bottomNavigation.getOrCreateBadge(page.id).apply {
             isVisible = true
             number = appCount
@@ -90,6 +94,20 @@ class MainActivity : BaseActivity() {
             bottomNavigation.setOnItemSelectedListener(this@MainActivity.onNavSelected)
             fabAdd.setOnClickListener(this@MainActivity.onFabAddClick)
         }
+
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    if (loaded) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            }
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
