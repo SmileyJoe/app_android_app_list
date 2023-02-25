@@ -2,6 +2,7 @@ package io.smileyjoe.applist.fragment
 
 import android.app.Dialog
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,7 +20,8 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentBottomSheetDetailsBinding
 import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
-import io.smileyjoe.applist.extensions.ViewExt.updateHeight
+import io.smileyjoe.applist.extensions.ViewExt.below
+import io.smileyjoe.applist.extensions.ViewExt.updateSize
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Icon
 
@@ -68,8 +70,25 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         abstract fun shouldShow(appDetail: AppDetail): Boolean
     }
 
+    private data class ViewSpecs(val view: View) {
+        var x: Float = view.x
+        var y: Float = view.y
+        var width: Int = view.measuredWidth
+        var height: Int = view.measuredHeight
+    }
+
+    private data class Dimens(val res: Resources) {
+        var screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        var screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        var paddingExtraLarge = res.getDimensionPixelSize(R.dimen.padding_extra_large)
+        var iconMedium = res.getDimensionPixelSize(R.dimen.icon_medium)
+    }
+
     lateinit var binding: FragmentBottomSheetDetailsBinding
-    var noteHeight = 0
+    private lateinit var specsNote: ViewSpecs
+    private lateinit var specsDetails: ViewSpecs
+    private lateinit var specsIcon: ViewSpecs
+    private lateinit var dimens: Dimens
 
     private fun setupView(bottomSheet: BottomSheetDialog) {
         binding =
@@ -87,6 +106,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        dimens = Dimens(resources)
         var bottomSheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         setupView(bottomSheet)
         val behavior = BottomSheetBehavior.from(binding.root.parent as View)
@@ -102,11 +122,13 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         var noteHeight = binding.textNote.measuredHeight
 
         if (noteHeight > 0 && height > 0) {
-            this@AppDetailsBottomSheet.noteHeight = noteHeight
-            binding.textNote.updateHeight(0)
+            specsNote = ViewSpecs(binding.textNote)
+            specsDetails = ViewSpecs(binding.layoutDetails)
+            specsIcon = ViewSpecs(binding.imageIcon)
+            binding.textNote.updateSize(height = 0)
         } else if (height > 0) {
             behavior.peekHeight = height
-            binding.viewSpace.updateHeight(ViewGroup.LayoutParams.MATCH_PARENT)
+            binding.viewSpace.updateSize(height = ViewGroup.LayoutParams.MATCH_PARENT)
             return true
         }
 
@@ -224,7 +246,33 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         }
 
         override fun onSlide(view: View, offset: Float) {
-            binding.textNote.updateHeight(noteHeight * offset)
+            binding.textNote.updateSize(height = specsNote.height * offset)
+            var iconSize = animateIcon(offset)
+            animateDetails(offset, iconSize)
+            shiftAllViews()
+        }
+
+        private fun animateIcon(offset: Float): Int {
+            var iconSize = ((specsIcon.height * offset * 2) + specsIcon.height).toInt()
+            binding.imageIcon.updateSize(height = iconSize, width = iconSize)
+            binding.imageIcon.x =
+                ((((dimens.screenWidth - (specsIcon.x * 2)) / 2) - (iconSize / 2)) * offset) + specsIcon.x
+            return iconSize
+        }
+
+        private fun animateDetails(offset: Float, iconSize: Int) {
+            var iconBottom = binding.imageIcon.y + (iconSize / 2)
+            var detailsYNew = (iconBottom * offset) + specsDetails.y
+            binding.layoutDetails.y = detailsYNew
+            binding.layoutDetails.x = specsDetails.x * (1 - offset)
+            binding.layoutDetails.updateSize(width = dimens.screenWidth - binding.layoutDetails.x)
+        }
+
+        private fun shiftAllViews() {
+            binding.textNote.below(binding.layoutDetails)
+            binding.dividerContentActions.below(binding.textNote, dimens.paddingExtraLarge)
+            binding.layoutActions.below(binding.dividerContentActions)
+            binding.viewSpace.below(binding.layoutContent)
         }
     }
 }

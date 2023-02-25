@@ -6,13 +6,22 @@ import android.view.ViewTreeObserver
 
 object ViewExt {
 
-    fun View.updateHeight(height: Float) = updateHeight(height.toInt())
+    fun View.updateSize(height: Float? = null, width:Float? = null) =
+        updateSize(height = height?.toInt(), width = width?.toInt())
 
-    fun View.updateHeight(height: Int) =
-        layoutParams.let { params ->
+    fun View.updateSize(height: Int? = null, width:Int? = null) {
+        var params = layoutParams
+
+        if(height != null){
             params.height = height
-            layoutParams = params
         }
+
+        if(width != null){
+            params.width = width
+        }
+
+        layoutParams = params
+    }
 
     fun ViewGroup.addLayoutListener(callback: () -> Boolean) =
         viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -23,5 +32,9 @@ object ViewExt {
                 }
             }
         })
+
+    fun View.below(viewAbove:View, marginTop:Int = 0){
+        y = viewAbove.y + viewAbove.measuredHeight + marginTop
+    }
 
 }
