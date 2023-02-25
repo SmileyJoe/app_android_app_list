@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,19 +76,29 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         var y: Float = view.y
         var width: Int = view.measuredWidth
         var height: Int = view.measuredHeight
+        var textSize: Float =
+            when (view) {
+                is TextView -> view.textSize
+                else -> 0F
+            }
     }
 
     private data class Dimens(val res: Resources) {
         var screenWidth = Resources.getSystem().displayMetrics.widthPixels
         var screenHeight = Resources.getSystem().displayMetrics.heightPixels
         var paddingExtraLarge = res.getDimensionPixelSize(R.dimen.padding_extra_large)
+        var paddingMedium = res.getDimensionPixelSize(R.dimen.padding_medium)
         var iconMedium = res.getDimensionPixelSize(R.dimen.icon_medium)
+        var textActionBar = res.getDimensionPixelSize(R.dimen.text_actionbar)
     }
 
     lateinit var binding: FragmentBottomSheetDetailsBinding
     private lateinit var specsNote: ViewSpecs
     private lateinit var specsDetails: ViewSpecs
     private lateinit var specsIcon: ViewSpecs
+    private lateinit var specsHandle: ViewSpecs
+    private lateinit var specsTitle: ViewSpecs
+    private lateinit var specsScroll: ViewSpecs
     private lateinit var dimens: Dimens
 
     private fun setupView(bottomSheet: BottomSheetDialog) {
@@ -103,6 +114,8 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         Icon.load(binding.imageIcon, appDetail)
         addActions()
         bottomSheet.setContentView(binding.root)
+        binding.imageSlideDown.alpha = 0F
+        binding.imageSlideDown.setOnClickListener { dismiss() }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -125,6 +138,9 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             specsNote = ViewSpecs(binding.textNote)
             specsDetails = ViewSpecs(binding.layoutDetails)
             specsIcon = ViewSpecs(binding.imageIcon)
+            specsHandle = ViewSpecs(binding.dragHandle)
+            specsTitle = ViewSpecs(binding.textTitle)
+            specsScroll = ViewSpecs(binding.scrollContent)
             binding.textNote.updateSize(height = 0)
         } else if (height > 0) {
             behavior.peekHeight = height
@@ -235,21 +251,52 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             when (newState) {
                 BottomSheetBehavior.STATE_EXPANDED -> {
                     binding.textNote.visibility = View.VISIBLE
+                    binding.imageSlideDown.visibility = View.VISIBLE
                 }
                 BottomSheetBehavior.STATE_COLLAPSED -> {
                     binding.textNote.visibility = View.GONE
+                    binding.imageSlideDown.visibility = View.GONE
                 }
-                BottomSheetBehavior.STATE_DRAGGING -> {
+                else -> {
                     binding.textNote.visibility = View.VISIBLE
+                    binding.imageSlideDown.visibility = View.VISIBLE
                 }
             }
         }
 
         override fun onSlide(view: View, offset: Float) {
+            // only animate things when view is bigger then the default peek size
+            if(offset >= 0) {
+                animateNote(offset)
+                var iconSize = animateIcon(offset)
+                animateHandle(offset)
+                animateTitle(offset)
+                animateDetails(offset, iconSize)
+                shiftAllViews()
+            }
+        }
+
+        private fun animateNote(offset: Float){
             binding.textNote.updateSize(height = specsNote.height * offset)
-            var iconSize = animateIcon(offset)
-            animateDetails(offset, iconSize)
-            shiftAllViews()
+        }
+
+        private fun animateTitle(offset: Float) {
+            // the icon and the title start at the same place, so move the title the width of the icon
+            binding.textTitle.x = specsTitle.x + (binding.imageSlideDown.measuredWidth * offset)
+            // move all the scroll content up to cover the drag handle
+            binding.scrollContent.y =
+                specsScroll.y - (binding.dragHandle.measuredHeight * offset) + dimens.paddingMedium
+            // make the text smaller
+            binding.textTitle.setTextSize(
+                TypedValue.COMPLEX_UNIT_PX,
+                specsTitle.textSize - ((specsTitle.textSize - dimens.textActionBar) * offset)
+            )
+            // fade the slide down icon
+            binding.imageSlideDown.alpha = offset
+        }
+
+        private fun animateHandle(offset: Float) {
+            binding.dragHandle.y = specsHandle.y - (specsHandle.height * offset)
         }
 
         private fun animateIcon(offset: Float): Int {
@@ -258,14 +305,19 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             // iconSize is then 3 times the original size when bottom sheet is expanded
             var iconSize = ((specsIcon.height * offset * 2) + specsIcon.height).toInt()
             binding.imageIcon.updateSize(height = iconSize, width = iconSize)
+
             // we want to move the icon to the center of the screen horizontally
             // (dimens.screenWidth - (specsIcon.x * 2)) start with the width of the screen minus the start position * 2 because we want the center
             // (/ 2) divide it by 2 to get the center
             // (- (iconSize / 2)) subtract half the icon size, this gives us the left most position of the icon
             // (* offset) move the view at the speed of the expanding
             // (+ specsIcon.x) puts the icon back at it's start position with the offset is 0
-            binding.imageIcon.x =
-                ((((dimens.screenWidth - (specsIcon.x * 2)) / 2) - (iconSize / 2)) * offset) + specsIcon.x
+            var x = ((((dimens.screenWidth - (specsIcon.x * 2)) / 2) - (iconSize / 2)) * offset) + specsIcon.x
+
+            if(x >= specsIcon.x) {
+                binding.imageIcon.x = x
+            }
+
             return iconSize
         }
 

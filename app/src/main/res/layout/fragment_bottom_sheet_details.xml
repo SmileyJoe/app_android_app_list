@@ -14,6 +14,7 @@
         android:layout_height="wrap_content" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false">
@@ -22,6 +23,17 @@
             android:id="@+id/layout_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image_slide_down"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:layout_marginStart="@dimen/activity_padding"
+                android:src="@drawable/ic_slide_down"
+                app:layout_constraintBottom_toBottomOf="@id/text_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_title"
+                app:tint="?android:textColorPrimary" />
 
             <TextView
                 android:id="@+id/text_title"

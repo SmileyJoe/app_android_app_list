@@ -15,4 +15,7 @@
     <dimen name="activity_padding">@dimen/padding_medium</dimen>
     <dimen name="activity_padding_large">@dimen/padding_extra_large</dimen>
     <dimen name="button_padding">16dp</dimen>
+
+    <!-- Text -->
+    <dimen name="text_actionbar">20dp</dimen>
 </resources>
