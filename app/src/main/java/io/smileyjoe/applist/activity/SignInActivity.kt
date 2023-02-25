@@ -1,16 +1,27 @@
 package io.smileyjoe.applist.activity
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.view.animation.AnticipateInterpolator
+import androidx.core.animation.doOnEnd
 import io.smileyjoe.applist.BuildConfig
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.User
 import io.smileyjoe.applist.databinding.ActivitySignInBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
+import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.util.Notify
 import za.co.smileyjoedev.firebaseauth.google.GoogleAuth
+import java.time.Duration
+import java.time.Instant
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class SignInActivity : BaseActivity() {
 
@@ -44,10 +55,12 @@ class SignInActivity : BaseActivity() {
         googleAuth = GoogleAuth.Builder.with(this)
                 .on(view.buttonGoogleSignIn)
                 .serverClientId(BuildConfig.SERVER_CLIENT_ID)
-                .onFail { checkSignIn(true) }
-                .onLogIn { checkSignIn(true) }
+                .onFail { checkSignIn(true, false) }
+                .onLogIn { checkSignIn(true, false) }
                 .onLogout { Log.d("GoogleAuth", "Logout") }
                 .build()
+
+        splashScreen.exitAfterAnim()
     }
 
     private fun handleExtras() {
@@ -62,10 +75,10 @@ class SignInActivity : BaseActivity() {
         checkSignIn(false)
     }
 
-    private fun checkSignIn(showError: Boolean) {
+    private fun checkSignIn(showError: Boolean, fromSplash:Boolean = true) {
         if (User.getCurrent() != null) {
             if (returnIntent == null) {
-                startActivity(MainActivity.getIntent(baseContext))
+                startActivity(MainActivity.getIntent(baseContext, fromSplash))
             } else {
                 startActivity(returnIntent)
             }

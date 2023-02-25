@@ -15,6 +15,8 @@ import io.smileyjoe.applist.adapter.PagerAdapterMain
 import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Direction
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
+import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsBottomSheet
 import io.smileyjoe.applist.util.Notify
 
@@ -22,10 +24,13 @@ class MainActivity : BaseActivity() {
 
     companion object {
         private const val ACTIVITY_SAVE_APP: Int = 1
+        private const val EXTRA_FROM_SPLASH = "from_splash"
 
         @JvmStatic
-        fun getIntent(context: Context): Intent {
-            return Intent(context, MainActivity::class.java)
+        fun getIntent(context: Context, fromSplash:Boolean = true): Intent {
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(EXTRA_FROM_SPLASH, fromSplash)
+            return intent
         }
     }
 
@@ -95,19 +100,12 @@ class MainActivity : BaseActivity() {
             fabAdd.setOnClickListener(this@MainActivity.onFabAddClick)
         }
 
-        val content: View = findViewById(android.R.id.content)
-        content.viewTreeObserver.addOnPreDrawListener(
-            object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    if (loaded) {
-                        content.viewTreeObserver.removeOnPreDrawListener(this)
-                        return true
-                    } else {
-                        return false
-                    }
-                }
+        intent.extras?.getBoolean(EXTRA_FROM_SPLASH, true)?.let {fromSplash ->
+            if(fromSplash){
+                removeOnPreDrawListener { loaded }
+                splashScreen.exitAfterAnim()
             }
-        )
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
