@@ -253,22 +253,35 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         }
 
         private fun animateIcon(offset: Float): Int {
+            // (original height * the offset * 2) gives us an icon that is 2x the original height
+            // (+ original height) means when the offset is 0 the icon is the original height
+            // iconSize is then 3 times the original size when bottom sheet is expanded
             var iconSize = ((specsIcon.height * offset * 2) + specsIcon.height).toInt()
             binding.imageIcon.updateSize(height = iconSize, width = iconSize)
+            // we want to move the icon to the center of the screen horizontally
+            // (dimens.screenWidth - (specsIcon.x * 2)) start with the width of the screen minus the start position * 2 because we want the center
+            // (/ 2) divide it by 2 to get the center
+            // (- (iconSize / 2)) subtract half the icon size, this gives us the left most position of the icon
+            // (* offset) move the view at the speed of the expanding
+            // (+ specsIcon.x) puts the icon back at it's start position with the offset is 0
             binding.imageIcon.x =
                 ((((dimens.screenWidth - (specsIcon.x * 2)) / 2) - (iconSize / 2)) * offset) + specsIcon.x
             return iconSize
         }
 
         private fun animateDetails(offset: Float, iconSize: Int) {
+            // the details are centered by default, so we only need to move them half the new icon height
             var iconBottom = binding.imageIcon.y + (iconSize / 2)
-            var detailsYNew = (iconBottom * offset) + specsDetails.y
-            binding.layoutDetails.y = detailsYNew
+            var y = (iconBottom * offset) + specsDetails.y
+            binding.layoutDetails.y = y
+            // the view is moving left, so 1 - offset
             binding.layoutDetails.x = specsDetails.x * (1 - offset)
+            // seeing details is moving underneath the icon, it can now be full screen width
             binding.layoutDetails.updateSize(width = dimens.screenWidth - binding.layoutDetails.x)
         }
 
         private fun shiftAllViews() {
+            // move all the views down as needed so they don't overlap
             binding.textNote.below(binding.layoutDetails)
             binding.dividerContentActions.below(binding.textNote, dimens.paddingExtraLarge)
             binding.layoutActions.below(binding.dividerContentActions)
