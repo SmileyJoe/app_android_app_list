@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.fragment
 
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,12 +11,18 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentBottomSheetDetailsBinding
+import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
+import io.smileyjoe.applist.extensions.ViewExt.updateHeight
+import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Icon
+
 
 class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragment() {
 
@@ -61,29 +68,71 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         abstract fun shouldShow(appDetail: AppDetail): Boolean
     }
 
-    lateinit var view: FragmentBottomSheetDetailsBinding
+    lateinit var binding: FragmentBottomSheetDetailsBinding
+    var noteHeight = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        view = FragmentBottomSheetDetailsBinding.inflate(inflater, container, false).apply {
-            textTitle.text = appDetail.name
-            textPackage.text = appDetail.appPackage
-            textInstalled.visibility = if (appDetail.isInstalled) View.VISIBLE else View.GONE
+    private fun setupView(bottomSheet: BottomSheetDialog) {
+        binding =
+            FragmentBottomSheetDetailsBinding.inflate(LayoutInflater.from(context), null, false)
+                .apply {
+                    textTitle.text = appDetail.name
+                    textPackage.text = appDetail.appPackage
+                    textInstalled.visibility =
+                        if (appDetail.isInstalled) View.VISIBLE else View.GONE
+                }
+
+        Icon.load(binding.imageIcon, appDetail)
+        addActions()
+        bottomSheet.setContentView(binding.root)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        var bottomSheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        setupView(bottomSheet)
+        val behavior = BottomSheetBehavior.from(binding.root.parent as View)
+
+        binding.root.addLayoutListener { layoutListener(behavior) }
+        behavior.addBottomSheetCallback(Callback())
+
+        return bottomSheet
+    }
+
+    private fun layoutListener(behavior: BottomSheetBehavior<*>): Boolean {
+        var height = binding.root.measuredHeight
+        var noteHeight = binding.textNote.measuredHeight
+
+        if (noteHeight > 0 && height > 0) {
+            this@AppDetailsBottomSheet.noteHeight = noteHeight
+            binding.textNote.updateHeight(0)
+        } else if (height > 0) {
+            behavior.peekHeight = height
+            binding.viewSpace.updateHeight(ViewGroup.LayoutParams.MATCH_PARENT)
+            return true
         }
 
-        Icon.load(view.imageIcon, appDetail)
-        addActions()
-        return view.root
+        return false
     }
 
     private fun addActions() {
         Action.values().forEach { action ->
-            view.layoutActions.addView(TextView(context, null, 0, R.style.Text_ListAction).apply {
-                text = getString(action.title)
-                setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, action.icon), null, null, null)
-                visibility = if (action.shouldShow(appDetail)) View.VISIBLE else View.GONE
-                setOnClickListener { onActionClicked(action) }
-                tag = action.tag
-            })
+            binding.layoutActions.addView(
+                TextView(
+                    context,
+                    null,
+                    0,
+                    R.style.Text_ListAction
+                ).apply {
+                    text = getString(action.title)
+                    setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(
+                            context,
+                            action.icon
+                        ), null, null, null
+                    )
+                    visibility = if (action.shouldShow(appDetail)) View.VISIBLE else View.GONE
+                    setOnClickListener { onActionClicked(action) }
+                    tag = action.tag
+                })
         }
     }
 
@@ -149,13 +198,33 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
 
     private fun hide(vararg actions: Action) {
         actions.forEach { action ->
-            view.layoutActions.findViewWithTag<View>(action.tag).visibility = View.GONE
+            binding.layoutActions.findViewWithTag<View>(action.tag).visibility = View.GONE
         }
     }
 
     private fun show(vararg actions: Action) {
         actions.forEach { action ->
-            view.layoutActions.findViewWithTag<View>(action.tag).visibility = View.VISIBLE
+            binding.layoutActions.findViewWithTag<View>(action.tag).visibility = View.VISIBLE
+        }
+    }
+
+    private inner class Callback : BottomSheetCallback() {
+        override fun onStateChanged(view: View, newState: Int) {
+            when (newState) {
+                BottomSheetBehavior.STATE_EXPANDED -> {
+                    binding.textNote.visibility = View.VISIBLE
+                }
+                BottomSheetBehavior.STATE_COLLAPSED -> {
+                    binding.textNote.visibility = View.GONE
+                }
+                BottomSheetBehavior.STATE_DRAGGING -> {
+                    binding.textNote.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        override fun onSlide(view: View, offset: Float) {
+            binding.textNote.updateHeight(noteHeight * offset)
         }
     }
 }

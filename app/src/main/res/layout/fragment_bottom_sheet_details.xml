@@ -78,6 +78,20 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="layout_details, image_icon"/>
 
+        <TextView
+            android:id="@+id/text_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_medium"
+            android:paddingBottom="@dimen/padding_medium"
+            android:layout_marginStart="@dimen/activity_padding"
+            android:layout_marginEnd="@dimen/activity_padding"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_content_actions"
+            app:layout_constraintBottom_toTopOf="@id/divider_content_actions"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum."/>
+
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider_content_actions"
             android:layout_marginTop="@dimen/padding_extra_large"
@@ -88,7 +102,7 @@
             android:layout_marginEnd="@dimen/activity_padding"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barrier_content_actions"
+            app:layout_constraintTop_toBottomOf="@id/text_note"
             app:layout_constraintBottom_toTopOf="@id/layout_actions"/>
 
         <LinearLayout
@@ -102,4 +116,9 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_space"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 </LinearLayout>
