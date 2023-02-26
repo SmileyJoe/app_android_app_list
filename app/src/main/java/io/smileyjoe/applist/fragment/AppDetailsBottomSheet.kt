@@ -93,12 +93,14 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
     }
 
     lateinit var binding: FragmentBottomSheetDetailsBinding
-    private lateinit var specsNote: ViewSpecs
+    private lateinit var specsContentExpanded: ViewSpecs
     private lateinit var specsDetails: ViewSpecs
     private lateinit var specsIcon: ViewSpecs
     private lateinit var specsHandle: ViewSpecs
     private lateinit var specsTitle: ViewSpecs
     private lateinit var specsScroll: ViewSpecs
+    private lateinit var specsTitlePackage: ViewSpecs
+    private lateinit var specsTitleInstallStatus: ViewSpecs
     private lateinit var dimens: Dimens
 
     private fun setupView(bottomSheet: BottomSheetDialog) {
@@ -132,16 +134,20 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
 
     private fun layoutListener(behavior: BottomSheetBehavior<*>): Boolean {
         var height = binding.root.measuredHeight
-        var noteHeight = binding.textNote.measuredHeight
+        var contentExpandedHeight = binding.layoutContentExpanded.measuredHeight
 
-        if (noteHeight > 0 && height > 0) {
-            specsNote = ViewSpecs(binding.textNote)
+        if (contentExpandedHeight > 0 && height > 0) {
+            specsContentExpanded = ViewSpecs(binding.layoutContentExpanded)
             specsDetails = ViewSpecs(binding.layoutDetails)
             specsIcon = ViewSpecs(binding.imageIcon)
             specsHandle = ViewSpecs(binding.dragHandle)
             specsTitle = ViewSpecs(binding.textTitle)
             specsScroll = ViewSpecs(binding.scrollContent)
-            binding.textNote.updateSize(height = 0)
+            specsTitlePackage = ViewSpecs(binding.textTitlePackage)
+            specsTitleInstallStatus = ViewSpecs(binding.textTitleInstallStatus)
+            binding.layoutContentExpanded.updateSize(height = 0)
+            binding.textTitlePackage.updateSize(height = 0)
+            binding.textTitleInstallStatus.updateSize(height = 0)
         } else if (height > 0) {
             behavior.peekHeight = height
             binding.viewSpace.updateSize(height = ViewGroup.LayoutParams.MATCH_PARENT)
@@ -250,15 +256,15 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
         override fun onStateChanged(view: View, newState: Int) {
             when (newState) {
                 BottomSheetBehavior.STATE_EXPANDED -> {
-                    binding.textNote.visibility = View.VISIBLE
+                    binding.layoutContentExpanded.visibility = View.VISIBLE
                     binding.imageSlideDown.visibility = View.VISIBLE
                 }
                 BottomSheetBehavior.STATE_COLLAPSED -> {
-                    binding.textNote.visibility = View.GONE
+                    binding.layoutContentExpanded.visibility = View.GONE
                     binding.imageSlideDown.visibility = View.GONE
                 }
                 else -> {
-                    binding.textNote.visibility = View.VISIBLE
+                    binding.layoutContentExpanded.visibility = View.VISIBLE
                     binding.imageSlideDown.visibility = View.VISIBLE
                 }
             }
@@ -266,7 +272,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
 
         override fun onSlide(view: View, offset: Float) {
             // only animate things when view is bigger then the default peek size
-            if(offset >= 0) {
+            if (offset >= 0) {
                 animateNote(offset)
                 var iconSize = animateIcon(offset)
                 animateHandle(offset)
@@ -276,8 +282,8 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             }
         }
 
-        private fun animateNote(offset: Float){
-            binding.textNote.updateSize(height = specsNote.height * offset)
+        private fun animateNote(offset: Float) {
+            binding.layoutContentExpanded.updateSize(height = specsContentExpanded.height * offset)
         }
 
         private fun animateTitle(offset: Float) {
@@ -312,9 +318,10 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             // (- (iconSize / 2)) subtract half the icon size, this gives us the left most position of the icon
             // (* offset) move the view at the speed of the expanding
             // (+ specsIcon.x) puts the icon back at it's start position with the offset is 0
-            var x = ((((dimens.screenWidth - (specsIcon.x * 2)) / 2) - (iconSize / 2)) * offset) + specsIcon.x
+            var x =
+                ((((dimens.screenWidth - (specsIcon.x * 2)) / 2) - (iconSize / 2)) * offset) + specsIcon.x
 
-            if(x >= specsIcon.x) {
+            if (x >= specsIcon.x) {
                 binding.imageIcon.x = x
             }
 
@@ -330,12 +337,17 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             binding.layoutDetails.x = specsDetails.x * (1 - offset)
             // seeing details is moving underneath the icon, it can now be full screen width
             binding.layoutDetails.updateSize(width = dimens.screenWidth - binding.layoutDetails.x)
+            binding.textTitlePackage.updateSize(height = specsTitlePackage.height * offset)
+            binding.textTitleInstallStatus.updateSize(height = specsTitleInstallStatus.height * offset)
         }
 
         private fun shiftAllViews() {
             // move all the views down as needed so they don't overlap
-            binding.textNote.below(binding.layoutDetails)
-            binding.dividerContentActions.below(binding.textNote, dimens.paddingExtraLarge)
+            binding.layoutContentExpanded.below(binding.layoutDetails)
+            binding.dividerContentActions.below(
+                binding.layoutContentExpanded,
+                dimens.paddingExtraLarge
+            )
             binding.layoutActions.below(binding.dividerContentActions)
             binding.viewSpace.below(binding.layoutContent)
         }
