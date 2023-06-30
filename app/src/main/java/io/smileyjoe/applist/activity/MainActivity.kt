@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
+import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -18,6 +22,7 @@ import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsBottomSheet
+import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.util.Notify
 
 class MainActivity : BaseActivity() {
@@ -47,7 +52,16 @@ class MainActivity : BaseActivity() {
     }
 
     private var onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
-        AppDetailsBottomSheet(appDetail).show(supportFragmentManager, "TAG")
+//        AppDetailsBottomSheet(appDetail).show(supportFragmentManager, "TAG")
+        Log.d("ItemClicked", "Loading fragment")
+
+        supportFragmentManager.addOnBackStackChangedListener (onDetailsBackstackListener )
+
+        supportFragmentManager.commit {
+            addToBackStack("APP_DETAILS")
+            setCustomAnimations(R.anim.slide_up_in, R.anim.slide_out_down, R.anim.slide_up_in, R.anim.slide_out_down)
+            add(R.id.fragment_details, AppDetailsFragment(appDetail), "APP_DETAILS")
+        }
     }
 
     private var onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
@@ -76,13 +90,27 @@ class MainActivity : BaseActivity() {
         startActivity(SaveAppActivity.getIntent(baseContext), options.toBundle())
     }
 
+    private val onDetailsBackstackListener: OnBackStackChangedListener = OnBackStackChangedListener{
+        supportFragmentManager.findFragmentByTag("APP_DETAILS")?.let { _ ->
+            view.fabAdd.hide()
+            AnimationUtils.loadAnimation(baseContext, R.anim.slide_out_down).also { anim ->
+                view.bottomNavigation.startAnimation(anim)
+            }
+        } ?: run {
+            view.fabAdd.show()
+            AnimationUtils.loadAnimation(baseContext, R.anim.slide_up_in).also { anim ->
+                view.bottomNavigation.startAnimation(anim)
+            }
+            supportFragmentManager.removeOnBackStackChangedListener ( onDetailsBackstackListener )
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
         view = ActivityMainBinding.inflate(layoutInflater)
         setContentView(view.root)
-
         Log.i("AnimThings", "Oncreate")
 
         var pagerAdapterMain = PagerAdapterMain(this).apply {
