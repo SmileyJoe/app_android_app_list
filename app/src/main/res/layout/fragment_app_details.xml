@@ -13,6 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/text_title"
         style="@style/Text.Heading.Medium"
@@ -20,8 +25,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
-        android:paddingTop="@dimen/padding_medium"
-        android:paddingEnd="@dimen/activity_padding_large"
         android:textColor="?android:colorPrimary"
         tools:text="Title" />
 
