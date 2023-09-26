@@ -1,10 +1,11 @@
 package io.smileyjoe.applist.activity
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
@@ -24,10 +25,8 @@ import io.smileyjoe.applist.util.Notify
 class MainActivity : BaseActivity() {
 
     companion object {
-        private const val ACTIVITY_SAVE_APP: Int = 1
         private const val EXTRA_FROM_SPLASH = "from_splash"
 
-        @JvmStatic
         fun getIntent(context: Context, fromSplash: Boolean = true): Intent {
             var intent = Intent(context, MainActivity::class.java)
             intent.putExtra(EXTRA_FROM_SPLASH, fromSplash)
@@ -35,19 +34,21 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    lateinit var view: ActivityMainBinding
+    val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
     var loaded = false
 
-    private var onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
+    private val onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
         if (page == Page.INSTALLED) loaded = true
 
-        view.bottomNavigation.getOrCreateBadge(page.id).apply {
+        binding.bottomNavigation.getOrCreateBadge(page.id).apply {
             isVisible = true
             number = appCount
         }
     }
 
-    private var onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
+    private val onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
         supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
 
         supportFragmentManager.commit {
@@ -56,50 +57,64 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private var onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
+    private val onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
         when (direction) {
             Direction.UP -> {
-                if (!view.fabAdd.isShown) {
-                    view.fabAdd.show()
+                if (!binding.fabAdd.isShown) {
+                    binding.fabAdd.show()
                 }
             }
             Direction.DOWN -> {
-                if (view.fabAdd.isShown) {
-                    view.fabAdd.hide()
+                if (binding.fabAdd.isShown) {
+                    binding.fabAdd.hide()
                 }
             }
         }
     }
 
-    private var onNavSelected = NavigationBarView.OnItemSelectedListener { item ->
-        view.pagerApps.currentItem = Page.fromId(item.itemId).position
+    private val onNavSelected = NavigationBarView.OnItemSelectedListener { item ->
+        binding.pagerApps.currentItem = Page.fromId(item.itemId).position
         true
     }
 
-    private var onFabAddClick = View.OnClickListener { view ->
-        var options = ActivityOptions
+    private val onFabAddClick = View.OnClickListener { view ->
+        var options = ActivityOptionsCompat
             .makeSceneTransitionAnimation(this, view, "transition_fab")
-        startActivity(SaveAppActivity.getIntent(baseContext), options.toBundle())
+        saveAppResult.launch(SaveAppActivity.getIntent(baseContext), options)
     }
 
     private val onDetailsBackstackListener: OnBackStackChangedListener =
         OnBackStackChangedListener {
             supportFragmentManager.findFragmentByTag(AppDetailsFragment.TAG)?.let { _ ->
-                view.fabAdd.hide()
-                view.bottomNavigation.isVisible = false
+                binding.fabAdd.hide()
+                binding.bottomNavigation.isVisible = false
             } ?: run {
-                view.fabAdd.show()
-                view.bottomNavigation.isVisible = true
+                binding.fabAdd.show()
+                binding.bottomNavigation.isVisible = true
                 supportFragmentManager.removeOnBackStackChangedListener(onDetailsBackstackListener)
             }
         }
+
+    private val saveAppResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                Notify.success(binding.layoutMain, R.string.success_app_saved)
+            }
+        }
+
+    private val onPageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            var nav = Page.fromPosition(position)
+            binding.textTitle.setText(nav.getTitle(baseContext))
+            binding.bottomNavigation.selectedItemId = nav.id
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
-        view = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(view.root)
+        setContentView(binding.root)
 
         var pagerAdapterMain = PagerAdapterMain(this).apply {
             listener = this@MainActivity.onFragmentLoadComplete
@@ -107,10 +122,10 @@ class MainActivity : BaseActivity() {
             scrollListener = this@MainActivity.onFragmentScroll
         }
 
-        view.apply {
+        binding.apply {
             pagerApps.adapter = pagerAdapterMain
             pagerApps.offscreenPageLimit = Page.values().size
-            pagerApps.registerOnPageChangeCallback(OnPageChangeListener())
+            pagerApps.registerOnPageChangeCallback(onPageChangeListener)
             textTitle.text = Page.fromId(0).getTitle(baseContext)
             bottomNavigation.setOnItemSelectedListener(this@MainActivity.onNavSelected)
             fabAdd.setOnClickListener(this@MainActivity.onFabAddClick)
@@ -121,27 +136,6 @@ class MainActivity : BaseActivity() {
                 removeOnPreDrawListener { loaded }
                 splashScreen.exitAfterAnim()
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            ACTIVITY_SAVE_APP -> {
-                if (resultCode == RESULT_OK) {
-                    Notify.success(view.layoutMain, R.string.success_app_saved)
-                }
-            }
-            else -> {
-                super.onActivityResult(requestCode, resultCode, data)
-            }
-        }
-    }
-
-    inner class OnPageChangeListener : ViewPager2.OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            var nav = Page.fromPosition(position)
-            view.textTitle.setText(nav.getTitle(baseContext))
-            view.bottomNavigation.selectedItemId = nav.id
         }
     }
 }
