@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
@@ -92,14 +94,10 @@ class MainActivity : BaseActivity() {
     private val onDetailsBackstackListener: OnBackStackChangedListener = OnBackStackChangedListener{
         supportFragmentManager.findFragmentByTag("APP_DETAILS")?.let { _ ->
             view.fabAdd.hide()
-            AnimationUtils.loadAnimation(baseContext, R.anim.slide_out_down).also { anim ->
-                view.bottomNavigation.startAnimation(anim)
-            }
+            view.bottomNavigation.isVisible = false
         } ?: run {
             view.fabAdd.show()
-            AnimationUtils.loadAnimation(baseContext, R.anim.slide_up_in).also { anim ->
-                view.bottomNavigation.startAnimation(anim)
-            }
+            view.bottomNavigation.isVisible = true
             supportFragmentManager.removeOnBackStackChangedListener ( onDetailsBackstackListener )
         }
     }
