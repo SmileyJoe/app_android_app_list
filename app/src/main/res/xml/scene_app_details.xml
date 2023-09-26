@@ -40,9 +40,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_collapse"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/text_title"/>
+            app:layout_constraintBottom_toTopOf="@id/image_icon"/>
+
+        <Constraint
+            android:id="@id/image_close"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/icon_large"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/image_icon"/>
 
         <Constraint
             android:id="@id/text_title"
@@ -62,42 +72,19 @@
             android:layout_height="@dimen/icon_medium"
             android:elevation="@dimen/elevation_app_details_collapse"
             android:layout_marginStart="@dimen/activity_padding_large"
+            android:layout_marginTop="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/layout_actions"
+            app:layout_constraintBottom_toTopOf="@id/scroll_content"
             app:layout_constraintEnd_toStartOf="@id/text_title"/>
 
         <Constraint
-            android:id="@+id/layout_actions"
+            android:id="@+id/scroll_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_collapse"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <Constraint
-            android:id="@id/scroll_details"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:paddingTop="0dp"
-            android:elevation="@dimen/elevation_app_details_collapse"
-            android:paddingBottom="@dimen/padding_medium"
-            app:layout_constraintBottom_toTopOf="@id/barrier_content_actions"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/frame_main"
-            app:layout_constraintEnd_toEndOf="@id/frame_main"
-            app:layout_constraintTop_toBottomOf="@id/text_title"/>
-
-        <Constraint
-            android:id="@+id/divider_content_actions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:elevation="@dimen/elevation_app_details_collapse"
-            app:layout_constraintBottom_toTopOf="@id/layout_actions"
-            app:layout_constraintEnd_toEndOf="@id/frame_main"
-            app:layout_constraintStart_toStartOf="@id/frame_main"
-            app:layout_constraintTop_toBottomOf="@id/scroll_details" />
+            app:layout_constraintEnd_toEndOf="@id/frame_main"/>
 
     </ConstraintSet>
 
@@ -124,8 +111,18 @@
             android:id="@id/drag_handle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <Constraint
+            android:id="@id/image_close"
+            android:layout_width="@dimen/icon_large"
+            android:layout_height="@dimen/icon_large"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <Constraint
@@ -144,42 +141,20 @@
             android:layout_height="@dimen/icon_xx_large"
             android:layout_marginStart="0dp"
             android:elevation="@dimen/elevation_app_details_expanded"
+            android:layout_marginTop="@dimen/padding_medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/drag_handle"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <Constraint
-            android:id="@id/scroll_details"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingTop="@dimen/activity_padding"
-            android:paddingBottom="@dimen/padding_medium"
-            android:elevation="@dimen/elevation_app_details_expanded"
-            app:layout_constraintBottom_toTopOf="@id/divider_content_actions"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_title"/>
-
-        <Constraint
-            android:id="@+id/divider_content_actions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:elevation="@dimen/elevation_app_details_expanded"
-            app:layout_constraintBottom_toTopOf="@id/layout_actions"
-            app:layout_constraintEnd_toEndOf="@id/frame_main"
-            app:layout_constraintStart_toStartOf="@id/frame_main"
-            app:layout_constraintTop_toBottomOf="@id/scroll_details" />
-
-        <Constraint
-            android:id="@+id/layout_actions"
+            android:id="@+id/scroll_content"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:elevation="@dimen/elevation_app_details_expanded"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_content_actions" />
+            app:layout_constraintStart_toStartOf="@id/frame_main"
+            app:layout_constraintEnd_toEndOf="@id/frame_main"
+            app:layout_constraintTop_toBottomOf="@id/text_title" />
     </ConstraintSet>
 
 </MotionScene>

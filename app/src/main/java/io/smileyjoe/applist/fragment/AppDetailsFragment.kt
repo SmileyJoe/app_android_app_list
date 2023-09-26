@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
@@ -77,6 +79,11 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.motionMain.setTransitionListener{layout ->
+            layout?.let{
+                binding.motionContent.progress = it.progress
+            }
+        }
         populateView()
     }
     
@@ -84,8 +91,11 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
         binding.apply {
             textTitle.text = appDetail.name
             textPackage.text = appDetail.appPackage
-            textInstalled.visibility =
-                if (appDetail.isInstalled) View.VISIBLE else View.GONE
+            textInstalled.isVisible = appDetail.isInstalled
+        }
+
+        binding.imageClose.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         Icon.load(binding.imageIcon, appDetail)
@@ -190,5 +200,21 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun MotionLayout.setTransitionListener(callback: (layout:MotionLayout?) -> Unit){
+        setTransitionListener(object : MotionLayout.TransitionListener{
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) =
+                callback.invoke(p0)
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) =
+                callback.invoke(p0)
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) =
+                callback.invoke(p0)
+
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) =
+                callback.invoke(p0)
+        })
     }
 }
