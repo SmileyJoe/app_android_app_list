@@ -26,7 +26,8 @@ import io.smileyjoe.applist.extensions.ViewExt.updateSize
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Icon
 
-
+@Deprecated("This has custom animations, it's staying in for learnings sake, " +
+        "but it's been replaced with motionlayout in AppDetailsFragment, which is easier to manage")
 class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragment() {
 
     private enum class Action(@StringRes var title: Int, @DrawableRes var icon: Int) {

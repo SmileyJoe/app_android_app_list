@@ -3,7 +3,6 @@ package io.smileyjoe.applist.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,50 +20,47 @@ import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Icon
 
-class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
+class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
+
+    companion object{
+        const val TAG = "APP_DETAILS"
+    }
 
     private enum class Action(@StringRes var title: Int, @DrawableRes var icon: Int) {
         EDIT(R.string.action_edit, R.drawable.ic_edit) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return appDetail.isSaved
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                appDetail.isSaved
         },
         SHARE(R.string.action_share, R.drawable.ic_share) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return true
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                true
         },
         PLAY_STORE(R.string.action_play_store, R.drawable.ic_play_store) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return true
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                true
         },
         FAVOURITE(R.string.action_favourite, R.drawable.ic_favourite) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return !appDetail.isFavourite && appDetail.isSaved
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                !appDetail.isFavourite && appDetail.isSaved
         },
         UNFAVOURITE(R.string.action_unfavourite, R.drawable.ic_favourite_outline) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return appDetail.isFavourite
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                appDetail.isFavourite
         },
         SAVE(R.string.action_save, R.drawable.ic_save) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return !appDetail.isSaved
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                !appDetail.isSaved
         },
         DELETE(R.string.action_delete, R.drawable.ic_delete) {
-            override fun shouldShow(appDetail: AppDetail): Boolean {
-                return appDetail.isSaved
-            }
+            override fun shouldShow(appDetail: AppDetail) =
+                appDetail.isSaved
         };
 
         var tag = "action_$name"
 
         abstract fun shouldShow(appDetail: AppDetail): Boolean
     }
-    
+
     private var _binding: FragmentAppDetailsBinding? = null
     private val binding: FragmentAppDetailsBinding
         get() = _binding!!
@@ -80,8 +76,8 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.motionMain.setTransitionListener{layout ->
-            layout?.let{
+        binding.motionMain.setTransitionListener { layout ->
+            layout?.let {
                 binding.motionContent.progress = it.progress
             }
         }
@@ -90,8 +86,8 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
             binding.motionMain.startAnimation(anim)
         }
     }
-    
-    private fun populateView(){
+
+    private fun populateView() {
         binding.apply {
             textTitle.text = appDetail.name
             textPackage.text = appDetail.appPackage
@@ -206,8 +202,8 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
         _binding = null
     }
 
-    private fun MotionLayout.setTransitionListener(callback: (layout:MotionLayout?) -> Unit){
-        setTransitionListener(object : MotionLayout.TransitionListener{
+    private fun MotionLayout.setTransitionListener(callback: (layout: MotionLayout?) -> Unit) {
+        setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) =
                 callback.invoke(p0)
 
