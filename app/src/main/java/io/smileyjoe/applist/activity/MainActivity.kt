@@ -4,9 +4,10 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
+import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -17,7 +18,7 @@ import io.smileyjoe.applist.enums.Direction
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
-import io.smileyjoe.applist.fragment.AppDetailsBottomSheet
+import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.util.Notify
 
 class MainActivity : BaseActivity() {
@@ -27,7 +28,7 @@ class MainActivity : BaseActivity() {
         private const val EXTRA_FROM_SPLASH = "from_splash"
 
         @JvmStatic
-        fun getIntent(context: Context, fromSplash:Boolean = true): Intent {
+        fun getIntent(context: Context, fromSplash: Boolean = true): Intent {
             var intent = Intent(context, MainActivity::class.java)
             intent.putExtra(EXTRA_FROM_SPLASH, fromSplash)
             return intent
@@ -38,7 +39,7 @@ class MainActivity : BaseActivity() {
     var loaded = false
 
     private var onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
-        if(page == Page.INSTALLED) loaded = true
+        if (page == Page.INSTALLED) loaded = true
 
         view.bottomNavigation.getOrCreateBadge(page.id).apply {
             isVisible = true
@@ -47,7 +48,12 @@ class MainActivity : BaseActivity() {
     }
 
     private var onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
-        AppDetailsBottomSheet(appDetail).show(supportFragmentManager, "TAG")
+        supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
+
+        supportFragmentManager.commit {
+            addToBackStack(AppDetailsFragment.TAG)
+            add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
+        }
     }
 
     private var onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
@@ -72,9 +78,21 @@ class MainActivity : BaseActivity() {
 
     private var onFabAddClick = View.OnClickListener { view ->
         var options = ActivityOptions
-                .makeSceneTransitionAnimation(this, view, "transition_fab");
+            .makeSceneTransitionAnimation(this, view, "transition_fab")
         startActivity(SaveAppActivity.getIntent(baseContext), options.toBundle())
     }
+
+    private val onDetailsBackstackListener: OnBackStackChangedListener =
+        OnBackStackChangedListener {
+            supportFragmentManager.findFragmentByTag(AppDetailsFragment.TAG)?.let { _ ->
+                view.fabAdd.hide()
+                view.bottomNavigation.isVisible = false
+            } ?: run {
+                view.fabAdd.show()
+                view.bottomNavigation.isVisible = true
+                supportFragmentManager.removeOnBackStackChangedListener(onDetailsBackstackListener)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
@@ -82,8 +100,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         view = ActivityMainBinding.inflate(layoutInflater)
         setContentView(view.root)
-
-        Log.i("AnimThings", "Oncreate")
 
         var pagerAdapterMain = PagerAdapterMain(this).apply {
             listener = this@MainActivity.onFragmentLoadComplete
@@ -100,8 +116,8 @@ class MainActivity : BaseActivity() {
             fabAdd.setOnClickListener(this@MainActivity.onFabAddClick)
         }
 
-        intent.extras?.getBoolean(EXTRA_FROM_SPLASH, true)?.let {fromSplash ->
-            if(fromSplash){
+        intent.extras?.getBoolean(EXTRA_FROM_SPLASH, true)?.let { fromSplash ->
+            if (fromSplash) {
                 removeOnPreDrawListener { loaded }
                 splashScreen.exitAfterAnim()
             }
