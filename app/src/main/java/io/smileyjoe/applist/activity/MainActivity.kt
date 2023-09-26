@@ -59,7 +59,6 @@ class MainActivity : BaseActivity() {
 
         supportFragmentManager.commit {
             addToBackStack("APP_DETAILS")
-            setCustomAnimations(R.anim.slide_up_in, R.anim.slide_out_down, R.anim.slide_up_in, R.anim.slide_out_down)
             add(R.id.fragment_details, AppDetailsFragment(appDetail), "APP_DETAILS")
         }
     }

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -85,6 +86,9 @@ class AppDetailsFragment(private val appDetail: AppDetail): Fragment() {
             }
         }
         populateView()
+        AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up_in).also { anim ->
+            binding.motionMain.startAnimation(anim)
+        }
     }
     
     private fun populateView(){
