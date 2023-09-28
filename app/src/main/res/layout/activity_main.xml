@@ -10,55 +10,62 @@
 
     <TextView
         android:id="@+id/text_title"
+        style="@style/Text.Heading.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="?android:colorPrimary"
-        style="@style/Text.Heading.Medium"
         android:padding="@dimen/activity_padding"
-        tools:text="Title"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="?android:colorPrimary"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/coordinator_main"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/pager_apps"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager_apps"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/text_title"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"/>
+        app:layout_constraintTop_toBottomOf="@id/text_title">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        android:layout_marginBottom="@dimen/activity_padding"
-        android:layout_marginEnd="@dimen/activity_padding"
-        android:text="@string/action_add"
-        android:transitionName="transition_fab"
-        app:icon="@drawable/ic_add"/>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager_apps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_padding"
+            android:layout_marginBottom="@dimen/activity_padding"
+            android:text="@string/action_add"
+            android:transitionName="transition_fab"
+            android:layout_gravity="bottom|end"
+            app:layout_behavior="io.smileyjoe.applist.behavior.ExtendedFabBehavior"
+            app:icon="@drawable/ic_add"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/coordinator_main"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pager_apps"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/bottom_nav_main" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

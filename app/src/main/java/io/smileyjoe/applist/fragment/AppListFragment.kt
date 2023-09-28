@@ -26,10 +26,6 @@ class AppListFragment : Fragment() {
         fun onLoadComplete(page: Page, appCount: Int)
     }
 
-    fun interface ScrollListener {
-        fun onScroll(direction: Direction)
-    }
-
     fun interface ItemSelectedListener : AppDetailViewHolder.ItemSelectedListener
 
     companion object {
@@ -50,7 +46,6 @@ class AppListFragment : Fragment() {
     lateinit var appDetailAdapter: AppDetailAdapter
     lateinit var view: FragmentAppListBinding
     var listener: Listener? = null
-    var scrollListener: ScrollListener? = null
     var itemSelectedListener: ItemSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -67,7 +62,6 @@ class AppListFragment : Fragment() {
         view.recyclerAppDetails.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = appDetailAdapter
-            setOnScrollChangeListener(this@AppListFragment::dispatchScroll)
         }
 
         populateList()
@@ -81,14 +75,6 @@ class AppListFragment : Fragment() {
             saveListener = AppDetailViewHolder.Listener { app -> app.save(requireActivity()) }
             deleteListener = AppDetailViewHolder.Listener { app -> app.delete(requireActivity()) }
             itemSelectedListener = this@AppListFragment.itemSelectedListener
-        }
-    }
-
-    private fun dispatchScroll(view: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-        if (scrollY > oldScrollY) {
-            scrollListener?.onScroll(Direction.DOWN)
-        } else if (scrollY < oldScrollY) {
-            scrollListener?.onScroll(Direction.UP)
         }
     }
 

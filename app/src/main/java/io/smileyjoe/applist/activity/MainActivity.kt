@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterMain
@@ -54,21 +55,6 @@ class MainActivity : BaseActivity() {
         supportFragmentManager.commit {
             addToBackStack(AppDetailsFragment.TAG)
             add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
-        }
-    }
-
-    private val onFragmentScroll = PagerAdapterMain.ScrollListener { direction ->
-        when (direction) {
-            Direction.UP -> {
-                if (!binding.fabAdd.isShown) {
-                    binding.fabAdd.show()
-                }
-            }
-            Direction.DOWN -> {
-                if (binding.fabAdd.isShown) {
-                    binding.fabAdd.hide()
-                }
-            }
         }
     }
 
@@ -119,7 +105,6 @@ class MainActivity : BaseActivity() {
         var pagerAdapterMain = PagerAdapterMain(this).apply {
             listener = this@MainActivity.onFragmentLoadComplete
             itemSelectedListener = this@MainActivity.onItemSelected
-            scrollListener = this@MainActivity.onFragmentScroll
         }
 
         binding.apply {
