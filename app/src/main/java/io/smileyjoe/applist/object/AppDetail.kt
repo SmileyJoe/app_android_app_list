@@ -24,12 +24,14 @@ class AppDetail() : Parcelable {
         const val DB_KEY_NAME: String = "name"
         const val DB_KEY_PACKAGE: String = "package"
         const val DB_KEY_IS_FAVOURITE: String = "is_favourite"
+        const val DB_KEY_NOTES: String = "notes"
 
         override fun AppDetail.write(parcel: Parcel, flags: Int) {
             parcel.apply {
                 writeString(name)
                 writeString(appPackage)
                 writeBoolean(isFavourite)
+                writeString(notes)
                 writeString(firebaseKey)
                 writeParcelable(Icon.getBitmapFromDrawable(icon), flags)
                 writeBoolean(isSaved)
@@ -42,6 +44,7 @@ class AppDetail() : Parcelable {
                 name = parcel.readString()
                 appPackage = parcel.readString()
                 isFavourite = parcel.readBoolean()
+                notes = parcel.readString()
                 firebaseKey = parcel.readString()
                 var bitmap: Bitmap? = parcel.readParcelable(ClassLoader.getSystemClassLoader()) as Bitmap?
                 if (bitmap != null) {
@@ -56,6 +59,7 @@ class AppDetail() : Parcelable {
     var icon: Drawable? = null
     var name: String? = null
     var isFavourite: Boolean = false
+    var notes: String? = null
     var isSaved: Boolean = false
     var playstoreLink: String? = null
     var isInstalled: Boolean = false
@@ -90,6 +94,12 @@ class AppDetail() : Parcelable {
                     isFavourite = it
                 }
             }
+
+            if (data.hasChild(DB_KEY_NOTES)){
+                data.child(DB_KEY_NOTES).getValue(String::class.java)?.let {
+                    notes = it
+                }
+            }
         }
     }
 
@@ -111,7 +121,8 @@ class AppDetail() : Parcelable {
                 val data = mapOf(
                         DB_KEY_NAME to name,
                         DB_KEY_PACKAGE to appPackage,
-                        DB_KEY_IS_FAVOURITE to isFavourite
+                        DB_KEY_IS_FAVOURITE to isFavourite,
+                        DB_KEY_NOTES to notes
                 )
 
                 reference.child(key)
@@ -161,10 +172,12 @@ class AppDetail() : Parcelable {
             isSaved = true
             isFavourite = app.isFavourite
             firebaseKey = app.firebaseKey
+            notes = app.notes
             return true
         } ?: run {
             isSaved = false
             firebaseKey = null
+            notes = null
             return false
         }
     }
@@ -182,6 +195,6 @@ class AppDetail() : Parcelable {
     }
 
     override fun toString(): String {
-        return "AppDetail(icon=$icon, appPackage=$appPackage, name=$name, firebaseKey=$firebaseKey, isFavourite=$isFavourite, isSaved=$isSaved, playstoreLink='$playstoreLink', isInstalled=$isInstalled)"
+        return "AppDetail(icon=$icon, appPackage=$appPackage, name=$name, notes=$notes, firebaseKey=$firebaseKey, isFavourite=$isFavourite, isSaved=$isSaved, playstoreLink='$playstoreLink', isInstalled=$isInstalled)"
     }
 }

@@ -98,6 +98,19 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
+        if(appDetail.notes.isNullOrEmpty()){
+            binding.apply {
+                textTitleNotes.isVisible = false
+                textNotes.isVisible = false
+            }
+        } else {
+            binding.apply {
+                textTitleNotes.isVisible = true
+                textNotes.isVisible = true
+                textNotes.text = appDetail.notes
+            }
+        }
+
         Icon.load(binding.imageIcon, appDetail)
         addActions()
     }

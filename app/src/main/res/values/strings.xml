@@ -36,6 +36,7 @@
 
     <string name="hint_app_package">Package</string>
     <string name="hint_app_name">Name</string>
+    <string name="hint_app_notes">Notes</string>
 
     <string name="instruction_empty_app_list">You have no applications in this category at the moment.</string>
     <string name="progress_saving">Saving &#8230;</string>

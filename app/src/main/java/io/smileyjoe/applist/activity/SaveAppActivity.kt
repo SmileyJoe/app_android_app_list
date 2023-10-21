@@ -170,6 +170,7 @@ class SaveAppActivity : BaseActivity() {
                 name = appName
                 appPackage = packageName
                 isFavourite = view.switchFavourite.isChecked
+                notes = view.inputNote.editText?.text.toString()
             }
             appDetail.save(this) { error, ref ->
                 hideProgress()
