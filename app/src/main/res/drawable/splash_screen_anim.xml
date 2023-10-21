@@ -1,0 +1,35 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="960dp"
+            android:height="960dp"
+            android:viewportWidth="960"
+            android:viewportHeight="960">
+            <group
+                android:pivotX="480"
+                android:pivotY="480"
+                android:scaleX="0.60"
+                android:scaleY="0.60">
+                <path
+                    android:name="path"
+                    android:pathData="M 180 840 Q 156 840 138 822 Q 120 804 120 780 L 120 257 Q 120 242 123 231.5 Q 126 221 134 212 L 190 136 Q 198 127 208.5 123.5 Q 219 120 233.386 120 L 726.614 120 Q 741 120 751 123.5 Q 761 127 769 136 L 826 212 Q 834 221 837 231.5 Q 840 242 840 257 L 840 780 Q 840 804 822 822 Q 804 840 780 840 L 180 840 Z M 197 226 L 762 226 L 725.591 180 L 233 180 L 197 226 Z M 180 286 L 180 780 L 780 780 L 780 286 L 180 286 Z M 480 690 L 636 534 L 596 494 L 510 580 L 510 379 L 450 379 L 450 580 L 364 494 L 324 534 L 480 690 Z M 180 780 L 780 780 L 180 780 Z"
+                    android:fillColor="?android:colorPrimary"
+                    android:strokeWidth="1"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="path">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:duration="@integer/splash_animation_duration"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:valueType="floatType"
+                android:interpolator="@android:anim/accelerate_interpolator"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

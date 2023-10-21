@@ -1,18 +1,27 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">8dp</dimen>
-    <dimen name="activity_vertical_margin">8dp</dimen>
-    <dimen name="row_horizontal_margin">8dp</dimen>
-    <dimen name="row_vertical_margin">8dp</dimen>
+    <!-- General -->
+    <!-- Padding -->
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="padding_extra_large">32dp</dimen>
+
+    <!-- Icons -->
+    <dimen name="icon_small">24dp</dimen>
+    <dimen name="icon_medium">48dp</dimen>
+    <dimen name="icon_large">72dp</dimen>
+    <dimen name="icon_x_large">96dp</dimen>
+    <dimen name="icon_xx_large">120dp</dimen>
+
+    <!-- Items -->
+    <dimen name="activity_padding">@dimen/padding_medium</dimen>
+    <dimen name="activity_padding_large">@dimen/padding_extra_large</dimen>
     <dimen name="button_padding">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
-    <dimen name="image_app_icon_width">40dp</dimen>
-    <dimen name="image_app_icon_height">@dimen/image_app_icon_width</dimen>
-    <dimen name="app_detail_icon_margin_right">8dp</dimen>
-    <dimen name="button_spacing">8dp</dimen>
-    <dimen name="button_progress_width">24dp</dimen>
-    <dimen name="button_progress_height">@dimen/button_progress_width</dimen>
-    <dimen name="margin_bottom_sign_in_description">64dp</dimen>
-    <dimen name="margin_top_input">8dp</dimen>
+
+    <!-- Text -->
+    <dimen name="text_actionbar">20dp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="elevation_app_details_collapse">16dp</dimen>
+    <dimen name="elevation_app_details_expanded">0dp</dimen>
 </resources>

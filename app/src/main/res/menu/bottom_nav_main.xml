@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_installed"
+        android:enabled="true"
+        android:icon="@drawable/ic_installed"
+        android:title="@string/fragment_title_installed_apps"/>
+    <item
+        android:id="@+id/nav_saved"
+        android:enabled="true"
+        android:icon="@drawable/ic_save"
+        android:title="@string/fragment_title_saved_apps"/>
+    <item
+        android:id="@+id/nav_favourite"
+        android:enabled="true"
+        android:icon="@drawable/ic_favourite"
+        android:title="@string/fragment_title_saved_apps"/>
+</menu>

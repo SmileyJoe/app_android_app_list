@@ -1,71 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              style="@style/RowWrapper"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/padding_medium"
+    android:layout_marginEnd="@dimen/padding_medium"
+    android:layout_marginTop="@dimen/padding_small"
+    android:layout_marginBottom="@dimen/padding_small">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:paddingStart="@dimen/activity_padding"
+        android:paddingBottom="@dimen/activity_padding">
 
         <ImageView
             android:id="@+id/image_icon"
-            android:layout_width="@dimen/image_app_icon_width"
-            android:layout_height="@dimen/image_app_icon_height"
-            android:layout_marginRight="@dimen/app_detail_icon_margin_right"/>
+            android:layout_width="@dimen/icon_medium"
+            android:layout_height="@dimen/icon_medium"
+            android:layout_marginTop="@dimen/activity_padding"
+            app:layout_constraintBottom_toTopOf="@id/barrier_content_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_placeholder"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_icon_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="image_icon" />
+
+        <io.smileyjoe.applist.view.ImageSelected
+            android:id="@+id/image_favourite"
+            android:layout_width="@dimen/icon_medium"
+            android:layout_height="@dimen/icon_medium"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingEnd="@dimen/activity_padding"
+            app:tint="?android:colorPrimary"
+            app:image_selected_state="deselected"
+            app:src_selected="@drawable/ic_favourite"
+            app:src_deselected="@drawable/ic_favourite_outline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/layout_details"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/padding_medium"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/activity_padding"
+            app:layout_constraintBottom_toTopOf="@id/barrier_content_button"
+            app:layout_constraintLeft_toRightOf="@id/barrier_icon_details"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/text_title"
-                style="@style/Text.Title"/>
+                style="@style/Text.Title"
+                tools:text="Title" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/text_package"
-                style="@style/Text"/>
+                tools:text="io.smileyjoe.test_package" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/text_installed"
                 android:text="@string/text_installed"
                 android:textStyle="italic"
-                style="@style/Text"/>
+                tools:text="Installed" />
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:paddingTop="@dimen/row_vertical_margin"
-        android:orientation="horizontal">
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_content_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="image_icon, layout_details" />
 
         <io.smileyjoe.applist.view.ButtonProgress
             android:id="@+id/button_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:text_enabled="@string/button_save"
-            app:text_disabled="@string/button_delete"
-            app:background_enabled="@color/colorPrimary"
-            app:background_disabled="@color/transparent"
-            app:background_loading="@color/colorPrimary"
-            app:text_color_enabled="@color/white"
-            app:text_color_disabled="@color/red"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/activity_padding"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_content_button"
             app:state="enabled"
-            android:layout_marginRight="@dimen/button_spacing"/>
-
-        <Button
-            android:id="@+id/button_play_store"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            style="@style/Button.Primary"
-            android:text="@string/button_open_play_store"/>
-    </LinearLayout>
-</LinearLayout>
+            app:src_disabled="@drawable/ic_delete"
+            app:text_disabled="@string/button_delete"
+            app:src_enabled="@drawable/ic_save"
+            app:text_enabled="@string/button_save" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

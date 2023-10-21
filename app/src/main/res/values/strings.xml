@@ -1,37 +1,56 @@
 <resources>
     <string name="app_name">App List</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="activity_title_save_app">Save App</string>
+
     <string name="fragment_title_installed_apps">Installed</string>
-    <string name="button_open_play_store">Play Store</string>
+    <string name="fragment_title_saved_apps">Saved</string>
+    <string name="fragment_title_favourite_apps">Favourite</string>
+
     <string name="button_save">Save</string>
-    <string name="button_saved">Saved</string>
     <string name="button_delete">Delete</string>
+    <string name="button_log_in">Log In</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="button_ok">OK</string>
 
     <string name="dialog_title_confirm">Confirm</string>
     <string name="dialog_title_error">Error</string>
     <string name="dialog_title_success">Success</string>
-    <string name="button_yes">Yes</string>
-    <string name="button_no">No</string>
-    <string name="text_sign_in">Sign in...</string>
+
+    <string name="text_sign_in">Sign in &#8230;</string>
     <string name="text_sign_in_description">Please sign in to continue.</string>
-    <string name="button_ok">OK</string>
+    <string name="text_installed">Installed</string>
+    <string name="text_details">Details</string>
+
+    <string name="success_app_saved">Application saved successfully</string>
+
     <string name="error_sign_in">Something went wrong while signing you in. Please try again</string>
-    <string name="activity_title_sign_in">Sign In</string>
     <string name="error_not_signed_in">You need to sign in to complete this action.</string>
     <string name="error_generic">Something went wrong, please try again later.</string>
-    <string name="error_database_read_failed">An error occured reading your data, please try again later.</string>
-    <string name="fragment_title_saved_apps">Saved</string>
-    <string name="activity_title_save_app">Save App</string>
+    <string name="error_database_read_failed">An error occurred reading your data, please try again later.</string>
     <string name="error_invalid_url">%1$s is not a valid play store application url</string>
-    <string name="hint_app_package">Application Package</string>
-    <string name="hint_app_name">Application Name</string>
-    <string name="action_save">Save</string>
     <string name="error_invalid_package">Please enter a package name</string>
     <string name="error_invalid_app_name">Please enter an application name.</string>
     <string name="error_invalid_fields">Please fill in all the fields correctly.</string>
-    <string name="success_app_saved">Application saved successfully</string>
+
+    <string name="hint_app_package">Package</string>
+    <string name="hint_app_name">Name</string>
+    <string name="hint_app_notes">Notes</string>
+
     <string name="instruction_empty_app_list">You have no applications in this category at the moment.</string>
-    <string name="progress_saving">Saving...</string>
-    <string name="text_installed">Installed</string>
+    <string name="progress_saving">Saving &#8230;</string>
+
+    <string name="action_edit">Edit</string>
+    <string name="action_share">Share</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_favourite">Favourite</string>
+    <string name="action_unfavourite">Unfavourite</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_add">Add</string>
+
+    <string name="title_app_package">Package Name:</string>
+    <string name="title_install_status">Install Status:</string>
+    <string name="title_notes">Notes:</string>
 </resources>

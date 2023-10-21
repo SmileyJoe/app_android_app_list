@@ -4,15 +4,21 @@
     <declare-styleable name="ButtonProgress">
         <attr name="text_enabled" format="reference"/>
         <attr name="text_disabled" format="reference"/>
-        <attr name="text_color_enabled" format="reference"/>
-        <attr name="text_color_disabled" format="reference"/>
-        <attr name="background_enabled" format="reference"/>
-        <attr name="background_disabled" format="reference"/>
-        <attr name="background_loading" format="reference"/>
+        <attr name="src_enabled" format="reference"/>
+        <attr name="src_disabled" format="reference"/>
         <attr name="state" format="enum">
             <enum name="enabled" value="0"/>
             <enum name="disabled" value="1"/>
             <enum name="loading" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ImageSelected">
+        <attr name="src_selected" format="reference"/>
+        <attr name="src_deselected" format="reference"/>
+        <attr name="image_selected_state" format="enum">
+            <enum name="selected" value="0"/>
+            <enum name="deselected" value="1"/>
         </attr>
     </declare-styleable>
 

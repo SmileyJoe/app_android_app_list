@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image_slide_down"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:layout_marginStart="@dimen/activity_padding"
+                android:src="@drawable/ic_slide_down"
+                app:layout_constraintBottom_toBottomOf="@id/text_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_title"
+                app:tint="?android:textColorPrimary" />
+
+            <TextView
+                android:id="@+id/text_title"
+                style="@style/Text.Heading.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:paddingStart="@dimen/activity_padding_large"
+                android:paddingEnd="@dimen/activity_padding_large"
+                android:textColor="?android:colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Title" />
+
+            <ImageView
+                android:id="@+id/image_icon"
+                android:layout_width="@dimen/icon_medium"
+                android:layout_height="@dimen/icon_medium"
+                android:layout_marginStart="@dimen/activity_padding_large"
+                android:layout_marginTop="@dimen/activity_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_title"
+                tools:src="@drawable/ic_placeholder" />
+
+            <LinearLayout
+                android:id="@+id/layout_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/padding_medium"
+                android:paddingTop="@dimen/activity_padding"
+                android:paddingEnd="@dimen/activity_padding_large"
+                app:layout_constraintBottom_toTopOf="@id/barrier_content_actions"
+                app:layout_constraintLeft_toRightOf="@id/image_icon"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_title">
+
+                <TextView
+                    android:id="@+id/text_title_package"
+                    style="@style/Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_medium"
+                    android:text="@string/title_app_package" />
+
+                <TextView
+                    android:id="@+id/text_package"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="io.smileyjoe.test_package" />
+
+                <TextView
+                    android:id="@+id/text_title_install_status"
+                    style="@style/Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_medium"
+                    android:text="@string/title_install_status" />
+
+                <TextView
+                    android:id="@+id/text_installed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_installed"
+                    android:textStyle="italic"
+                    tools:text="Installed" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_content_actions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="layout_details, image_icon" />
+
+            <LinearLayout
+                android:id="@+id/layout_content_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_padding"
+                android:layout_marginEnd="@dimen/activity_padding"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/divider_content_actions"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_content_actions">
+
+                <TextView
+                    android:id="@+id/text_title_notes"
+                    style="@style/Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_medium"
+                    android:text="@string/title_notes" />
+
+                <TextView
+                    android:id="@+id/text_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum." />
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_content_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_padding"
+                android:layout_marginTop="@dimen/padding_extra_large"
+                android:layout_marginEnd="@dimen/activity_padding"
+                app:layout_constraintBottom_toTopOf="@id/layout_actions"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_content_expanded" />
+
+            <LinearLayout
+                android:id="@+id/layout_actions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/padding_medium"
+                android:paddingBottom="@dimen/activity_padding_large"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_content_actions" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/view_space"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#00ff00"
+        android:visibility="invisible" />
+</LinearLayout>

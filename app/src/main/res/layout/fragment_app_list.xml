@@ -2,7 +2,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,12 +16,14 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         android:text="@string/instruction_empty_app_list"
-        style="@style/ActivityContentWrapper"/>
+        android:padding="@dimen/activity_padding"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_app_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/padding_small"
+        android:clipToPadding="false"
         android:visibility="gone"/>
 
 </RelativeLayout>
