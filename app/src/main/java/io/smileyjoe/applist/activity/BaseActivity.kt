@@ -12,7 +12,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun checkSignIn() {
-        if (User.getCurrent() == null) {
+        if (User.current == null) {
             startActivity(SignInActivity.getIntent(baseContext, intent))
             finish()
         }

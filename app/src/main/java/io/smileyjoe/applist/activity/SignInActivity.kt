@@ -45,7 +45,7 @@ class SignInActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         // We only have to use this activity if there is no current user //
-        if (User.getCurrent() != null) {
+        if (User.current != null) {
             return
         }
 
@@ -76,7 +76,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun checkSignIn(showError: Boolean, fromSplash:Boolean = true) {
-        if (User.getCurrent() != null) {
+        if (User.current != null) {
             if (returnIntent == null) {
                 startActivity(MainActivity.getIntent(baseContext, fromSplash))
             } else {

@@ -12,7 +12,7 @@ object Db {
     private val DB_KEY_APP_DETAIL = if (BuildConfig.DEBUG) "app-debug" else "app"
 
     private fun getReference(activity: Activity): DatabaseReference? {
-        User.getCurrent()?.let { user ->
+        User.current?.let { user ->
             return FirebaseDatabase.getInstance().reference.child(user.id)
         } ?: run {
             Notify.error(activity, R.string.error_not_signed_in)
