@@ -12,6 +12,7 @@ android {
         targetSdkVersion 33
         versionCode 4
         versionName "2.0"
+        buildConfigField "String", "SERVER_CLIENT_ID", findProperty("app_list.firebase_server_client_id")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         configurations.all{
             resolutionStrategy{force 'androidx.core:core-ktx:1.9.0'}
@@ -25,7 +26,6 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            buildConfigField "String", "SERVER_CLIENT_ID", findProperty("app_list.firebase_server_client_id")
         }
     }
 
