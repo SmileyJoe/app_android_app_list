@@ -13,10 +13,9 @@ import com.google.firebase.database.ValueEventListener
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.AppDetailAdapter
 import io.smileyjoe.applist.databinding.FragmentAppListBinding
-import io.smileyjoe.applist.enums.Direction
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
-import io.smileyjoe.applist.util.Db
+import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
 
@@ -72,8 +71,8 @@ class AppListFragment : Fragment() {
 
     private fun setupAdapter() {
         appDetailAdapter = AppDetailAdapter(ArrayList(), page).apply {
-            saveListener = AppDetailViewHolder.Listener { app -> app.save(requireActivity()) }
-            deleteListener = AppDetailViewHolder.Listener { app -> app.delete(requireActivity()) }
+            saveListener = AppDetailViewHolder.Listener { app -> app.db.save(requireActivity()) }
+            deleteListener = AppDetailViewHolder.Listener { app -> app.db.delete(requireActivity()) }
             itemSelectedListener = this@AppListFragment.itemSelectedListener
         }
     }

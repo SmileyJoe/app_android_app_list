@@ -145,7 +145,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             Action.SHARE -> share()
             Action.FAVOURITE -> {
                 appDetail.isFavourite = true
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.FAVOURITE)
                         show(Action.UNFAVOURITE)
@@ -154,7 +154,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             }
             Action.UNFAVOURITE -> {
                 appDetail.isFavourite = false
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.UNFAVOURITE)
                         show(Action.FAVOURITE)
@@ -163,7 +163,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             }
             Action.SAVE -> {
                 appDetail.isSaved = true
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.SAVE)
                         show(Action.DELETE, Action.FAVOURITE)
@@ -171,7 +171,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                 }
             }
             Action.DELETE -> {
-                appDetail.delete(requireActivity()) { error, ref ->
+                appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
                         appDetail.isFavourite = true
                         hide(Action.DELETE, Action.FAVOURITE, Action.UNFAVOURITE)

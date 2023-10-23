@@ -5,6 +5,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import com.google.firebase.database.DataSnapshot
 import io.smileyjoe.applist.R
+import io.smileyjoe.applist.db.DbAppDetail
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.PackageUtil
 
@@ -36,7 +37,7 @@ enum class Page(var position: Int, @IdRes var id: Int, @StringRes var title: Int
         var apps = ArrayList<AppDetail>()
 
         dataSnapshot.children.forEach { item ->
-            apps.add(AppDetail(item))
+            apps.add(DbAppDetail.get(item))
         }
 
         return apps

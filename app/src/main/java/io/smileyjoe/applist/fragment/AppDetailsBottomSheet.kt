@@ -188,7 +188,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             Action.SHARE -> share()
             Action.FAVOURITE -> {
                 appDetail.isFavourite = true
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.FAVOURITE)
                         show(Action.UNFAVOURITE)
@@ -197,7 +197,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             }
             Action.UNFAVOURITE -> {
                 appDetail.isFavourite = false
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.UNFAVOURITE)
                         show(Action.FAVOURITE)
@@ -206,7 +206,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             }
             Action.SAVE -> {
                 appDetail.isSaved = true
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.SAVE)
                         show(Action.DELETE, Action.FAVOURITE)
@@ -214,7 +214,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                 }
             }
             Action.DELETE -> {
-                appDetail.delete(requireActivity()) { error, ref ->
+                appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
                         appDetail.isFavourite = true
                         hide(Action.DELETE, Action.FAVOURITE, Action.UNFAVOURITE)

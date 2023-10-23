@@ -172,7 +172,7 @@ class SaveAppActivity : BaseActivity() {
                 isFavourite = view.switchFavourite.isChecked
                 notes = view.inputNote.editText?.text.toString()
             }
-            appDetail.save(this) { error, ref ->
+            appDetail.db.save(this) { error, ref ->
                 hideProgress()
                 if (error == null) {
                     setResult(RESULT_OK)
