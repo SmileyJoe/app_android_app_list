@@ -51,6 +51,12 @@ class ImageSelected : AppCompatImageView, View.OnClickListener {
             }
         }
 
+    var isImageSelected: Boolean
+        get() = state == State.SELECTED
+        set(value) {
+            state = if(value) State.SELECTED else State.DESELECTED
+        }
+
     private fun init(attrs: AttributeSet?) {
         if (attrs != null) {
             context.obtainStyledAttributes(attrs, R.styleable.ImageSelected)?.let { typedArray ->

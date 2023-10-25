@@ -45,6 +45,12 @@ class ButtonProgress : RelativeLayout {
             style()
         }
 
+    var isButtonEnabled:Boolean
+        get() = state == State.ENABLED || state == State.LOADING
+        set(value) {
+            state = if(value) State.ENABLED else State.DISABLED
+        }
+
     private fun init(attrs: AttributeSet?) {
         view = ViewButtonProgressBinding.inflate(LayoutInflater.from(context), this, true)
         handleAttributes(attrs)
