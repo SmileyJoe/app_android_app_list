@@ -19,7 +19,7 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
     /**
      * Callback for when an item is selected
      */
-    fun interface ItemSelectedListener {
+    fun interface OnItemSelected {
         fun onSelected(appDetail: AppDetail)
     }
 
@@ -36,7 +36,7 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
     var page: Page
     var saveListener: Listener? = null
     var deleteListener: Listener? = null
-    var itemSelectedListener: ItemSelectedListener? = null
+    var onItemSelected: OnItemSelected? = null
 
     constructor(
         parent: ViewGroup,
@@ -58,7 +58,7 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
             textTitle.setText(app.name)
             textPackage.setText(app.appPackage)
             textInstalled.isVisible = page == Page.INSTALLED && app.isInstalled
-            root.setOnClickListener { itemSelectedListener?.onSelected(app) }
+            root.setOnClickListener { onItemSelected?.onSelected(app) }
             buttonSave.apply {
                 onEnabledClick { save(app) }
                 onDisabledClick { deleteListener?.onUpdate(app) }

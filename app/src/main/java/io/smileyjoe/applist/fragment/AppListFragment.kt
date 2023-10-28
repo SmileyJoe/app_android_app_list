@@ -13,19 +13,19 @@ import com.google.firebase.database.ValueEventListener
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.AppDetailAdapter
 import io.smileyjoe.applist.databinding.FragmentAppListBinding
+import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
-import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
 
 class AppListFragment : Fragment() {
 
-    fun interface Listener {
+    fun interface OnLoadComplete {
         fun onLoadComplete(page: Page, appCount: Int)
     }
 
-    fun interface ItemSelectedListener : AppDetailViewHolder.ItemSelectedListener
+    fun interface OnItemSelected : AppDetailViewHolder.OnItemSelected
 
     companion object {
         private const val EXTRA_PAGE: String = "page"
@@ -44,8 +44,8 @@ class AppListFragment : Fragment() {
     lateinit var page: Page
     lateinit var appDetailAdapter: AppDetailAdapter
     lateinit var view: FragmentAppListBinding
-    var listener: Listener? = null
-    var itemSelectedListener: ItemSelectedListener? = null
+    var onLoadComplete: OnLoadComplete? = null
+    var onItemSelected: OnItemSelected? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,7 +53,11 @@ class AppListFragment : Fragment() {
         page = requireArguments().getSerializableCompat(EXTRA_PAGE, Page::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         view = FragmentAppListBinding.inflate(layoutInflater, container, false)
 
         setupAdapter()
@@ -70,11 +74,12 @@ class AppListFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        appDetailAdapter = AppDetailAdapter(ArrayList(), page).apply {
-            saveListener = AppDetailViewHolder.Listener { app -> app.db.save(requireActivity()) }
-            deleteListener = AppDetailViewHolder.Listener { app -> app.db.delete(requireActivity()) }
-            itemSelectedListener = this@AppListFragment.itemSelectedListener
-        }
+        appDetailAdapter = AppDetailAdapter(
+            page = page,
+            saveListener = AppDetailViewHolder.Listener { app -> app.db.save(requireActivity()) },
+            deleteListener = AppDetailViewHolder.Listener { app -> app.db.delete(requireActivity()) },
+            onItemSelected = this@AppListFragment.onItemSelected
+        )
     }
 
     private fun populateList() {
@@ -103,10 +108,10 @@ class AppListFragment : Fragment() {
 
     inner class AppDetailsEventListener : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            appDetailAdapter.update(page.getApps(requireContext(), snapshot))
+            appDetailAdapter.items = page.getApps(requireContext(), snapshot)
             isLoading = false
             handleDisplayView()
-            listener?.onLoadComplete(page, appDetailAdapter.itemCount)
+            onLoadComplete?.onLoadComplete(page, appDetailAdapter.itemCount)
         }
 
         override fun onCancelled(error: DatabaseError) {

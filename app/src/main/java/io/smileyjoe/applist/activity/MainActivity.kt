@@ -11,7 +11,7 @@ import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.adapter.PagerAdapterMain
+import io.smileyjoe.applist.adapter.PagerAdapterAppList
 import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
@@ -86,20 +86,21 @@ class MainActivity : BaseActivity() {
     }
 
     // pager adapter for the view pager that houses the AppListFragments //
-    private val pagerAdapterMain = PagerAdapterMain(this).apply {
+    private val pagerAdapterMain = PagerAdapterAppList(
+        activity = this,
         // call back for when the page has loaded //
-        listener = PagerAdapterMain.Listener { page, appCount ->
+        onLoadComplete = { page, appCount ->
             // installed is the last page, so when that is loaded, everything is loaded //
-            loaded = page == Page.INSTALLED
+            if (page == Page.INSTALLED) loaded = true
 
             // set the app count badge on the bottom nav //
             binding.bottomNavigation.getOrCreateBadge(page.id).apply {
                 isVisible = true
                 number = appCount
             }
-        }
+        },
         // show the details when an item is selected //
-        itemSelectedListener = PagerAdapterMain.ItemSelectedListener { appDetail ->
+        onItemSelected = { appDetail ->
             supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
 
             supportFragmentManager.commit {
@@ -107,7 +108,7 @@ class MainActivity : BaseActivity() {
                 add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
             }
         }
-    }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // handle any shared element animations //
