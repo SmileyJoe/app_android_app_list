@@ -3,31 +3,41 @@ package io.smileyjoe.applist.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.adapter.PagerAdapterMain
+import io.smileyjoe.applist.adapter.PagerAdapterAppList
 import io.smileyjoe.applist.databinding.ActivityMainBinding
-import io.smileyjoe.applist.enums.Direction
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.util.Notify
 
+/**
+ * Main activity, houses a view pager of fragments, one for each item in [Page]
+ */
 class MainActivity : BaseActivity() {
 
     companion object {
+        /**
+         * Check if this screen is loading from the splash screen, if it is we need
+         * to do some extra things like exit the splash screen
+         */
         private const val EXTRA_FROM_SPLASH = "from_splash"
 
+        /**
+         * Get the intent to start the activity
+         *
+         * @param context current context
+         * @param fromSplash true if this is from the splash screen, defaults to true
+         * @return the intent to start the activity
+         */
         fun getIntent(context: Context, fromSplash: Boolean = true): Intent {
             var intent = Intent(context, MainActivity::class.java)
             intent.putExtra(EXTRA_FROM_SPLASH, fromSplash)
@@ -35,52 +45,30 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // activity UI //
     val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    var loaded = false
 
-    private val onFragmentLoadComplete = PagerAdapterMain.Listener { page, appCount ->
-        if (page == Page.INSTALLED) loaded = true
+    // only remove the splash screen if the activity has fully loaded, so keep track of that //
+    private var loaded = false
 
-        binding.bottomNavigation.getOrCreateBadge(page.id).apply {
-            isVisible = true
-            number = appCount
-        }
-    }
-
-    private val onItemSelected = PagerAdapterMain.ItemSelectedListener { appDetail ->
-        supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
-
-        supportFragmentManager.commit {
-            addToBackStack(AppDetailsFragment.TAG)
-            add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
-        }
-    }
-
-    private val onNavSelected = NavigationBarView.OnItemSelectedListener { item ->
-        binding.pagerApps.currentItem = Page.fromId(item.itemId).position
-        true
-    }
-
-    private val onFabAddClick = View.OnClickListener { view ->
-        var options = ActivityOptionsCompat
-            .makeSceneTransitionAnimation(this, view, "transition_fab")
-        saveAppResult.launch(SaveAppActivity.getIntent(baseContext), options)
-    }
-
+    // listen to the backstack to show or hide the fab and bottom nav //
     private val onDetailsBackstackListener: OnBackStackChangedListener =
         OnBackStackChangedListener {
             supportFragmentManager.findFragmentByTag(AppDetailsFragment.TAG)?.let { _ ->
+                // if the AppDetailsFragment is on the backstack, hide the fab and bottom nav //
                 binding.fabAdd.hide()
                 binding.bottomNavigation.isVisible = false
             } ?: run {
+                // else show them and remove the listener //
                 binding.fabAdd.show()
                 binding.bottomNavigation.isVisible = true
                 supportFragmentManager.removeOnBackStackChangedListener(onDetailsBackstackListener)
             }
         }
 
+    // listen for the result from saving/editing an item //
     private val saveAppResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -88,6 +76,7 @@ class MainActivity : BaseActivity() {
             }
         }
 
+    // update the bottom nav and title when the page changes //
     private val onPageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             var nav = Page.fromPosition(position)
@@ -96,26 +85,64 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // pager adapter for the view pager that houses the AppListFragments //
+    private val pagerAdapterMain = PagerAdapterAppList(
+        activity = this,
+        // call back for when the page has loaded //
+        onLoadComplete = { page, appCount ->
+            // installed is the last page, so when that is loaded, everything is loaded //
+            if (page == Page.INSTALLED) loaded = true
+
+            // set the app count badge on the bottom nav //
+            binding.bottomNavigation.getOrCreateBadge(page.id).apply {
+                isVisible = true
+                number = appCount
+            }
+        },
+        // show the details when an item is selected //
+        onItemSelected = { appDetail ->
+            supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
+
+            supportFragmentManager.commit {
+                addToBackStack(AppDetailsFragment.TAG)
+                add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
+            }
+        }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        // handle any shared element animations //
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        var pagerAdapterMain = PagerAdapterMain(this).apply {
-            listener = this@MainActivity.onFragmentLoadComplete
-            itemSelectedListener = this@MainActivity.onItemSelected
-        }
-
+        // populate the ui //
         binding.apply {
-            pagerApps.adapter = pagerAdapterMain
-            pagerApps.offscreenPageLimit = Page.values().size
-            pagerApps.registerOnPageChangeCallback(onPageChangeListener)
+            pagerApps.apply {
+                adapter = pagerAdapterMain
+                offscreenPageLimit = Page.values().size
+                registerOnPageChangeCallback(onPageChangeListener)
+            }
             textTitle.text = Page.fromId(0).getTitle(baseContext)
-            bottomNavigation.setOnItemSelectedListener(this@MainActivity.onNavSelected)
-            fabAdd.setOnClickListener(this@MainActivity.onFabAddClick)
+            bottomNavigation.setOnItemSelectedListener { item ->
+                binding.pagerApps.currentItem = Page.fromId(item.itemId).position
+                true
+            }
+            fabAdd.setOnClickListener { view ->
+                saveAppResult.launch(
+                    SaveAppActivity.getIntent(baseContext),
+                    ActivityOptionsCompat
+                        .makeSceneTransitionAnimation(
+                            this@MainActivity,
+                            view,
+                            "transition_fab"
+                        )
+                )
+            }
         }
 
+        // remove the splash screen if we are coming from there //
         intent.extras?.getBoolean(EXTRA_FROM_SPLASH, true)?.let { fromSplash ->
             if (fromSplash) {
                 removeOnPreDrawListener { loaded }

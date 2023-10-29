@@ -24,7 +24,7 @@ import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
 import io.smileyjoe.applist.extensions.ViewExt.below
 import io.smileyjoe.applist.extensions.ViewExt.updateSize
 import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.util.Icon
+import io.smileyjoe.applist.db.Icon
 
 @Deprecated("This has custom animations, it's staying in for learnings sake, " +
         "but it's been replaced with motionlayout in AppDetailsFragment, which is easier to manage")
@@ -188,7 +188,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             Action.SHARE -> share()
             Action.FAVOURITE -> {
                 appDetail.isFavourite = true
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.FAVOURITE)
                         show(Action.UNFAVOURITE)
@@ -197,7 +197,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             }
             Action.UNFAVOURITE -> {
                 appDetail.isFavourite = false
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.UNFAVOURITE)
                         show(Action.FAVOURITE)
@@ -206,7 +206,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
             }
             Action.SAVE -> {
                 appDetail.isSaved = true
-                appDetail.save(requireActivity()) { error, ref ->
+                appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
                         hide(Action.SAVE)
                         show(Action.DELETE, Action.FAVOURITE)
@@ -214,7 +214,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                 }
             }
             Action.DELETE -> {
-                appDetail.delete(requireActivity()) { error, ref ->
+                appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
                         appDetail.isFavourite = true
                         hide(Action.DELETE, Action.FAVOURITE, Action.UNFAVOURITE)

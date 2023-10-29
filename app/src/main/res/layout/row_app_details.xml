@@ -89,7 +89,7 @@
             app:constraint_referenced_ids="image_icon, layout_details" />
 
         <io.smileyjoe.applist.view.ButtonProgress
-            android:id="@+id/button_progress"
+            android:id="@+id/button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_small"

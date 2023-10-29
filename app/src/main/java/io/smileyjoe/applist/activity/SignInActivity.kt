@@ -1,35 +1,37 @@
 package io.smileyjoe.applist.activity
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.view.animation.AnticipateInterpolator
-import androidx.core.animation.doOnEnd
 import io.smileyjoe.applist.BuildConfig
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.`object`.User
 import io.smileyjoe.applist.databinding.ActivitySignInBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
+import io.smileyjoe.applist.`object`.User
 import io.smileyjoe.applist.util.Notify
 import za.co.smileyjoedev.firebaseauth.google.GoogleAuth
-import java.time.Duration
-import java.time.Instant
-import java.util.*
-import kotlin.concurrent.timerTask
 
 class SignInActivity : BaseActivity() {
 
     companion object {
-        const val EXTRA_RETURN_INTENT: String = "return_intent"
+        /**
+         * The intent that should be loaded after the user has signed in
+         */
+        private const val EXTRA_RETURN_INTENT: String = "return_intent"
 
-        @JvmStatic
-        fun getIntent(context: Context, returnIntent: Intent): Intent {
+        /**
+         * Get the intent for sign in
+         * </p>
+         * This activity will always clear the top so it's the only activity available
+         * as if the user is not signed in they can't use the app at all
+         *
+         * @param context current context
+         * @param returnIntent the intent to start when the user signs in defaults to [MainActivity] if not provided
+         * @return the intent for this activity
+         */
+        fun getIntent(context: Context, returnIntent: Intent? = null): Intent {
             var intent = Intent(context, SignInActivity::class.java)
             intent.putExtra(EXTRA_RETURN_INTENT, returnIntent)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -37,46 +39,61 @@ class SignInActivity : BaseActivity() {
         }
     }
 
+    // setup in [onCreate] once the binding can be set //
     private lateinit var googleAuth: GoogleAuth
+
+    // see [EXTRA_RETURN_INTENT] //
     private var returnIntent: Intent? = null
-    private lateinit var view: ActivitySignInBinding
+
+    // the activity ui //
+    private val binding by lazy {
+        ActivitySignInBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // We only have to use this activity if there is no current user //
-        if (User.getCurrent() != null) {
-            return
-        }
-
-        view = ActivitySignInBinding.inflate(layoutInflater)
-        setContentView(view.root)
+        setContentView(binding.root)
         handleExtras()
+        // setup the google auth
         googleAuth = GoogleAuth.Builder.with(this)
-                .on(view.buttonGoogleSignIn)
-                .serverClientId(BuildConfig.SERVER_CLIENT_ID)
-                .onFail { checkSignIn(true, false) }
-                .onLogIn { checkSignIn(true, false) }
-                .onLogout { Log.d("GoogleAuth", "Logout") }
-                .build()
-
+            .on(binding.buttonGoogleSignIn)
+            .serverClientId(BuildConfig.SERVER_CLIENT_ID)
+            .onFail { checkSignIn(true, false) }
+            .onLogIn { checkSignIn(true, false) }
+            .onLogout { Log.d("GoogleAuth", "Logout") }
+            .build()
+        // close the splash screen //
         splashScreen.exitAfterAnim()
     }
 
+    /**
+     * Get all intent data
+     *
+     * @see [EXTRA_RETURN_INTENT]
+     */
     private fun handleExtras() {
         intent.extras?.let { extras ->
-            if (extras.containsKey(EXTRA_RETURN_INTENT)) {
-                returnIntent = extras.getParcelableCompat(EXTRA_RETURN_INTENT, Intent::class.java)
-            }
+            returnIntent = extras.getParcelableCompat(EXTRA_RETURN_INTENT, Intent::class.java)
         }
     }
 
+    /**
+     * We are in the sign in activity, so overide the [BaseActivity.checkSignIn], whithout
+     * this the screens would just loop
+     */
     override fun checkSignIn() {
         checkSignIn(false)
     }
 
-    private fun checkSignIn(showError: Boolean, fromSplash:Boolean = true) {
-        if (User.getCurrent() != null) {
+    /**
+     * Confirm if the user has signed in and load the next activity
+     *
+     * @param showError whether to show a login error or not
+     * @param fromSplash has the user just tried to login, or has the screen just loaded
+     */
+    private fun checkSignIn(showError: Boolean, fromSplash: Boolean = true) {
+        if (User.current != null) {
             if (returnIntent == null) {
                 startActivity(MainActivity.getIntent(baseContext, fromSplash))
             } else {
@@ -88,6 +105,10 @@ class SignInActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Get the result from login. This is deprecated, but the [GoogleAuth] class
+     * still uses it, so it will be used until that is updated.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var consumed: Boolean = googleAuth.onActivityResult(requestCode, resultCode, data)
 
@@ -96,11 +117,17 @@ class SignInActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Let the auth package know the activity has started
+     */
     override fun onStart() {
         super.onStart()
         googleAuth.onStart()
     }
 
+    /**
+     * Let the auth package know the activity has stopped
+     */
     override fun onStop() {
         super.onStop()
         googleAuth.onStop()

@@ -9,11 +9,20 @@ import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
+/**
+ * Display images stored in Firebase with glide
+ *
+ * @see [Docs](https://firebaseopensource.com/projects/firebase/firebaseui-android/storage/readme/)
+ */
 @GlideModule
 class FirebaseGlide : AppGlideModule() {
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        registry.append(StorageReference::class.java, InputStream::class.java, FirebaseImageLoader.Factory())
+        registry.append(
+            StorageReference::class.java,
+            InputStream::class.java,
+            FirebaseImageLoader.Factory()
+        )
     }
 
 }

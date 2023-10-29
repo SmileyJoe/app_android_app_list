@@ -13,40 +13,60 @@ import com.google.firebase.database.ValueEventListener
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.AppDetailAdapter
 import io.smileyjoe.applist.databinding.FragmentAppListBinding
-import io.smileyjoe.applist.enums.Direction
+import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
-import io.smileyjoe.applist.util.Db
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
 
+/**
+ * Fragment containing a list of apps, filtered by the [Page] details
+ */
 class AppListFragment : Fragment() {
 
-    fun interface Listener {
+    /**
+     * Callback for when the page is loaded
+     */
+    fun interface OnLoadComplete {
+        /**
+         * The page is loaded
+         *
+         * @param page the page that loaded
+         * @param appCount how many apps are in the list
+         */
         fun onLoadComplete(page: Page, appCount: Int)
     }
 
-    fun interface ItemSelectedListener : AppDetailViewHolder.ItemSelectedListener
+    /**
+     * The user selected an item in the list
+     *
+     * @see [AppDetailViewHolder.OnItemSelected]
+     */
+    fun interface OnItemSelected : AppDetailViewHolder.OnItemSelected
 
     companion object {
         private const val EXTRA_PAGE: String = "page"
 
-        @JvmStatic
-        fun newInstance(page: Page): AppListFragment {
-            var fragment = AppListFragment()
-            var args = Bundle()
-            args.putSerializable(EXTRA_PAGE, page)
-            fragment.arguments = args
-            return fragment
-        }
+        /**
+         * Get an instance of the fragment set to the specified [Page]
+         *
+         * @param page page details to show
+         * @return instance of the fragment
+         */
+        fun newInstance(page: Page): AppListFragment =
+            AppListFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(EXTRA_PAGE, page)
+                }
+            }
     }
 
     var isLoading: Boolean = true
     lateinit var page: Page
     lateinit var appDetailAdapter: AppDetailAdapter
-    lateinit var view: FragmentAppListBinding
-    var listener: Listener? = null
-    var itemSelectedListener: ItemSelectedListener? = null
+    lateinit var binding: FragmentAppListBinding
+    var onLoadComplete: OnLoadComplete? = null
+    var onItemSelected: OnItemSelected? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,12 +74,16 @@ class AppListFragment : Fragment() {
         page = requireArguments().getSerializableCompat(EXTRA_PAGE, Page::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        view = FragmentAppListBinding.inflate(layoutInflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentAppListBinding.inflate(layoutInflater, container, false)
 
         setupAdapter()
 
-        view.recyclerAppDetails.apply {
+        binding.recyclerAppDetails.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = appDetailAdapter
         }
@@ -67,26 +91,41 @@ class AppListFragment : Fragment() {
         populateList()
         handleDisplayView()
 
-        return view.root
+        return binding.root
     }
 
+    /**
+     * Setup the adapter
+     */
     private fun setupAdapter() {
-        appDetailAdapter = AppDetailAdapter(ArrayList(), page).apply {
-            saveListener = AppDetailViewHolder.Listener { app -> app.save(requireActivity()) }
-            deleteListener = AppDetailViewHolder.Listener { app -> app.delete(requireActivity()) }
-            itemSelectedListener = this@AppListFragment.itemSelectedListener
-        }
+        appDetailAdapter = AppDetailAdapter(
+            page = page,
+            saveListener = AppDetailViewHolder.Listener { app -> app.db.save(requireActivity()) },
+            deleteListener = AppDetailViewHolder.Listener { app -> app.db.delete(requireActivity()) },
+            onItemSelected = this@AppListFragment.onItemSelected
+        )
     }
 
+    /**
+     * Add a listener to the db, this will fire once for the first load, and then will make
+     * sure the list is kept up to date, eg, if an installed app is saved, it will immediately
+     * be added to the saved list.
+     */
     private fun populateList() {
         Db.getDetailReference(requireActivity())?.addValueEventListener(AppDetailsEventListener())
     }
 
+    /**
+     * Setup which view to display based on the information we have. Either the list will show,
+     * or the loader, or an error message.
+     */
     private fun handleDisplayView() {
+        // only one shows at a time, so set them all to GONE to start //
         var progressVisibility = View.GONE
         var recyclerVisibility = View.GONE
         var textVisibility = View.GONE
 
+        // set only the needed view to visible //
         if (isLoading) {
             progressVisibility = View.VISIBLE
         } else if (appDetailAdapter.hasApps()) {
@@ -95,19 +134,26 @@ class AppListFragment : Fragment() {
             textVisibility = View.VISIBLE
         }
 
-        view.apply {
+        // update all the visibilities //
+        binding.apply {
             progressLoading.visibility = progressVisibility
             recyclerAppDetails.visibility = recyclerVisibility
             textEmpty.visibility = textVisibility
         }
     }
 
+    /**
+     * Db listener for any updates to the firebase objects.
+     * </p>
+     * Updates the adapter on any changes and notifies the calling class
+     * that data has loaded
+     */
     inner class AppDetailsEventListener : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            appDetailAdapter.update(page.getApps(requireContext(), snapshot))
+            appDetailAdapter.items = page.getApps(requireContext(), snapshot)
             isLoading = false
             handleDisplayView()
-            listener?.onLoadComplete(page, appDetailAdapter.itemCount)
+            onLoadComplete?.onLoadComplete(page, appDetailAdapter.itemCount)
         }
 
         override fun onCancelled(error: DatabaseError) {
