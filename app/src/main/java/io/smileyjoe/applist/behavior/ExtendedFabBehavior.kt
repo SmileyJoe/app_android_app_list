@@ -10,6 +10,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import kotlin.math.abs
 
+/**
+ * Behaviour for a [ExtendedFloatingActionButton], helps with two things:
+ * </p>
+ * - Move the fab when a [SnackbarLayout] shows
+ * - Hides the fab when a user scrolls down, shows it when the user scrolls up
+ */
 class ExtendedFabBehavior : CoordinatorLayout.Behavior<ExtendedFloatingActionButton> {
 
     constructor() : super()
