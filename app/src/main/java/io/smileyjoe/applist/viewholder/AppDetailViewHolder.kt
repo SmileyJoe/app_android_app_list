@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.util.Icon
+import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.view.ButtonProgress
 
 /**
@@ -70,6 +70,10 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
                 isVisible = app.isSaved
                 isImageSelected = app.isFavourite
             }
+            // hide the icon as not all apps will have one. If this is not hidden here //
+            // there is a moment that an old icon is shown while glide does it's thing. //
+            // Icon.Load will reset the visibility if there is an icon to load //
+            imageIcon.isVisible = false
 
         }
 

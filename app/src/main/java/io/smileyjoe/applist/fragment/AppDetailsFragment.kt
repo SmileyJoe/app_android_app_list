@@ -17,7 +17,7 @@ import io.smileyjoe.applist.enums.Action
 import io.smileyjoe.applist.extensions.MotionLayoutExt.setTransitionListener
 import io.smileyjoe.applist.extensions.TextViewExt.setDrawable
 import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.util.Icon
+import io.smileyjoe.applist.db.Icon
 
 /**
  * Fragment to display the app details, as well as all appropriate actions

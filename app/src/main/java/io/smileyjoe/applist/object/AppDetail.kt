@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
 import io.smileyjoe.applist.db.DbAppDetail
-import io.smileyjoe.applist.util.Icon
+import io.smileyjoe.applist.db.Icon
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 

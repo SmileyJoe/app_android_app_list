@@ -5,7 +5,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.util.Icon
 import io.smileyjoe.applist.util.Notify
 
 /**

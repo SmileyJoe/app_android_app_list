@@ -24,7 +24,7 @@ import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
 import io.smileyjoe.applist.extensions.ViewExt.below
 import io.smileyjoe.applist.extensions.ViewExt.updateSize
 import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.util.Icon
+import io.smileyjoe.applist.db.Icon
 
 @Deprecated("This has custom animations, it's staying in for learnings sake, " +
         "but it's been replaced with motionlayout in AppDetailsFragment, which is easier to manage")

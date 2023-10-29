@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.util
+package io.smileyjoe.applist.db
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -10,16 +10,35 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import io.smileyjoe.applist.BuildConfig
 import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.util.FirebaseGlide
 import java.io.ByteArrayOutputStream
 
+/**
+ * Icons are stored differently, there is no reason to store an icon to a user, so
+ * they have their key and reference.
+ */
 object Icon {
 
+    /**
+     * Root key for the icon storage
+     */
     private val STORAGE_KEY_APP_ICON = if (BuildConfig.DEBUG) "icon-debug" else "icon"
 
+    /**
+     * Get the reference to the icon storage
+     *
+     * @return reference to the icon storage
+     */
     private fun getReference(): StorageReference? {
         return FirebaseStorage.getInstance().reference.child(STORAGE_KEY_APP_ICON)
     }
 
+    /**
+     * Get the reference to a specific packages icon
+     *
+     * @param packageName the name of the package
+     * @return reference to the packages icon
+     */
     private fun getReference(packageName: String?): StorageReference? {
         if (!packageName.isNullOrEmpty()) {
             getReference()?.let { reference ->
@@ -32,38 +51,56 @@ object Icon {
         }
     }
 
+    /**
+     * Upload an icon into firebase storage
+     *
+     * @param packageName the package name
+     * @param icon the icon to save
+     */
     fun upload(packageName: String?, icon: Drawable?) {
         if (icon != null) {
             getReference(packageName)?.let { reference ->
                 // only upload if there is no icon //
                 reference.downloadUrl.addOnFailureListener { e ->
                     getBitmapFromDrawable(icon)?.let { iconBitmap ->
-                        var output = ByteArrayOutputStream()
+                        val output = ByteArrayOutputStream()
                         iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
-                        var data = output.toByteArray()
 
-                        reference.putBytes(data)
+                        reference.putBytes(output.toByteArray())
                     }
                 }
             }
         }
     }
 
+    /**
+     * Load an icon from firebase into a view
+     *
+     * @param imageView the view to put the icon into
+     * @param appDetail the app whose icon is needed
+     * @see [FirebaseGlide]
+     */
     fun load(imageView: ImageView, appDetail: AppDetail) {
+        // if the icon has already been retrieved from firebase, or from the packagemanager //
+        // set it on the imageView //
         if (appDetail.icon != null) {
             imageView.apply {
                 visibility = View.VISIBLE
                 setImageDrawable(appDetail.icon)
             }
         } else {
+            // if not, get the icon from firebase //
             getReference(appDetail.appPackage)?.let { reference ->
                 reference.downloadUrl.addOnSuccessListener { uri ->
                     Glide.with(imageView.context)
-                            .load(reference)
-                            .into(imageView)
+                        .load(reference)
+                        .into(imageView)
 
                     imageView.visibility = View.VISIBLE
-                }.addOnFailureListener { imageView.visibility = View.GONE }
+                }.addOnFailureListener {
+                    // if there is no icon, hide the view //
+                    imageView.visibility = View.GONE
+                }
             }
         }
     }
@@ -76,7 +113,11 @@ object Icon {
      */
     fun getBitmapFromDrawable(drawable: Drawable?): Bitmap? {
         if (drawable != null) {
-            var bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            var bitmap = Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
             var canvas = Canvas(bitmap)
             drawable.setBounds(0, 0, canvas.width, canvas.height)
             drawable.draw(canvas)
