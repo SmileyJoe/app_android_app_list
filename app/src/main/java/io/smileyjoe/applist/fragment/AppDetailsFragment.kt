@@ -8,57 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
+import io.smileyjoe.applist.enums.Action
+import io.smileyjoe.applist.extensions.MotionLayoutExt.setTransitionListener
+import io.smileyjoe.applist.extensions.TextViewExt.setDrawable
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Icon
 
+/**
+ * Fragment to display the app details, as well as all appropriate actions
+ *
+ * @param appDetail the details to load
+ */
 class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
 
-    companion object{
+    companion object {
+        // the tag to use when adding the fragment //
         const val TAG = "APP_DETAILS"
-    }
-
-    private enum class Action(@StringRes var title: Int, @DrawableRes var icon: Int) {
-        EDIT(R.string.action_edit, R.drawable.ic_edit) {
-            override fun shouldShow(appDetail: AppDetail) =
-                appDetail.isSaved
-        },
-        SHARE(R.string.action_share, R.drawable.ic_share) {
-            override fun shouldShow(appDetail: AppDetail) =
-                true
-        },
-        PLAY_STORE(R.string.action_play_store, R.drawable.ic_play_store) {
-            override fun shouldShow(appDetail: AppDetail) =
-                true
-        },
-        FAVOURITE(R.string.action_favourite, R.drawable.ic_favourite) {
-            override fun shouldShow(appDetail: AppDetail) =
-                !appDetail.isFavourite && appDetail.isSaved
-        },
-        UNFAVOURITE(R.string.action_unfavourite, R.drawable.ic_favourite_outline) {
-            override fun shouldShow(appDetail: AppDetail) =
-                appDetail.isFavourite
-        },
-        SAVE(R.string.action_save, R.drawable.ic_save) {
-            override fun shouldShow(appDetail: AppDetail) =
-                !appDetail.isSaved
-        },
-        DELETE(R.string.action_delete, R.drawable.ic_delete) {
-            override fun shouldShow(appDetail: AppDetail) =
-                appDetail.isSaved
-        };
-
-        var tag = "action_$name"
-
-        abstract fun shouldShow(appDetail: AppDetail): Boolean
     }
 
     private var _binding: FragmentAppDetailsBinding? = null
@@ -76,17 +46,26 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // because of the design, the following structure exists //
+        // MotionLayout -> ScrollView -> MotionLayout //
+        // this just keeps everything in sync so it all plays nice, as the main motionlayout //
+        // changes, it updates to the child motion layout inside the scrollview to be in the //
+        // same state //
         binding.motionMain.setTransitionListener { layout ->
             layout?.let {
                 binding.motionContent.progress = it.progress
             }
         }
         populateView()
+        // Slide the fragment up, replicating a bottom sheet //
         AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up_in).also { anim ->
             binding.motionMain.startAnimation(anim)
         }
     }
 
+    /**
+     * Populate the view
+     */
     private fun populateView() {
         binding.apply {
             textTitle.text = appDetail.name
@@ -98,26 +77,31 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        if(appDetail.notes.isNullOrEmpty()){
-            binding.apply {
-                textTitleNotes.isVisible = false
-                textNotes.isVisible = false
-            }
-        } else {
-            binding.apply {
-                textTitleNotes.isVisible = true
-                textNotes.isVisible = true
-                textNotes.text = appDetail.notes
-            }
+        val hasNotes = appDetail.notes.isNullOrEmpty().not()
+        binding.apply {
+            textTitleNotes.isVisible = hasNotes
+            textNotes.isVisible = hasNotes
+            textNotes.text = if (hasNotes) appDetail.notes else null
         }
 
         Icon.load(binding.imageIcon, appDetail)
         addActions()
     }
 
+    /**
+     * Add all the actions.
+     * </p>
+     * While not all actions are always relevant, they are all always added, and then
+     * shown and hidden as needed. This is so they are always in the same order when things change.
+     * </p>
+     * All action views are tagged with [Action.tag] so they can be found and have the visibility
+     * changed
+     */
     private fun addActions() {
         Action.values().forEach { action ->
+            // add each action //
             binding.layoutActions.addView(
+                // create a textview and set it up with all the details //
                 TextView(
                     context,
                     null,
@@ -125,56 +109,65 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                     R.style.Text_ListAction
                 ).apply {
                     text = getString(action.title)
-                    setCompoundDrawablesWithIntrinsicBounds(
-                        ContextCompat.getDrawable(
-                            context,
-                            action.icon
-                        ), null, null, null
-                    )
-                    visibility = if (action.shouldShow(appDetail)) View.VISIBLE else View.GONE
+                    setDrawable(left = action.icon)
+                    isVisible = action.shouldShow(appDetail)
                     setOnClickListener { onActionClicked(action) }
                     tag = action.tag
                 })
         }
     }
 
+    /**
+     * What to do when an [Action] is clicked
+     *
+     * @param action the action that was clicked
+     * //todo show and hide when actions are clicked should go through [Action.shouldShow]
+     */
     private fun onActionClicked(action: Action) {
         when (action) {
+            // start the save/edit activity //
+            // todo: this might need to be with a result listener to update with the changes //
             Action.EDIT -> startActivity(SaveAppActivity.getIntent(requireContext(), appDetail))
+            // open the app in the play store //
             Action.PLAY_STORE -> openUrl()
+            // open the native share dialog populate with the app link //
             Action.SHARE -> share()
+            // favourite the app and update firebase //
             Action.FAVOURITE -> {
-                appDetail.isFavourite = true
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
+                        appDetail.isFavourite = true
                         hide(Action.FAVOURITE)
                         show(Action.UNFAVOURITE)
                     }
                 }
             }
+            // unfavourite the app and update firebase //
             Action.UNFAVOURITE -> {
-                appDetail.isFavourite = false
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
+                        appDetail.isFavourite = false
                         hide(Action.UNFAVOURITE)
                         show(Action.FAVOURITE)
                     }
                 }
             }
+            // save the app in firebase //
             Action.SAVE -> {
-                appDetail.isSaved = true
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
+                        appDetail.isSaved = true
                         hide(Action.SAVE)
-                        show(Action.DELETE, Action.FAVOURITE)
+                        show(Action.DELETE, Action.FAVOURITE, Action.EDIT)
                     }
                 }
             }
+            // remove the app from firebase //
             Action.DELETE -> {
                 appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
                         appDetail.isFavourite = true
-                        hide(Action.DELETE, Action.FAVOURITE, Action.UNFAVOURITE)
+                        hide(Action.DELETE, Action.FAVOURITE, Action.UNFAVOURITE, Action.EDIT)
                         show(Action.SAVE)
                     }
                 }
@@ -182,11 +175,17 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         }
     }
 
+    /**
+     * Open the link to the app, this will open the play store assuming this is
+     * on a device with the play store installed
+     */
     private fun openUrl() {
-        var intent = Intent(Intent.ACTION_VIEW, Uri.parse(appDetail.playstoreLink))
-        startActivity(intent)
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(appDetail.playstoreLink)))
     }
 
+    /**
+     * Open the native share dialog with the link to the app
+     */
     private fun share() {
         var sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -198,36 +197,31 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         startActivity(shareIntent)
     }
 
-    private fun hide(vararg actions: Action) {
+    /**
+     * Hide actions
+     *
+     * @see [show]
+     */
+    private fun hide(vararg actions: Action) =
+        show(show = false, actions = actions)
+
+    /**
+     * Show actions, this uses the [Action.tag] to find the view and show it
+     *
+     * @param actions list of actions to show or hide
+     * @param show whether to show or hide the actions
+     */
+    private fun show(vararg actions: Action, show: Boolean = true) {
         actions.forEach { action ->
-            binding.layoutActions.findViewWithTag<View>(action.tag).visibility = View.GONE
+            binding.layoutActions.findViewWithTag<View>(action.tag).isVisible = show
         }
     }
 
-    private fun show(vararg actions: Action) {
-        actions.forEach { action ->
-            binding.layoutActions.findViewWithTag<View>(action.tag).visibility = View.VISIBLE
-        }
-    }
-
+    /**
+     * Destroy the binding with the fragment is destroyed
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun MotionLayout.setTransitionListener(callback: (layout: MotionLayout?) -> Unit) {
-        setTransitionListener(object : MotionLayout.TransitionListener {
-            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) =
-                callback.invoke(p0)
-
-            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) =
-                callback.invoke(p0)
-
-            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) =
-                callback.invoke(p0)
-
-            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) =
-                callback.invoke(p0)
-        })
     }
 }
