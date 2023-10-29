@@ -23,11 +23,11 @@ object Compat {
     /**
      * @see [Bundle.getParcelable]
      */
-    fun <T : Parcelable> Bundle.getParcelableCompat(tag: String, clazz: Class<T>): T {
+    fun <T : Parcelable> Bundle.getParcelableCompat(tag: String, clazz: Class<T>): T? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return getParcelable(tag, clazz)!!
+            return getParcelable(tag, clazz)
         } else {
-            return getParcelable(tag)!!
+            return getParcelable(tag)
         }
     }
 
