@@ -14,5 +14,5 @@
         android:id="@+id/nav_favourite"
         android:enabled="true"
         android:icon="@drawable/ic_favourite"
-        android:title="@string/fragment_title_saved_apps"/>
+        android:title="@string/fragment_title_favourite_apps"/>
 </menu>
