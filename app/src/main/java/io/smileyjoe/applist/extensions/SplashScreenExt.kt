@@ -8,11 +8,26 @@ import android.view.animation.AnticipateInterpolator
 import android.window.SplashScreen
 import android.window.SplashScreenView
 import androidx.core.animation.doOnEnd
+import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
+import io.smileyjoe.applist.extensions.SplashScreenExt.getRemainingDuration
+import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import java.time.Duration
 import java.time.Instant
 
+/**
+ * Helper functions for dealing with the splash screen
+ * </p>
+ * - [exitAfterAnim]
+ * - [getRemainingDuration]
+ * - [removeOnPreDrawListener]
+ *
+ * @see [Docs](https://developer.android.com/develop/ui/views/launch/splash-screen)
+ */
 object SplashScreenExt {
 
+    /**
+     * Animate the splashscreen away and then remove it
+     */
     fun SplashScreen.exitAfterAnim() {
         setOnExitAnimationListener { splashScreenView ->
             val slideUp = ObjectAnimator.ofFloat(
@@ -29,6 +44,11 @@ object SplashScreenExt {
         }
     }
 
+    /**
+     * Get the time in milliseconds until the icon animation will end
+     *
+     * @return milliseconds until the icon animation has ended
+     */
     private fun SplashScreenView.getRemainingDuration(): Long {
         val animationDuration = iconAnimationDuration
         val animationStart = iconAnimationStart
@@ -42,6 +62,9 @@ object SplashScreenExt {
         }
     }
 
+    /**
+     * Remove the predraw listener if the content is loaded
+     */
     fun Activity.removeOnPreDrawListener(loaded: () -> Boolean) {
         val content: View = findViewById(android.R.id.content)
         content.viewTreeObserver.addOnPreDrawListener(
