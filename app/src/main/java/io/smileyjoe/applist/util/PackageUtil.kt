@@ -112,15 +112,9 @@ object PackageUtil {
      * @param appPackage the package name
      * @return the icon for the installed app
      */
-    private fun getIcon(packageManager: PackageManager, appPackage: String?): Drawable? {
-        if (!appPackage.isNullOrEmpty()) {
-            try {
-                return packageManager.getApplicationIcon(appPackage)
-            } catch (e: PackageManager.NameNotFoundException) {
-                return null
-            }
-        }
-        return null
-    }
+    fun getIcon(packageManager: PackageManager, appPackage: String?) =
+        runCatching {
+            packageManager.getApplicationIcon(appPackage!!)
+        }.getOrNull()
 
 }
