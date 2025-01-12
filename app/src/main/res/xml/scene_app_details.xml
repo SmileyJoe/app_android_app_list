@@ -36,6 +36,21 @@
         </Constraint>
 
         <Constraint
+            android:id="@+id/frame_background_header"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/drag_handle"
+            app:layout_constraintBottom_toBottomOf="@id/image_icon">
+
+            <CustomAttribute
+                app:attributeName="elevation"
+                app:customDimension="@dimen/elevation_app_details_collapse" />
+        </Constraint>
+
+        <Constraint
             android:id="@id/drag_handle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +79,11 @@
             android:elevation="@dimen/elevation_app_details_collapse"
             app:layout_constraintTop_toTopOf="@id/image_icon"
             app:layout_constraintBottom_toBottomOf="@id/image_icon"
-            app:layout_constraintStart_toEndOf="@id/image_icon"/>
+            app:layout_constraintStart_toEndOf="@id/image_icon">
+            <CustomAttribute
+                app:attributeName="TextColor"
+                app:customColorValue="?android:colorPrimary" />
+        </Constraint>
 
         <Constraint
             android:id="@+id/image_icon"
@@ -94,6 +113,7 @@
             android:id="@id/frame_main"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:alpha="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -105,6 +125,19 @@
             <CustomAttribute
                 app:customDimension="0dp"
                 app:attributeName="radius" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/frame_background_header"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/text_title">
+            <CustomAttribute
+                app:attributeName="elevation"
+                app:customDimension="@dimen/elevation_app_details_expanded" />
         </Constraint>
 
         <Constraint
@@ -121,7 +154,7 @@
             android:layout_width="@dimen/icon_large"
             android:layout_height="@dimen/icon_large"
             android:elevation="@dimen/elevation_app_details_expanded"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -133,7 +166,11 @@
             android:elevation="@dimen/elevation_app_details_expanded"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_icon"/>
+            app:layout_constraintTop_toBottomOf="@id/image_icon">
+        <CustomAttribute
+            app:attributeName="paddingBottom"
+            app:customDimension="@dimen/padding_medium" />
+        </Constraint>
 
         <Constraint
             android:id="@+id/image_icon"

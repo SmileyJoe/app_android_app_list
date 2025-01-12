@@ -1,15 +1,30 @@
 package io.smileyjoe.applist.fragment
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintAttribute
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
+import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Target
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
@@ -84,7 +99,27 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             textNotes.text = if (hasNotes) appDetail.notes else null
         }
 
-        Icon.load(binding.imageIcon, appDetail)
+        Icon.load(binding.imageIcon, appDetail) {
+            Palette
+                .Builder(binding.imageIcon.drawable.toBitmap())
+                .maximumColorCount(32)
+                .generate { palette ->
+                    palette?.let {
+                        val swatch = it.mutedSwatch ?: it.darkMutedSwatch ?: it.vibrantSwatch ?: it.darkVibrantSwatch ?: it.dominantSwatch
+                        swatch?.let{
+                            binding.frameBackgroundHeader.setCardBackgroundColor(it.rgb)
+                            binding.motionMain.getConstraintSet(R.id.expanded).let { constraint ->
+                                constraint.setColorValue(
+                                    R.id.text_title,
+                                    "TextColor",
+                                    swatch.bodyTextColor
+                                )
+                            }
+                            binding.motionMain.rebuildScene()
+                        }
+                    }
+                }
+        }
         addActions()
     }
 
