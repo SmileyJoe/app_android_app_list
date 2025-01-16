@@ -12,6 +12,7 @@
         <item name="android:windowSplashScreenAnimationDuration">@integer/splash_animation_duration</item>
         <item name="android:windowSplashScreenBackground">?android:colorBackground</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/splash_screen_branding</item>
+        <item name="buttonActionStyle">@style/ButtonAction</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -35,18 +36,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.ListAction" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:textStyle">bold</item>
-        <item name="android:lines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:drawableTint">?android:colorPrimary</item>
-        <item name="android:drawablePadding">@dimen/padding_medium</item>
+    <style name="ButtonAction">
         <item name="android:paddingTop">@dimen/padding_medium</item>
         <item name="android:paddingBottom">@dimen/padding_medium</item>
-        <item name="android:paddingStart">@dimen/padding_extra_large</item>
-        <item name="android:paddingEnd">@dimen/padding_extra_large</item>
+        <item name="android:paddingStart">@dimen/padding_medium</item>
+        <item name="android:paddingEnd">@dimen/padding_medium</item>
         <item name="android:clickable">true</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/bg_button_action</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.FilledButton.Container.Shape</item>
     </style>
 
     <style name="CardView.ShapeAppearance.RoundedTop" parent="ShapeAppearance.Material3.MediumComponent">

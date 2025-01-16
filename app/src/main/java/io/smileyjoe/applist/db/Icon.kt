@@ -84,14 +84,14 @@ object Icon {
      * @param appDetail the app whose icon is needed
      * @see [FirebaseGlide]
      */
-    fun load(imageView: ImageView, appDetail: AppDetail, onComplete: (() -> Unit)?=null) {
+    fun load(imageView: ImageView, appDetail: AppDetail, onComplete: ((ImageView) -> Unit)?=null) {
         // if the icon has already been retrieved from firebase, or from the packagemanager //
         // set it on the imageView //
         if (appDetail.icon != null) {
             imageView.apply {
                 visibility = View.VISIBLE
                 setImageDrawable(appDetail.icon)
-                onComplete?.invoke()
+                onComplete?.invoke(imageView)
             }
         } else {
             // if not, get the icon from firebase //
@@ -116,7 +116,7 @@ object Icon {
                                 dataSource: DataSource?,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                onComplete?.invoke()
+                                onComplete?.invoke(imageView)
                                 return false
                             }
                         })

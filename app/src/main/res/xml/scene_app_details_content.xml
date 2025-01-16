@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Transition
+        app:layoutDuringTransition="honorRequest"
         app:constraintSetEnd="@id/expanded"
         app:constraintSetStart="@id/collapsed"
         app:duration="300"
@@ -17,25 +18,120 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:paddingTop="0dp"
-            android:paddingBottom="@dimen/padding_medium"/>
-
-        <Constraint
-            android:id="@+id/divider_content_actions"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_details"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="@dimen/padding_medium"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/layout_actions"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
-            android:id="@+id/layout_actions"
+            android:id="@+id/action_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:visibilityMode="ignore"
+            app:layout_constraintBottom_toTopOf="@id/action_share"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_content_actions">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="VisibilityText"
+                app:customFloatValue="@integer/alpha_visible" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+
+        <Constraint
+            android:id="@+id/action_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            app:visibilityMode="ignore"
+            app:layout_constraintBottom_toTopOf="@id/action_play_store"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_edit">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_play_store"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visibilityMode="ignore"
+            app:layout_constraintBottom_toTopOf="@id/action_favourite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_share">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_favourite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visibilityMode="ignore"
+            app:layout_constraintBottom_toTopOf="@id/action_unfavourite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_play_store">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_unfavourite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visibilityMode="ignore"
+            app:layout_constraintBottom_toTopOf="@id/action_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_favourite">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visibilityMode="ignore"
+            app:layout_constraintBottom_toTopOf="@id/action_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_unfavourite">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visibilityMode="ignore"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_save">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="VisibilityText"
+                app:customFloatValue="@integer/alpha_visible" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
 
     </ConstraintSet>
 
@@ -47,28 +143,35 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/activity_padding"
             android:paddingBottom="@dimen/padding_medium"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/divider_content_actions"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
-            android:id="@+id/divider_content_actions"
-            android:layout_width="match_parent"
+            android:id="@+id/action_edit"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/layout_details"
-            app:layout_constraintStart_toStartOf="parent"
+            app:visibilityMode="ignore"
+            android:layout_marginEnd="@dimen/padding_medium"
+            app:layout_constraintBottom_toTopOf="@id/action_share"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/layout_actions"/>
+            app:layout_constraintTop_toBottomOf="@id/barrier_content_actions">
+
+            <CustomAttribute
+                app:attributeName="VisibilityText"
+                app:customFloatValue="@integer/alpha_invisible" />
+        </Constraint>
 
         <Constraint
-            android:id="@+id/layout_actions"
-            android:layout_width="match_parent"
+            android:id="@+id/action_delete"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:visibilityMode="ignore"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_content_actions"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_save">
+        </Constraint>
     </ConstraintSet>
 
 </MotionScene>

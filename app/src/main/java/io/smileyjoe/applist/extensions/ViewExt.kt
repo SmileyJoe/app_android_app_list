@@ -3,9 +3,11 @@ package io.smileyjoe.applist.extensions
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
 import io.smileyjoe.applist.extensions.ViewExt.below
 import io.smileyjoe.applist.extensions.ViewExt.updateSize
+import io.smileyjoe.applist.util.Color
 
 /**
  * View extensions
@@ -15,6 +17,12 @@ import io.smileyjoe.applist.extensions.ViewExt.updateSize
  * - [below]
  */
 object ViewExt {
+
+    val View.ALPHA_VISIBLE: Float
+        get() = 1f
+
+    val View.ALPHA_INVISIBLE: Float
+        get() = 0f
 
     /**
      * Update the size of a view
@@ -69,6 +77,10 @@ object ViewExt {
      */
     fun View.below(viewAbove: View, marginTop: Int = 0) {
         y = viewAbove.y + viewAbove.measuredHeight + marginTop
+    }
+
+    fun ImageView.getColors(colors: (Color) -> Unit) {
+        Color.from(this, colors)
     }
 
 }

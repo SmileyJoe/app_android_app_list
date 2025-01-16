@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="splash_animation_duration">1000</integer>
+    <integer name="alpha_visible">1</integer>
+    <integer name="alpha_invisible">0</integer>
 </resources>

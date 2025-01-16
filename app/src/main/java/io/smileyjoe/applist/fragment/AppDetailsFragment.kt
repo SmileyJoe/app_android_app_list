@@ -1,38 +1,25 @@
 package io.smileyjoe.applist.fragment
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintAttribute
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.children
 import androidx.core.view.isVisible
-import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
-import androidx.palette.graphics.Palette
-import androidx.palette.graphics.Target
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
+import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.enums.Action
 import io.smileyjoe.applist.extensions.MotionLayoutExt.setTransitionListener
-import io.smileyjoe.applist.extensions.TextViewExt.setDrawable
+import io.smileyjoe.applist.extensions.ViewExt.getColors
 import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.db.Icon
+import io.smileyjoe.applist.util.Color
+import io.smileyjoe.applist.view.ButtonAction
 
 /**
  * Fragment to display the app details, as well as all appropriate actions
@@ -46,9 +33,15 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         const val TAG = "APP_DETAILS"
     }
 
+
     private var _binding: FragmentAppDetailsBinding? = null
     private val binding: FragmentAppDetailsBinding
         get() = _binding!!
+    private val actionButtons: List<ButtonAction> by lazy {
+        Action.values().mapNotNull {
+            binding.motionContent.findViewWithTag(it.tag)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,8 +60,8 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         // changes, it updates to the child motion layout inside the scrollview to be in the //
         // same state //
         binding.motionMain.setTransitionListener { layout ->
-            layout?.let {
-                binding.motionContent.progress = it.progress
+            layout?.let { motion ->
+                binding.motionContent.progress = motion.progress
             }
         }
         populateView()
@@ -99,28 +92,38 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             textNotes.text = if (hasNotes) appDetail.notes else null
         }
 
-        Icon.load(binding.imageIcon, appDetail) {
-            Palette
-                .Builder(binding.imageIcon.drawable.toBitmap())
-                .maximumColorCount(32)
-                .generate { palette ->
-                    palette?.let {
-                        val swatch = it.mutedSwatch ?: it.darkMutedSwatch ?: it.vibrantSwatch ?: it.darkVibrantSwatch ?: it.dominantSwatch
-                        swatch?.let{
-                            binding.frameBackgroundHeader.setCardBackgroundColor(it.rgb)
-                            binding.motionMain.getConstraintSet(R.id.expanded).let { constraint ->
-                                constraint.setColorValue(
-                                    R.id.text_title,
-                                    "TextColor",
-                                    swatch.bodyTextColor
-                                )
-                            }
-                            binding.motionMain.rebuildScene()
+        Icon.load(binding.imageIcon, appDetail) { imageView ->
+            imageView.getColors { color ->
+                binding.frameBackgroundHeader.setCardBackgroundColor(color.main.original)
+
+                binding.motionMain.getConstraintSet(R.id.expanded).let { constraint ->
+                    constraint.setColorValue(
+                        R.id.text_title,
+                        "TextColor",
+                        color.body.original
+                    )
+                }
+
+                binding.motionContent.getConstraintSet(R.id.expanded).let { constraint ->
+                    actionButtons.forEach { button ->
+                        val hasBackground = button.id != R.id.action_edit
+                        constraint.setColorValue(
+                            button.id,
+                            "IconTint",
+                            if (hasBackground) color.title.original else color.main.original
+                        )
+                        if (hasBackground) {
+                            constraint.setColorValue(
+                                button.id,
+                                "BackgroundTint",
+                                color.main.muted
+                            )
                         }
                     }
                 }
+            }
         }
-        addActions()
+        handleActions()
     }
 
     /**
@@ -132,23 +135,15 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
      * All action views are tagged with [Action.tag] so they can be found and have the visibility
      * changed
      */
-    private fun addActions() {
-        Action.values().forEach { action ->
-            // add each action //
-            binding.layoutActions.addView(
-                // create a textview and set it up with all the details //
-                TextView(
-                    context,
-                    null,
-                    0,
-                    R.style.Text_ListAction
-                ).apply {
-                    text = getString(action.title)
-                    setDrawable(left = action.icon)
-                    isVisible = action.shouldShow(appDetail)
-                    setOnClickListener { onActionClicked(action) }
-                    tag = action.tag
-                })
+    private fun handleActions() {
+        actionButtons.forEach { button ->
+            val action = button.action
+
+            button.apply {
+                setOnClickListener { onActionClicked(action) }
+                Log.d("MotionThings", "Setting up $action ${action.shouldShow(appDetail)}")
+                isVisible = action.shouldShow(appDetail)
+            }
         }
     }
 
@@ -207,6 +202,10 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                     }
                 }
             }
+
+            Action.UNKNOWN -> {
+                // do nothing //
+            }
         }
     }
 
@@ -248,7 +247,12 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
      */
     private fun show(vararg actions: Action, show: Boolean = true) {
         actions.forEach { action ->
-            binding.layoutActions.findViewWithTag<View>(action.tag).isVisible = show
+            actionButtons.firstOrNull {
+                it.tag == action.tag
+            }?.apply {
+                Log.w("MotionThings", "Set visibility show $action - $show")
+                isVisible = show
+            }
         }
     }
 
