@@ -33,6 +33,7 @@
     <string name="error_invalid_package">Please enter a package name</string>
     <string name="error_invalid_app_name">Please enter an application name.</string>
     <string name="error_invalid_fields">Please fill in all the fields correctly.</string>
+    <string name="error_no_notes">Add notes by selecting "Edit"</string>
 
     <string name="hint_app_package">Package</string>
     <string name="hint_app_name">Name</string>
@@ -49,6 +50,7 @@
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
     <string name="action_add">Add</string>
+    <string name="action_settings">Settings</string>
 
     <string name="title_app_package">Package Name:</string>
     <string name="title_install_status">Install Status:</string>

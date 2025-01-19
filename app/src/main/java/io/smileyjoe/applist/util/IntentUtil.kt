@@ -34,4 +34,15 @@ object IntentUtil {
     fun open(link: String): Intent =
         Intent(Intent.ACTION_VIEW, Uri.parse(link))
 
+    /**
+     * Open the settings for an app
+     *
+     * @param packageName to open
+     */
+    fun settings(packageName: String): Intent =
+        Intent(
+            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", packageName, null)
+        )
+
 }

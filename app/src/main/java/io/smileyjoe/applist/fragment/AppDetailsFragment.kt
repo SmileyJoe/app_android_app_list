@@ -1,6 +1,8 @@
 package io.smileyjoe.applist.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +51,8 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             binding.actionUnfavourite,
             binding.actionShare,
             binding.actionPlayStore,
-            binding.actionEdit
+            binding.actionEdit,
+            binding.actionSettings
         )
     }
     private val collapsed by lazy {
@@ -64,8 +67,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         R.id.action_save,
         R.id.action_delete,
         R.id.action_favourite,
-        R.id.action_unfavourite,
-        R.id.action_play_store
+        R.id.action_unfavourite
     )
 
     override fun onCreateView(
@@ -90,15 +92,20 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
      * Populate the view
      */
     private fun populateView() {
-        val hasNotes = appDetail.notes.isNullOrEmpty().not()
         binding.apply {
             textTitle.text = appDetail.name
             textPackage.text = appDetail.appPackage
             textInstalled.isVisible = appDetail.isInstalled
             textNotes.apply {
-                isVisible(expanded, hasNotes)
+                movementMethod = ScrollingMovementMethod()
+                isVisible(expanded, true)
                 isVisible(collapsed, false)
-                text = if (hasNotes) appDetail.notes else null
+                if (appDetail.notes.isNullOrEmpty().not()) {
+                    text = appDetail.notes
+                } else {
+                    text = getString(R.string.error_no_notes)
+                    setTypeface(null, Typeface.ITALIC)
+                }
             }
         }
 
@@ -217,6 +224,8 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                     }
                 }
             }
+
+            Action.SETTINGS -> appDetail.appPackage?.let { startActivity(IntentUtil.settings(it)) }
 
             Action.UNKNOWN -> {
                 // do nothing //

@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:paddingBottom="@dimen/padding_medium"
             android:textAlignment="center"
             android:textColor="?android:colorPrimary"
             tools:text="Title" />
@@ -98,7 +97,7 @@
             app:action="unfavourite" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_save_favourite"
+            android:id="@+id/guide_vertical_half"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -127,12 +126,26 @@
             android:id="@+id/text_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="vertical"
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum." />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_extras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="action_play_store, action_settings" />
 
         <io.smileyjoe.applist.view.ButtonAction
             android:id="@+id/action_play_store"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:action="play_store" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="settings" />
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </FrameLayout>

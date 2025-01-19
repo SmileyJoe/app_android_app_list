@@ -44,6 +44,10 @@ enum class Action(var id: Int, @StringRes var title: Int, @DrawableRes var icon:
     DELETE(6, R.string.action_delete, R.drawable.ic_delete) {
         override fun shouldShow(appDetail: AppDetail) =
             appDetail.isSaved
+    },
+    SETTINGS(7, R.string.action_settings, R.drawable.ic_settings) {
+        override fun shouldShow(appDetail: AppDetail): Boolean =
+            appDetail.isInstalled
     };
 
     // tag for the view, so it can be found //
@@ -63,7 +67,7 @@ enum class Action(var id: Int, @StringRes var title: Int, @DrawableRes var icon:
         else
             View.GONE
 
-    companion object{
+    companion object {
         fun getById(id: Int): Action =
             values().firstOrNull {
                 it.id == id
