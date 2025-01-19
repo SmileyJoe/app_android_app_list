@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.enums
 
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import io.smileyjoe.applist.R
@@ -55,6 +56,12 @@ enum class Action(var id: Int, @StringRes var title: Int, @DrawableRes var icon:
      * @param appDetail the details this action is being applies to
      */
     abstract fun shouldShow(appDetail: AppDetail): Boolean
+
+    fun getVisibility(appDetail: AppDetail): Int =
+        if (shouldShow(appDetail))
+            View.VISIBLE
+        else
+            View.GONE
 
     companion object{
         fun getById(id: Int): Action =

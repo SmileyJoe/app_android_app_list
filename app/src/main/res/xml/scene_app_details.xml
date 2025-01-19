@@ -6,6 +6,7 @@
         app:constraintSetEnd="@id/expanded"
         app:constraintSetStart="@id/collapsed"
         app:duration="300"
+        app:layoutDuringTransition="honorRequest"
         app:motionInterpolator="easeInOut">
 
         <OnSwipe
@@ -31,8 +32,12 @@
                 app:customDimension="@dimen/elevation_app_details_collapse" />
 
             <CustomAttribute
-                app:customDimension="16dp"
-                app:attributeName="radius" />
+                app:attributeName="radius"
+                app:customDimension="16dp" />
+
+            <CustomAttribute
+                app:attributeName="cardBackgroundColor"
+                app:customColorValue="?attr/colorSurfaceContainerLow" />
         </Constraint>
 
         <Constraint
@@ -40,10 +45,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/image_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/drag_handle"
-            app:layout_constraintBottom_toBottomOf="@id/image_icon">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/drag_handle">
 
             <CustomAttribute
                 app:attributeName="elevation"
@@ -56,30 +61,21 @@
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_collapse"
             android:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/image_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/image_icon"/>
-
-        <Constraint
-            android:id="@id/image_close"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/icon_large"
-            android:elevation="@dimen/elevation_app_details_collapse"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/image_icon"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Constraint
             android:id="@id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="0dp"
             android:layout_marginStart="@dimen/padding_medium"
-            android:paddingEnd="@dimen/activity_padding_large"
             android:elevation="@dimen/elevation_app_details_collapse"
-            app:layout_constraintTop_toTopOf="@id/image_icon"
+            android:paddingTop="0dp"
+            android:paddingEnd="@dimen/activity_padding_large"
             app:layout_constraintBottom_toBottomOf="@id/image_icon"
-            app:layout_constraintStart_toEndOf="@id/image_icon">
+            app:layout_constraintStart_toEndOf="@id/image_icon"
+            app:layout_constraintTop_toTopOf="@id/image_icon">
             <CustomAttribute
                 app:attributeName="TextColor"
                 app:customColorValue="?android:colorPrimary" />
@@ -89,21 +85,181 @@
             android:id="@+id/image_icon"
             android:layout_width="@dimen/icon_medium"
             android:layout_height="@dimen/icon_medium"
-            android:elevation="@dimen/elevation_app_details_collapse"
             android:layout_marginStart="@dimen/activity_padding_large"
             android:layout_marginTop="0dp"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_edit"
+            app:layout_constraintEnd_toStartOf="@id/text_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/scroll_content"
-            app:layout_constraintEnd_toStartOf="@id/text_title"/>
+            app:layout_constraintTop_toTopOf="@id/drag_handle"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <Constraint
-            android:id="@+id/scroll_content"
-            android:layout_width="0dp"
+            android:id="@+id/text_package"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:alpha="@integer/alpha_invisible"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/text_installed"
+            app:layout_constraintEnd_toStartOf="@id/action_share"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_header"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Constraint
+            android:id="@+id/text_installed"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:alpha="@integer/alpha_invisible"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/barrier_details"
+            app:layout_constraintEnd_toStartOf="@id/action_share"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_package" />
+
+        <Constraint
+            android:id="@+id/text_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:alpha="@integer/alpha_invisible"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_favourite" />
+
+        <Constraint
+            android:id="@+id/action_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_share"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_icon">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="TextVisibility"
+                app:customFloatValue="@integer/alpha_visible" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_play_store"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_edit">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="TextVisibility"
+                app:customFloatValue="@integer/alpha_visible" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_play_store"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_favourite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_share">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="TextColor"
+                app:customColorValue="?android:textColorPrimary" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_favourite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_unfavourite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_play_store">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="TextColor"
+                app:customColorValue="?android:textColorPrimary" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_unfavourite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_save"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_favourite">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="TextColor"
+                app:customColorValue="?android:textColorPrimary" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_collapse"
+            app:layout_constraintBottom_toTopOf="@id/action_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_unfavourite">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="TextColor"
+                app:customColorValue="?android:textColorPrimary" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_delete"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_collapse"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/frame_main"
-            app:layout_constraintEnd_toEndOf="@id/frame_main"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_save">
+            <CustomAttribute
+                app:attributeName="IconTint"
+                app:customColorValue="?android:colorPrimary" />
+            <CustomAttribute
+                app:attributeName="BackgroundTint"
+                app:customColorValue="@android:color/transparent" />
+            <CustomAttribute
+                app:attributeName="TextColor"
+                app:customColorValue="?android:textColorPrimary" />
+        </Constraint>
 
     </ConstraintSet>
 
@@ -123,8 +279,8 @@
                 app:customDimension="@dimen/elevation_app_details_expanded" />
 
             <CustomAttribute
-                app:customDimension="0dp"
-                app:attributeName="radius" />
+                app:attributeName="radius"
+                app:customDimension="0dp" />
         </Constraint>
 
         <Constraint
@@ -132,12 +288,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/padding_medium"
-            android:layout_marginEnd="@dimen/padding_medium"
             android:layout_marginTop="@dimen/padding_medium"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="@dimen/padding_medium"
+            app:layout_constraintBottom_toBottomOf="@id/text_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/text_title">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
             <CustomAttribute
                 app:attributeName="elevation"
                 app:customDimension="@dimen/elevation_app_details_expanded" />
@@ -148,31 +304,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <Constraint
-            android:id="@id/image_close"
-            android:layout_width="@dimen/icon_large"
-            android:layout_height="@dimen/icon_large"
-            android:elevation="@dimen/elevation_app_details_expanded"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingEnd="0dp"
             android:elevation="@dimen/elevation_app_details_expanded"
+            android:paddingEnd="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_icon">
-        <CustomAttribute
-            app:attributeName="paddingBottom"
-            app:customDimension="@dimen/padding_medium" />
+            <CustomAttribute
+                app:attributeName="paddingBottom"
+                app:customDimension="@dimen/padding_medium" />
         </Constraint>
 
         <Constraint
@@ -180,21 +327,126 @@
             android:layout_width="@dimen/icon_xx_large"
             android:layout_height="@dimen/icon_xx_large"
             android:layout_marginStart="0dp"
+            android:layout_marginTop="@dimen/padding_extra_large"
             android:elevation="@dimen/elevation_app_details_expanded"
-            android:layout_marginTop="@dimen/padding_large"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/drag_handle"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/drag_handle" />
 
         <Constraint
-            android:id="@+id/scroll_content"
+            android:id="@+id/text_package"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginTop="@dimen/padding_large"
+            android:alpha="@integer/alpha_visible"
             android:elevation="@dimen/elevation_app_details_expanded"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/frame_main"
-            app:layout_constraintEnd_toEndOf="@id/frame_main"
-            app:layout_constraintTop_toBottomOf="@id/text_title" />
+            app:layout_constraintBottom_toTopOf="@id/text_installed"
+            app:layout_constraintEnd_toStartOf="@id/action_share"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_header" />
+
+        <Constraint
+            android:id="@+id/text_installed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:alpha="@integer/alpha_visible"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintBottom_toTopOf="@id/barrier_details"
+            app:layout_constraintEnd_toStartOf="@id/action_share"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_package" />
+
+        <Constraint
+            android:id="@+id/action_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_medium"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintBottom_toTopOf="@id/barrier_details"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_header">
+
+            <CustomAttribute
+                app:attributeName="TextVisibility"
+                app:customFloatValue="@integer/alpha_invisible" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintBottom_toTopOf="@id/barrier_details"
+            app:layout_constraintEnd_toStartOf="@id/action_edit"
+            app:layout_constraintTop_toBottomOf="@id/barrier_header">
+
+            <CustomAttribute
+                app:attributeName="TextVisibility"
+                app:customFloatValue="@integer/alpha_invisible" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/action_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginEnd="@dimen/padding_medium"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guide_save_favourite"
+            app:layout_constraintTop_toBottomOf="@id/barrier_details" />
+
+        <Constraint
+            android:id="@+id/action_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginEnd="@dimen/padding_medium"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guide_save_favourite"
+            app:layout_constraintTop_toBottomOf="@id/barrier_details" />
+
+        <Constraint
+            android:id="@+id/action_favourite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginEnd="@dimen/padding_small"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintEnd_toStartOf="@id/guide_save_favourite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_details" />
+
+        <Constraint
+            android:id="@+id/action_unfavourite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginEnd="@dimen/padding_small"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintEnd_toStartOf="@id/guide_save_favourite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_details" />
+
+        <Constraint
+            android:id="@+id/text_notes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginEnd="@dimen/padding_medium"
+            android:alpha="@integer/alpha_visible"
+            android:elevation="@dimen/elevation_app_details_expanded"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_actions" />
     </ConstraintSet>
 
 </MotionScene>

@@ -30,15 +30,81 @@ class Color private constructor(
     class Value(@ColorInt val original: Int) {
 
         /**
+         * Update the hue, hue represents WHAT the color is
+         *
+         * @param percent
+         * @see update
+         */
+        private fun FloatArray.updateHue(percent: Int) =
+            update(0, percent)
+
+        /**
+         * Update the saturation, this represents how much of the color is used
+         *
+         * @param percent
+         * @see update
+         */
+        private fun FloatArray.updateSaturation(percent: Int) =
+            update(1, percent)
+
+        /**
+         * Update the lightness, or brightness
+         *
+         * @param percent
+         * @see update
+         */
+        private fun FloatArray.updateLightness(percent: Int) =
+            update(2, percent)
+
+        /**
+         * Update a specific value
+         *
+         * @param position in the [hsl] array
+         * @param percent to change it by
+         */
+        private fun FloatArray.update(position: Int, percent: Int) =
+            set(position, get(position) * (percent.toFloat() / 100))
+
+        /**
+         * All new values are clones of the originals [hsl] representation, this will
+         * make a clone of that and return it in the provided [block]
+         *
+         * @param block callback with a clone of the [hsl] value
+         */
+        private fun <R> cloneOf(block: FloatArray.() -> R): R {
+            return hsl.clone().block()
+        }
+
+        /**
+         * Convert the [hsl], or cloned and edited value, to a [ColorInt]
+         */
+        @ColorInt
+        private fun FloatArray.toColor() =
+            ColorUtils.HSLToColor(this)
+
+        /**
+         * Hue, Saturation, Lightness representation of the color
+         */
+        private val hsl = with(FloatArray(3)) {
+            ColorUtils.colorToHSL(original, this)
+            this
+        }
+
+        /**
          * Muted, or desaturated value, set to 30% saturation
          */
-        val muted: Int
-            get() {
-                val hsl = FloatArray(3)
-                ColorUtils.colorToHSL(original, hsl)
-                hsl.set(1, (hsl.get(1) * 0.3).toFloat())
-                return ColorUtils.HSLToColor(hsl)
-            }
+        val muted: Int = cloneOf {
+            updateSaturation(30)
+            toColor()
+        }
+
+        /**
+         * Dimmed color at 20% lightness
+         */
+        val dim: Int = cloneOf {
+            updateLightness(20)
+            toColor()
+        }
     }
 
     companion object {
@@ -86,7 +152,19 @@ class Color private constructor(
     }
 
     private val swatch: Swatch = palette.getSwatch()!!
+
+    /**
+     * The main color, normally used for backgrounds etc
+     */
     val main: Value = Value(swatch.rgb)
+
+    /**
+     * A color for any body text that is on top of the [main] color
+     */
     val body: Value = Value(swatch.bodyTextColor)
+
+    /**
+     * A color for any title text that is on top of the [main] color
+     */
     val title: Value = Value(swatch.titleTextColor)
 }
