@@ -382,7 +382,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_large"
-            android:layout_marginEnd="@dimen/padding_medium"
             android:elevation="@dimen/elevation_app_details_expanded"
             app:layout_constraintBottom_toTopOf="@id/barrier_details"
             app:layout_constraintEnd_toEndOf="parent"
