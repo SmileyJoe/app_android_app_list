@@ -67,15 +67,17 @@
 
         <Constraint
             android:id="@id/text_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginEnd="@dimen/padding_medium"
             android:elevation="@dimen/elevation_app_details_collapse"
             android:paddingTop="0dp"
             android:paddingEnd="@dimen/activity_padding_large"
             app:layout_constraintBottom_toBottomOf="@id/image_icon"
             app:layout_constraintStart_toEndOf="@id/image_icon"
-            app:layout_constraintTop_toTopOf="@id/image_icon">
+            app:layout_constraintTop_toTopOf="@id/image_icon"
+            app:layout_constraintEnd_toEndOf="@id/frame_main">
             <CustomAttribute
                 app:attributeName="TextColor"
                 app:customColorValue="?android:colorPrimary" />
@@ -85,12 +87,13 @@
             android:id="@+id/image_icon"
             android:layout_width="@dimen/icon_medium"
             android:layout_height="@dimen/icon_medium"
-            android:layout_marginStart="@dimen/activity_padding_large"
+            android:layout_marginStart="@dimen/padding_medium"
             android:layout_marginTop="0dp"
+            android:layout_marginBottom="@dimen/padding_medium"
             android:elevation="@dimen/elevation_app_details_collapse"
             app:layout_constraintBottom_toTopOf="@id/action_edit"
             app:layout_constraintEnd_toStartOf="@id/text_title"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/frame_main"
             app:layout_constraintTop_toTopOf="@id/drag_handle"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -132,7 +135,6 @@
             android:id="@+id/action_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_medium"
             android:elevation="@dimen/elevation_app_details_collapse"
             app:layout_constraintBottom_toTopOf="@id/action_share"
             app:layout_constraintStart_toStartOf="parent"
@@ -330,11 +332,13 @@
 
         <Constraint
             android:id="@+id/text_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_expanded"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginEnd="@dimen/padding_medium"
+            app:layout_constraintEnd_toEndOf="@id/frame_background_header"
+            app:layout_constraintStart_toStartOf="@id/frame_background_header"
             app:layout_constraintTop_toBottomOf="@id/image_icon" />
 
         <Constraint
