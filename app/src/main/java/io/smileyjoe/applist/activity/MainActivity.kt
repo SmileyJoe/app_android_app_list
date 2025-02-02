@@ -2,6 +2,7 @@ package io.smileyjoe.applist.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
@@ -64,6 +65,7 @@ class MainActivity : BaseActivity() {
                 // else show them and remove the listener //
                 binding.fabAdd.show()
                 binding.bottomNavigation.isVisible = true
+                window.statusBarColor = Color.TRANSPARENT
                 supportFragmentManager.removeOnBackStackChangedListener(onDetailsBackstackListener)
             }
         }

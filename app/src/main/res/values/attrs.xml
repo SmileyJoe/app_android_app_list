@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="buttonActionStyle"/>
+
     <declare-styleable name="ButtonProgress">
         <attr name="text_enabled" format="reference"/>
         <attr name="text_disabled" format="reference"/>
@@ -19,6 +21,21 @@
         <attr name="image_selected_state" format="enum">
             <enum name="selected" value="0"/>
             <enum name="deselected" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ButtonAction">
+        <attr name="android:textColor"/>
+        <attr name="android:iconTint"/>
+        <attr name="action" format="enum">
+            <enum name="edit" value="0"/>
+            <enum name="share" value="1"/>
+            <enum name="play_store" value="2"/>
+            <enum name="favourite" value="3"/>
+            <enum name="unfavourite" value="4"/>
+            <enum name="save" value="5"/>
+            <enum name="delete" value="6"/>
+            <enum name="settings" value="7"/>
         </attr>
     </declare-styleable>
 

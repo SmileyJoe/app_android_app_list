@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_faded">
@@ -10,29 +11,29 @@
         android:id="@+id/motion_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layoutDescription="@xml/scene_app_details">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/frame_main"
+        <View
+            android:id="@+id/view_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            app:rippleColor="@android:color/transparent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_background_header"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/drag_handle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/image_close"
-            android:layout_width="@dimen/icon_large"
-            android:layout_height="@dimen/icon_large"
-            android:paddingLeft="@dimen/padding_medium"
-            android:paddingTop="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_medium"
-            android:paddingBottom="@dimen/padding_medium"
-            android:src="@drawable/ic_close"
-            app:tint="?android:colorPrimary" />
 
         <TextView
             android:id="@+id/text_title"
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
+            android:textAlignment="center"
             android:textColor="?android:colorPrimary"
             tools:text="Title" />
 
@@ -50,93 +52,108 @@
             android:layout_height="@dimen/icon_medium"
             tools:src="@drawable/ic_placeholder" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_content"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="card_background_header, text_title, image_icon" />
+
+        <TextView
+            android:id="@+id/text_package"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="false"
+            tools:text="io.smileyjoe.test_package" />
+
+        <TextView
+            android:id="@+id/text_installed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_installed"
+            android:textStyle="italic"
+            tools:text="Installed" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="edit" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="share" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="text_installed, action_share, action_edit" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_favourite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="favourite" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_unfavourite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="unfavourite" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_vertical_half"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="save" />
+
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="delete" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="action_delete, action_save, action_favourite, action_unfavourite" />
+
+        <TextView
+            android:id="@+id/text_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:scrollbars="vertical"
-            android:verticalScrollbarPosition="left">
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum." />
 
-            <androidx.constraintlayout.motion.widget.MotionLayout
-                android:id="@+id/motion_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layoutDescription="@xml/scene_app_details_content">
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_extras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="action_play_store, action_settings" />
 
-                <LinearLayout
-                    android:id="@+id/layout_details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/padding_medium"
-                    android:paddingTop="@dimen/activity_padding"
-                    android:paddingEnd="@dimen/activity_padding_large"
-                    android:paddingBottom="@dimen/padding_medium"
-                    app:layout_constraintVertical_chainStyle="packed">
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_play_store"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="play_store" />
 
-                    <TextView
-                        android:id="@+id/text_title_package"
-                        style="@style/Text.Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/title_app_package" />
-
-                    <TextView
-                        android:id="@+id/text_package"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:text="io.smileyjoe.test_package" />
-
-                    <TextView
-                        android:id="@+id/text_title_install_status"
-                        style="@style/Text.Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_medium"
-                        android:text="@string/title_install_status" />
-
-                    <TextView
-                        android:id="@+id/text_installed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/text_installed"
-                        android:textStyle="italic"
-                        tools:text="Installed" />
-
-                    <TextView
-                        android:id="@+id/text_title_notes"
-                        style="@style/Text.Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding_medium"
-                        android:text="@string/title_notes" />
-
-                    <TextView
-                        android:id="@+id/text_notes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at urna vitae mauris faucibus sagittis vel eu lectus. Suspendisse potenti. Pellentesque imperdiet eget velit sed pulvinar. Integer maximus, tellus eu consequat dignissim, felis turpis laoreet felis, sit amet sollicitudin erat elit ac tellus. Ut egestas, dolor sed rhoncus pellentesque, sapien elit accumsan elit, in commodo mi neque ac erat. Suspendisse vitae metus ut nisi hendrerit ultricies. Suspendisse interdum massa odio, id egestas metus vestibulum nec. Aenean suscipit nulla venenatis vehicula fermentum." />
-                </LinearLayout>
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/divider_content_actions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_padding"
-                    android:layout_marginTop="@dimen/padding_extra_large"
-                    android:layout_marginEnd="@dimen/activity_padding" />
-
-                <LinearLayout
-                    android:id="@+id/layout_actions"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/padding_medium"
-                    android:paddingBottom="@dimen/activity_padding_large" />
-            </androidx.constraintlayout.motion.widget.MotionLayout>
-        </androidx.core.widget.NestedScrollView>
+        <io.smileyjoe.applist.view.ButtonAction
+            android:id="@+id/action_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:action="settings" />
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </FrameLayout>

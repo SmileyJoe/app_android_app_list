@@ -164,8 +164,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                 TextView(
                     context,
                     null,
-                    0,
-                    R.style.Text_ListAction
+                    0
                 ).apply {
                     text = getString(action.title)
                     setCompoundDrawablesWithIntrinsicBounds(
