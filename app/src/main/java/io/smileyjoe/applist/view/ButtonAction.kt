@@ -49,7 +49,8 @@ class ButtonAction : ConstraintLayout {
         fun update(modifier: Float) {
             when {
                 initial <= 0 -> initial = get()
-                initial > 0 -> set((initial * modifier).toInt())
+                // add 10 pixels, sometimes with the motion adding the text back it would cut it off it was the exact size //
+                initial > 0 -> set((initial * modifier).toInt() + 10)
             }
         }
     }

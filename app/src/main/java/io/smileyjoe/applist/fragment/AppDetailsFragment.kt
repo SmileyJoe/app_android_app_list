@@ -107,6 +107,9 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                     setTypeface(null, Typeface.ITALIC)
                 }
             }
+            viewBack.setOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
 
         setActionVisibility()
@@ -135,8 +138,8 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         }
 
         binding.apply {
-            frameBackgroundHeader.setCardBackgroundColor(color.main.original)
-            frameMain.setCardBackgroundColor(expanded, color.main.dim)
+            cardBackgroundHeader.setCardBackgroundColor(color.main.original)
+            cardMain.setCardBackgroundColor(expanded, color.main.dim)
             textTitle.setTextColor(expanded, color.body.original)
             motionMain.refresh()
         }

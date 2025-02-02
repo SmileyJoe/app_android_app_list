@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_faded">
@@ -12,13 +13,20 @@
         android:layout_height="match_parent"
         app:layoutDescription="@xml/scene_app_details">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/frame_main"
+        <View
+            android:id="@+id/view_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/frame_background_header"
+            android:id="@+id/card_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            app:rippleColor="@android:color/transparent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_background_header"
             android:layout_width="0dp"
             android:layout_height="0dp" />
 
@@ -49,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="frame_background_header, text_title, image_icon" />
+            app:constraint_referenced_ids="card_background_header, text_title, image_icon" />
 
         <TextView
             android:id="@+id/text_package"
