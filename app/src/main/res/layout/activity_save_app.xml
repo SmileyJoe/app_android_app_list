@@ -55,6 +55,16 @@
             app:layout_constraintBottom_toBottomOf="@id/input_package"/>
 
         <ImageView
+            android:id="@+id/icon_tag"
+            android:layout_width="@dimen/icon_small"
+            android:layout_height="@dimen/icon_small"
+            android:src="@drawable/ic_tag"
+            app:tint="?android:colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/input_tag"
+            app:layout_constraintBottom_toBottomOf="@id/input_tag"/>
+
+        <ImageView
             android:id="@+id/icon_notes"
             android:layout_width="@dimen/icon_small"
             android:layout_height="@dimen/icon_small"
@@ -115,7 +125,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_note"
+            android:id="@+id/input_tag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_medium"
@@ -123,6 +133,24 @@
             app:layout_constraintStart_toEndOf="@id/barrier_icons"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_package">
+
+            <io.smileyjoe.applist.view.TagInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_app_tag"
+                app:chipPaddingTop="@dimen/padding_small"
+                app:chipPaddingBottom="@dimen/padding_small"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_note"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:layout_marginLeft="@dimen/padding_medium"
+            app:layout_constraintStart_toEndOf="@id/barrier_icons"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_tag">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

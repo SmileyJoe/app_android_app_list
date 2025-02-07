@@ -36,6 +36,7 @@
     <string name="error_no_notes">Add notes by selecting "Edit"</string>
 
     <string name="hint_app_package">Package</string>
+    <string name="hint_app_tag">Tags</string>
     <string name="hint_app_name">Name</string>
     <string name="hint_app_notes">Notes</string>
 

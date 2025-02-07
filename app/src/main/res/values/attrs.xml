@@ -39,4 +39,12 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="TagInputEditText">
+        <attr name="chipTint" format="color"/>
+        <attr name="chipPaddingTop" format="dimension"/>
+        <attr name="chipPaddingBottom" format="dimension"/>
+        <attr name="chipTextColor" format="color"/>
+        <attr name="chipRemoveIconTint" format="color"/>
+    </declare-styleable>
+
 </resources>
