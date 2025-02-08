@@ -19,6 +19,7 @@ import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.util.ThemeUtil
+import io.smileyjoe.applist.view.TagInputEditText
 
 /**
  * Save or edit an app
@@ -147,6 +148,8 @@ class SaveAppActivity : BaseActivity() {
                 inputPackage.editText?.setText(app.appPackage)
                 inputPackage.isEnabled = app.appPackage.isNullOrEmpty()
                 switchFavourite.isChecked = app.isFavourite
+                inputNote.editText?.setText(app.notes)
+                (inputTag.editText as TagInputEditText).tags = app.tags
             }
         }
     }
@@ -232,11 +235,14 @@ class SaveAppActivity : BaseActivity() {
                 appPackage = packageName
                 isFavourite = binding.switchFavourite.isChecked
                 notes = binding.inputNote.editText?.text.toString()
+                tags = (binding.inputTag.editText as TagInputEditText).tags
             }
             appDetail!!.db.save(this) { error, ref ->
                 hideProgress()
                 if (error == null) {
-                    setResult(RESULT_OK)
+                    setResult(RESULT_OK, Intent().apply {
+                        putExtra(EXTRA_APP_DETAIL, appDetail)
+                    })
                     finish()
                 } else {
                     Notify.error(this, R.string.error_generic)

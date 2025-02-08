@@ -3,9 +3,11 @@ package io.smileyjoe.applist.db
 import android.app.Activity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.GenericTypeIndicator
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.`object`.AppDetail
 import io.smileyjoe.applist.util.Notify
+
 
 /**
  * Db functions for the AppDetail object
@@ -22,6 +24,7 @@ class DbAppDetail(
         private const val DB_KEY_PACKAGE: String = "package"
         private const val DB_KEY_IS_FAVOURITE: String = "is_favourite"
         private const val DB_KEY_NOTES: String = "notes"
+        private const val DB_KEY_TAGS: String = "tags"
 
         /**
          * Gets an instance of [AppDetail] from a [DataSnapshot]
@@ -31,13 +34,17 @@ class DbAppDetail(
          */
         fun get(dataSnapshot: DataSnapshot) =
             with(dataSnapshot) {
+                val listType: GenericTypeIndicator<List<String>> =
+                    object : GenericTypeIndicator<List<String>>() {}
+
                 AppDetail(
                     firebaseKey = key,
                     isSaved = true,
                     name = child(DB_KEY_NAME).getValue(String::class.java),
                     appPackage = child(DB_KEY_PACKAGE).getValue(String::class.java),
                     isFavourite = child(DB_KEY_IS_FAVOURITE).getValue(Boolean::class.java) ?: false,
-                    notes = child(DB_KEY_NOTES).getValue(String::class.java)
+                    notes = child(DB_KEY_NOTES).getValue(String::class.java),
+                    tags = child(DB_KEY_TAGS).getValue(listType)
                 )
             }
     }
@@ -73,7 +80,8 @@ class DbAppDetail(
                     DB_KEY_NAME to appDetail.name,
                     DB_KEY_PACKAGE to appDetail.appPackage,
                     DB_KEY_IS_FAVOURITE to appDetail.isFavourite,
-                    DB_KEY_NOTES to appDetail.notes
+                    DB_KEY_NOTES to appDetail.notes,
+                    DB_KEY_TAGS to appDetail.tags
                 )
 
                 // save the details //

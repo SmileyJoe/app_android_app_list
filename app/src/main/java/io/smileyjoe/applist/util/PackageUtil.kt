@@ -58,6 +58,7 @@ object PackageUtil {
                     isFavourite = app.isFavourite
                     firebaseKey = app.firebaseKey
                     notes = app.notes
+                    tags = app.tags
                 } ?: run {
                     // if not, set the defaults //
                     isSaved = false

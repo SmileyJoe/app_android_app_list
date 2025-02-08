@@ -66,12 +66,22 @@ class TagInputEditText : TextInputEditText {
     /**
      * Get a list of all the tags in the input
      */
-    val tags: List<String>?
+    var tags: List<String>?
         get() {
             return withNotNull(text) {
                 split(" ")
                     .filter { it.isNotBlank() }
                     .map { it.trim() }
+            }
+        }
+        set(value) {
+            value?.let {
+                setText(
+                    it.joinToString(" ")
+                        // tags are only processed when the user presses space, so add a space at //
+                        // the end when they are added externally //
+                        .plus(" ")
+                )
             }
         }
 

@@ -29,7 +29,7 @@ abstract class CustomTextWatcher : TextWatcher {
     protected var editable: Editable? = null
         private set
 
-    protected open fun afterTextChanged() {}
+    open fun afterTextChanged() {}
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         if (!updating) {

@@ -2,6 +2,7 @@ package io.smileyjoe.applist.textwatcher
 
 import android.content.Context
 import android.text.SpannableStringBuilder
+import android.util.Log
 import com.google.android.material.textfield.TextInputEditText
 import io.smileyjoe.applist.extensions.Extensions.edit
 import io.smileyjoe.applist.extensions.Extensions.pad

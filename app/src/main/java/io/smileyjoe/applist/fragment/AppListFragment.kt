@@ -100,8 +100,8 @@ class AppListFragment : Fragment() {
     private fun setupAdapter() {
         appDetailAdapter = AppDetailAdapter(
             page = page,
-            saveListener = AppDetailViewHolder.Listener { app -> app.db.save(requireActivity()) },
-            deleteListener = AppDetailViewHolder.Listener { app -> app.db.delete(requireActivity()) },
+            saveListener = { app -> app.db.save(requireActivity()) },
+            deleteListener = { app -> app.db.delete(requireActivity()) },
             onItemSelected = this@AppListFragment.onItemSelected
         )
     }

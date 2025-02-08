@@ -24,6 +24,7 @@
     <string name="text_details">Details</string>
 
     <string name="success_app_saved">Application saved successfully</string>
+    <string name="success_app_edited">Application updated successfully</string>
 
     <string name="error_sign_in">Something went wrong while signing you in. Please try again</string>
     <string name="error_not_signed_in">You need to sign in to complete this action.</string>

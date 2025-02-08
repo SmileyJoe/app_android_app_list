@@ -24,6 +24,7 @@ import kotlinx.parcelize.Parcelize
  * @param isInstalled is the app currently just installed
  * @param appPackage the package name for the app, this is used to make the [playstoreLink]
  * @param firebaseKey the key used for the record in the firebase db
+ * @param tags list of tags for the app
  */
 @Parcelize
 class AppDetail(
@@ -34,7 +35,8 @@ class AppDetail(
     var isSaved: Boolean = false,
     var isInstalled: Boolean = false,
     var appPackage: String? = null,
-    firebaseKey: String? = null
+    firebaseKey: String? = null,
+    var tags: List<String>? = null
 ) : Parcelable {
 
     // caters for an empty key, if it's empty, make it null //
@@ -66,6 +68,7 @@ class AppDetail(
                 writeParcelable(Icon.getBitmapFromDrawable(icon), flags)
                 writeBoolean(isSaved)
                 writeBoolean(isInstalled)
+                writeStringList(tags)
             }
         }
 
@@ -86,6 +89,8 @@ class AppDetail(
                 }
                 isSaved = parcel.readBoolean()
                 isInstalled = parcel.readBoolean()
+                tags = mutableListOf()
+                parcel.readStringList(tags!!)
             }
         }
     }
@@ -100,7 +105,8 @@ class AppDetail(
                 "isFavourite=$isFavourite, " +
                 "isSaved=$isSaved, " +
                 "playstoreLink='$playstoreLink', " +
-                "isInstalled=$isInstalled" +
+                "isInstalled=$isInstalled, " +
+                "tags=$tags" +
                 ")"
     }
 }
