@@ -121,7 +121,11 @@ class MainActivity : BaseActivity() {
 
             supportFragmentManager.commit {
                 addToBackStack(AppDetailsFragment.TAG)
-                add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
+                add(
+                    R.id.fragment_details,
+                    AppDetailsFragment(appDetail, tags),
+                    AppDetailsFragment.TAG
+                )
             }
         },
         getFilter = { filter }
@@ -156,7 +160,10 @@ class MainActivity : BaseActivity() {
             }
             fabAdd.setOnClickListener { view ->
                 saveAppResult.launch(
-                    SaveAppActivity.getIntent(baseContext),
+                    SaveAppActivity.getIntent(
+                        context = baseContext,
+                        tags = tags
+                    ),
                     ActivityOptionsCompat
                         .makeSceneTransitionAnimation(
                             this@MainActivity,

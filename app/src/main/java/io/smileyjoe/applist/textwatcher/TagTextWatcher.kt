@@ -45,14 +45,7 @@ class TagTextWatcher(
      */
     private fun updateText(remove: Int) {
         withNotNull(editable) {
-            // only change anything if //
-            // - there is content //
-            // - the user enters a space, or presses backspace //
-            // - the change is not coming from an internal update //
-            if (isNotEmpty()
-                && ((direction == Direction.FORWARD && last() == ' ') || direction == Direction.BACKWARD)
-                && !updating
-            ) {
+            if (isNotEmpty() && lastChar == ' ' && !updating) {
                 // when replacing the text in the editable, the spans are left, as we are replacing //
                 // everything, just remove all instances of the spans we added //
                 update {
@@ -96,6 +89,8 @@ class TagTextWatcher(
                         if (remove == REMOVE_LAST) lastIndex else remove
                     )
                 }
+                // make sure all the tags are distinct //
+                .distinct()
                 // cycle each tag and everything to the builder //
                 .forEachIndexed { index, text ->
                     builder.apply {

@@ -29,14 +29,19 @@ abstract class CustomTextWatcher : TextWatcher {
     protected var editable: Editable? = null
         private set
 
+    // the last character in the string, either the character being removed, or the character being //
+    // added //
+    protected var lastChar: Char? = null
+
     open fun afterTextChanged() {}
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         if (!updating) {
             if (count > after) {
-                direction = Direction.BACKWARD
+                direction = BACKWARD
+                lastChar = s?.lastOrNull()
             } else {
-                direction = Direction.FORWARD
+                direction = FORWARD
             }
         }
     }
@@ -48,6 +53,9 @@ abstract class CustomTextWatcher : TextWatcher {
      */
     override fun afterTextChanged(s: Editable?) {
         editable = s
+        if (direction == FORWARD) {
+            lastChar = s?.lastOrNull()
+        }
         afterTextChanged()
     }
 
@@ -62,5 +70,8 @@ abstract class CustomTextWatcher : TextWatcher {
         block()
         updating = false
     }
+
+    private fun CharSequence.lastOrNull(): Char? =
+        if (isNotEmpty()) last() else null
 
 }

@@ -4,16 +4,18 @@ import android.content.Context
 import android.content.res.Resources
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.widget.ArrayAdapter
 import androidx.annotation.XmlRes
-import com.google.android.material.textfield.TextInputEditText
+import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.extensions.Extensions.withNotNull
 import io.smileyjoe.applist.textwatcher.TagTextWatcher
+import io.smileyjoe.applist.textwatcher.TokenizerSpace
 
 /**
  * Text input for adding tags
  */
-class TagInputEditText : TextInputEditText {
+class TagInputEditText : AppCompatMultiAutoCompleteTextView {
 
     constructor(context: Context) : super(context) {
         init(null)
@@ -64,6 +66,23 @@ class TagInputEditText : TextInputEditText {
                         .plus(" ")
                 )
             }
+        }
+
+    /**
+     * The tags that will be used to populate the autocomplete
+     */
+    var allTags: List<String>? = null
+        set(value) {
+            value?.let {
+                setAdapter(
+                    ArrayAdapter(
+                        context,
+                        R.layout.row_tag_autocomplete, it.toMutableList()
+                    )
+                )
+                setTokenizer(TokenizerSpace())
+            }
+            field = value
         }
 
     /**

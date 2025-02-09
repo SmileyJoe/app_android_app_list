@@ -30,17 +30,20 @@ class SaveAppActivity : BaseActivity() {
 
     companion object {
         const val EXTRA_APP_DETAIL: String = "app_details"
+        const val EXTRA_TAGS: String = "tags"
 
         /**
          * Get an intent for this activity, pass in an [appDetail] to edit the details
          *
          * @param context current context
          * @param appDetail details to edit, null to create a new app
+         * @param tags to populate the autocomplete with
          * @return intent to start the activity with
          */
-        fun getIntent(context: Context, appDetail: AppDetail? = null) =
+        fun getIntent(context: Context, appDetail: AppDetail? = null, tags: List<String>? = null) =
             Intent(context, SaveAppActivity::class.java).apply {
                 putExtra(EXTRA_APP_DETAIL, appDetail)
+                putStringArrayListExtra(EXTRA_TAGS, tags?.let { ArrayList(it) })
             }
     }
 
@@ -139,6 +142,8 @@ class SaveAppActivity : BaseActivity() {
         intent.extras?.let { extras ->
             if (extras.containsKey(EXTRA_APP_DETAIL)) {
                 appDetail = extras.getParcelableCompat(EXTRA_APP_DETAIL, AppDetail::class.java)
+                (binding.inputTag.editText as TagInputEditText).allTags =
+                    extras.getStringArrayList(EXTRA_TAGS)
             }
         }
 

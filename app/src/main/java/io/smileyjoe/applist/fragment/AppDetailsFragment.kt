@@ -39,7 +39,8 @@ import io.smileyjoe.applist.view.ButtonAction
  *
  * @param appDetail the details to load
  */
-class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
+class AppDetailsFragment(private val appDetail: AppDetail, private val tags: List<String>? = null) :
+    Fragment() {
 
     companion object {
         // the tag to use when adding the fragment //
@@ -264,8 +265,9 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             // start the save/edit activity //
             Action.EDIT -> saveAppResult.launch(
                 SaveAppActivity.getIntent(
-                    requireContext(),
-                    appDetail
+                    context = requireContext(),
+                    appDetail = appDetail,
+                    tags = tags
                 )
             )
             // open the app in the play store //
