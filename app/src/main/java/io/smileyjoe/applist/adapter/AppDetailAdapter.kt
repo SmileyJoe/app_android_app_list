@@ -4,7 +4,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.comparator.AppDetailComparator
 import io.smileyjoe.applist.enums.Page
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.extensions.Extensions.withNotNull
+import io.smileyjoe.applist.objects.AppDetail
+import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
 import java.util.Collections
 
@@ -17,27 +19,28 @@ class AppDetailAdapter(
     private val saveListener: AppDetailViewHolder.Listener? = null,
     private val deleteListener: AppDetailViewHolder.Listener? = null,
     private val onItemSelected: AppDetailViewHolder.OnItemSelected? = null,
-    private val getFilters: GetFilters? = null
+    private val getFilter: GetFilter? = null
 ) : RecyclerView.Adapter<AppDetailViewHolder>() {
 
-    fun interface GetFilters {
-        fun getFilters(): List<String>
+    fun interface GetFilter {
+        fun getFilter(): Filter
     }
 
     // the items list is filtered, so we need to keep a record of the original and a record of what //
     // is being used by the adapter for the list //
     private var displayItems: List<AppDetail> = listOf()
         set(value) {
-            val filters = getFilters?.getFilters() ?: listOf()
-            if (filters.isEmpty()) {
-                field = value
-            } else {
-                field = value.filter { app ->
-                    // if the app contains any of the filter tags select it //
-                    app.tags?.any(filters::contains)
-                        ?: run {
-                            false
-                        }
+            withNotNull(getFilter?.getFilter()) {
+                if (tags.isEmpty()) {
+                    field = value
+                } else {
+                    field = value.filter { app ->
+                        // if the app contains any of the filter tags select it //
+                        app.tags?.any(tags::contains)
+                            ?: run {
+                                false
+                            }
+                    }
                 }
             }
         }

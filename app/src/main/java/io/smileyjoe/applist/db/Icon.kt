@@ -13,7 +13,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import io.smileyjoe.applist.BuildConfig
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.FirebaseGlide
 import java.io.ByteArrayOutputStream
 
@@ -84,7 +84,11 @@ object Icon {
      * @param appDetail the app whose icon is needed
      * @see [FirebaseGlide]
      */
-    fun load(imageView: ImageView, appDetail: AppDetail, onComplete: ((ImageView) -> Unit)?=null) {
+    fun load(
+        imageView: ImageView,
+        appDetail: AppDetail,
+        onComplete: ((ImageView) -> Unit)? = null
+    ) {
         // if the icon has already been retrieved from firebase, or from the packagemanager //
         // set it on the imageView //
         if (appDetail.icon != null) {
@@ -99,7 +103,7 @@ object Icon {
                 reference.downloadUrl.addOnSuccessListener { uri ->
                     Glide.with(imageView.context)
                         .load(reference)
-                        .listener(object : RequestListener<Drawable>{
+                        .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(
                                 e: GlideException?,
                                 model: Any?,

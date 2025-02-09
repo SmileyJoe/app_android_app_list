@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.`object`
+package io.smileyjoe.applist.objects
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable

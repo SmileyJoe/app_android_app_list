@@ -25,7 +25,7 @@ import io.smileyjoe.applist.extensions.Extensions.withEach
 import io.smileyjoe.applist.extensions.MotionLayoutExt.onStateChanged
 import io.smileyjoe.applist.extensions.MotionLayoutExt.refresh
 import io.smileyjoe.applist.extensions.ViewExt.getColors
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Color
 import io.smileyjoe.applist.util.IntentUtil
 import io.smileyjoe.applist.util.Notify
@@ -78,15 +78,16 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 result.data?.extras?.let {
-                    it.getParcelableCompat(SaveAppActivity.EXTRA_APP_DETAIL, AppDetail::class.java)?.let {
-                        appDetail.apply {
-                            name = it.name
-                            tags = it.tags
-                            notes = it.notes
-                            isFavourite = it.isFavourite
+                    it.getParcelableCompat(SaveAppActivity.EXTRA_APP_DETAIL, AppDetail::class.java)
+                        ?.let {
+                            appDetail.apply {
+                                name = it.name
+                                tags = it.tags
+                                notes = it.notes
+                                isFavourite = it.isFavourite
+                            }
+                            updateView()
                         }
-                        updateView()
-                    }
                 }
                 Notify.success(binding.frameMain, R.string.success_app_edited)
             }
@@ -110,7 +111,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         }
     }
 
-    private fun updateView(){
+    private fun updateView() {
         binding.apply {
             textTitle.text = appDetail.name
             textNotes.apply {
@@ -122,7 +123,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                     setTypeface(null, Typeface.ITALIC)
                 }
             }
-            if(appDetail.isFavourite){
+            if (appDetail.isFavourite) {
                 show(actionUnfavourite)
                 hide(actionFavourite)
             } else {
@@ -220,7 +221,12 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
     private fun onActionButtonClicked(button: ButtonAction) {
         when (button.action) {
             // start the save/edit activity //
-            Action.EDIT -> saveAppResult.launch(SaveAppActivity.getIntent(requireContext(), appDetail))
+            Action.EDIT -> saveAppResult.launch(
+                SaveAppActivity.getIntent(
+                    requireContext(),
+                    appDetail
+                )
+            )
             // open the app in the play store //
             Action.PLAY_STORE -> startActivity(IntentUtil.open(appDetail.playstoreLink))
             // open the native share dialog populate with the app link //

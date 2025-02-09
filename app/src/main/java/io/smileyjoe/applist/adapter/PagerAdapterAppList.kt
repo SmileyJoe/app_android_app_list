@@ -15,7 +15,7 @@ class PagerAdapterAppList(
     private val activity: FragmentActivity,
     private val onLoadComplete: OnLoadComplete? = null,
     private val onItemSelected: OnItemSelected? = null,
-    private val getFilters: GetFilters? = null
+    private val getFilter: GetFilter? = null
 ) : FragmentStateAdapter(activity) {
 
     // keep track of the fragments so we can update them with filtes //
@@ -34,13 +34,13 @@ class PagerAdapterAppList(
     /**
      * @see AppListFragment.GetFilters
      */
-    fun interface GetFilters : AppListFragment.GetFilters
+    fun interface GetFilter : AppListFragment.GetFilter
 
     override fun createFragment(position: Int): AppListFragment {
         val fragment = AppListFragment.newInstance(Page.fromPosition(position)).apply {
             onLoadComplete = this@PagerAdapterAppList.onLoadComplete
             onItemSelected = this@PagerAdapterAppList.onItemSelected
-            getFilters = this@PagerAdapterAppList.getFilters
+            getFilter = this@PagerAdapterAppList.getFilter
         }
         fragments[position] = WeakReference(fragment)
         return fragment

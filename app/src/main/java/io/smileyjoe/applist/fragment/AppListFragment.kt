@@ -16,7 +16,7 @@ import io.smileyjoe.applist.databinding.FragmentAppListBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
 
@@ -47,9 +47,9 @@ class AppListFragment : Fragment() {
     fun interface OnItemSelected : AppDetailViewHolder.OnItemSelected
 
     /**
-     * @see AppDetailAdapter.GetFilters
+     * @see AppDetailAdapter.GetFilter
      */
-    fun interface GetFilters : AppDetailAdapter.GetFilters
+    fun interface GetFilter : AppDetailAdapter.GetFilter
 
     companion object {
         private const val EXTRA_PAGE: String = "page"
@@ -74,7 +74,7 @@ class AppListFragment : Fragment() {
     lateinit var binding: FragmentAppListBinding
     var onLoadComplete: OnLoadComplete? = null
     var onItemSelected: OnItemSelected? = null
-    var getFilters: GetFilters? = null
+    var getFilter: GetFilter? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -111,7 +111,7 @@ class AppListFragment : Fragment() {
             saveListener = { app -> app.db.save(requireActivity()) },
             deleteListener = { app -> app.db.delete(requireActivity()) },
             onItemSelected = this@AppListFragment.onItemSelected,
-            getFilters = getFilters
+            getFilter = getFilter
         )
     }
 

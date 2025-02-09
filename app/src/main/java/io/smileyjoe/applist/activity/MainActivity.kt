@@ -21,6 +21,7 @@ import io.smileyjoe.applist.extensions.Extensions.addDistinct
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
+import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
 
 /**
@@ -58,7 +59,7 @@ class MainActivity : BaseActivity() {
     private val tags = mutableListOf<String>()
 
     // enabled filters //
-    private val activeFilters = mutableListOf<String>()
+    private val filter = Filter()
 
     // only remove the splash screen if the activity has fully loaded, so keep track of that //
     private var loaded = false
@@ -123,7 +124,7 @@ class MainActivity : BaseActivity() {
                 add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
             }
         },
-        getFilters = { activeFilters }
+        getFilter = { filter }
     )
 
     // inflate the chip used for tag filters //
@@ -182,7 +183,7 @@ class MainActivity : BaseActivity() {
                 addView(
                     chipTag.apply {
                         text = tag
-                        isChecked = activeFilters.contains(tag)
+                        isChecked = filter.tags.contains(tag)
                         setOnCheckedChangeListener(::onFilterClicked)
                     }
                 )
@@ -193,9 +194,9 @@ class MainActivity : BaseActivity() {
     private fun onFilterClicked(chip: CompoundButton, isChecked: Boolean) {
         val text = chip.text.toString()
         if (isChecked) {
-            activeFilters.add(text)
+            filter.tags.add(text)
         } else {
-            activeFilters.remove(text)
+            filter.tags.remove(text)
         }
         pagerAdapterMain.refresh()
     }

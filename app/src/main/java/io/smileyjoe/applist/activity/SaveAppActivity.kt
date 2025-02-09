@@ -16,7 +16,7 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.util.ThemeUtil
 import io.smileyjoe.applist.view.TagInputEditText

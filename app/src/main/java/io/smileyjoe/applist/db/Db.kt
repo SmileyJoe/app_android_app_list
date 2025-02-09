@@ -5,7 +5,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import io.smileyjoe.applist.BuildConfig
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.`object`.User
+import io.smileyjoe.applist.objects.User
 import io.smileyjoe.applist.util.Notify
 
 /**
