@@ -93,4 +93,16 @@ object Extensions {
     fun <T> Editable.removeSpans(type: Class<T>) {
         getSpans(0, length, type).forEach { removeSpan(it) }
     }
+
+    /**
+     * Only add the items in the provided [list] if they are not already in the current list.
+     *
+     * @param list to add
+     */
+    fun <T> MutableList<T>.addDistinct(list: List<T>) {
+        addAll(list)
+        val distinctList = distinct()
+        clear()
+        addAll(distinctList)
+    }
 }

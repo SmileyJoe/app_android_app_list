@@ -138,8 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_app_tag"
-                app:chipPaddingTop="@dimen/padding_small"
-                app:chipPaddingBottom="@dimen/padding_small"/>
+                app:chipXml="@xml/chip_span"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -168,7 +167,7 @@
             android:layout_height="wrap_content"
             android:text="@string/action_favourite"
             android:layout_marginTop="@dimen/padding_medium"
-            android:layout_marginLeft="@dimen/padding_medium"
+            android:layout_marginStart="@dimen/padding_medium"
             app:layout_constraintStart_toEndOf="@id/barrier_icons"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_note"/>

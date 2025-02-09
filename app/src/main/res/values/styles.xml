@@ -59,4 +59,12 @@
         <item name="cornerSize">0dp</item>
     </style>
 
+    <style name="Chip.Filter" parent="Widget.Material3.Chip.Filter"/>
+    <style name="Chip.Input" parent="Widget.Material3.Chip.Input">
+        <item name="chipBackgroundColor">?attr/colorSecondaryContainer</item>
+        <item name="chipStrokeColor">?attr/colorAccent</item>
+        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="closeIconTint">?attr/colorAccent</item>
+    </style>
+
 </resources>

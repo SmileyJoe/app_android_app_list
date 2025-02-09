@@ -23,6 +23,7 @@ import io.smileyjoe.applist.R
  * @param onMeasure callback with the text in the span, as well as it's width and height
  * todo: Make the remove icon optional
  */
+@Deprecated("Replaced with using chip and imagespan, leaving here for learning")
 class ChipSpan(
     context: Context,
     private val theme: Theme,

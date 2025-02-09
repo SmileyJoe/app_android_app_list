@@ -4,17 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.chip.Chip
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterAppList
 import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.applist.extensions.Extensions.addDistinct
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
@@ -50,6 +53,12 @@ class MainActivity : BaseActivity() {
     val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    // distinct list of all the tags in the lists //
+    private val tags = mutableListOf<String>()
+
+    // enabled filters //
+    private val activeFilters = mutableListOf<String>()
 
     // only remove the splash screen if the activity has fully loaded, so keep track of that //
     private var loaded = false
@@ -91,7 +100,7 @@ class MainActivity : BaseActivity() {
     private val pagerAdapterMain = PagerAdapterAppList(
         activity = this,
         // call back for when the page has loaded //
-        onLoadComplete = { page, appCount ->
+        onLoadComplete = { page, appCount, tags ->
             // installed is the last page, so when that is loaded, everything is loaded //
             if (page == Page.INSTALLED) loaded = true
 
@@ -100,6 +109,10 @@ class MainActivity : BaseActivity() {
                 isVisible = true
                 number = appCount
             }
+
+            // add the tags to the global distinct list //
+            this@MainActivity.tags.addDistinct(tags)
+            populateTags()
         },
         // show the details when an item is selected //
         onItemSelected = { appDetail ->
@@ -109,8 +122,17 @@ class MainActivity : BaseActivity() {
                 addToBackStack(AppDetailsFragment.TAG)
                 add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
             }
-        }
+        },
+        getFilters = { activeFilters }
     )
+
+    // inflate the chip used for tag filters //
+    private val chipTag: Chip
+        get() = layoutInflater.inflate(
+            R.layout.inflate_chip_filter,
+            binding.layoutTags,
+            false
+        ) as Chip
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // handle any shared element animations //
@@ -151,5 +173,30 @@ class MainActivity : BaseActivity() {
                 splashScreen.exitAfterAnim()
             }
         }
+    }
+
+    private fun populateTags() {
+        with(binding.layoutTags) {
+            removeAllViews()
+            tags.forEach { tag ->
+                addView(
+                    chipTag.apply {
+                        text = tag
+                        isChecked = activeFilters.contains(tag)
+                        setOnCheckedChangeListener(::onFilterClicked)
+                    }
+                )
+            }
+        }
+    }
+
+    private fun onFilterClicked(chip: CompoundButton, isChecked: Boolean) {
+        val text = chip.text.toString()
+        if (isChecked) {
+            activeFilters.add(text)
+        } else {
+            activeFilters.remove(text)
+        }
+        pagerAdapterMain.refresh()
     }
 }

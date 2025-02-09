@@ -2,10 +2,11 @@ package io.smileyjoe.applist.textwatcher
 
 import android.content.Context
 import android.text.SpannableStringBuilder
-import android.util.Log
+import android.text.style.ImageSpan
+import androidx.annotation.XmlRes
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.textfield.TextInputEditText
 import io.smileyjoe.applist.extensions.Extensions.edit
-import io.smileyjoe.applist.extensions.Extensions.pad
 import io.smileyjoe.applist.extensions.Extensions.removeSpans
 import io.smileyjoe.applist.extensions.Extensions.withNotNull
 import io.smileyjoe.applist.span.ChipSpan
@@ -17,34 +18,17 @@ import io.smileyjoe.applist.span.ClickPositionSpan
  * Tags a separated by a space
  *
  * @param context
- * @param chipTheme styling details of the span used for each tag
  * @see ChipSpan
  */
 class TagTextWatcher(
     private val context: Context,
-    private val chipTheme: ChipSpan.Theme
+    @XmlRes private val chipXml: Int
 ) : CustomTextWatcher() {
 
     companion object {
         const val REMOVE_NONE = -1
         const val REMOVE_LAST = -2
     }
-
-    /**
-     * Record the height of the chip, every chip will have the same height so this just saves some
-     * calculations. It also caters for adding extra line spacing making the tag to big when
-     * they start to wrap on a new line
-     */
-    private var chipHeight: Int? = null
-
-    /**
-     * Keep a record of the chip widths, when a [TextInputEditText] uses multiple line, it trims the
-     * end of each line, which is problematic as spaces are used as padding for each span.
-     *
-     * By keeping track of the widths, when a new line is added, we can give the span at the end
-     * of each line the measured width before it was trimmed
-     */
-    private val chipWidths: MutableMap<String, Float> = mutableMapOf()
 
     override fun afterTextChanged() {
         updateText(
@@ -61,13 +45,19 @@ class TagTextWatcher(
      */
     private fun updateText(remove: Int) {
         withNotNull(editable) {
-            // only change anything if there is content, and the change is coming from an internal update //
-            if (isNotEmpty() && last() == ' ' && !updating) {
+            // only change anything if //
+            // - there is content //
+            // - the user enters a space, or presses backspace //
+            // - the change is not coming from an internal update //
+            if (isNotEmpty()
+                && ((direction == Direction.FORWARD && last() == ' ') || direction == Direction.BACKWARD)
+                && !updating
+            ) {
                 // when replacing the text in the editable, the spans are left, as we are replacing //
                 // everything, just remove all instances of the spans we added //
                 update {
-                    removeSpans(ChipSpan::class.java)
                     removeSpans(ClickPositionSpan::class.java)
+                    removeSpans(ImageSpan::class.java)
                 }
                 // replace the contents if there is new content //
                 addSpans(remove)?.let {
@@ -106,10 +96,6 @@ class TagTextWatcher(
                         if (remove == REMOVE_LAST) lastIndex else remove
                     )
                 }
-                // add the space prefix and suffix that is used as padding //
-                .map {
-                    it.pad(start = 8, end = 4, char = ' ')
-                }
                 // cycle each tag and everything to the builder //
                 .forEachIndexed { index, text ->
                     builder.apply {
@@ -130,13 +116,8 @@ class TagTextWatcher(
      * @param text that will be in the span
      */
     private fun getChipSpan(text: String) =
-        ChipSpan(
-            context = context,
-            height = chipHeight,
-            width = chipWidths[text],
-            theme = chipTheme
-        ) { content, height, width ->
-            chipHeight = height
-            content?.let { chipWidths[it] = width }
-        }
+        ImageSpan(ChipDrawable.createFromResource(context, chipXml).apply {
+            this.text = text
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        })
 }
