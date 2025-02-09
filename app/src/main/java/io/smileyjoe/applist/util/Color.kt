@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.util
 
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.annotation.ColorInt
@@ -148,6 +149,12 @@ class Color private constructor(
          */
         private fun Palette.getSwatch(): Swatch? =
             mutedSwatch ?: darkMutedSwatch ?: vibrantSwatch ?: darkVibrantSwatch ?: dominantSwatch
+
+        /**
+         * Convert the [ColorInt], to a [ColorStateList]
+         */
+        fun Int.toColorStateList() =
+            ColorStateList.valueOf(this)
 
     }
 

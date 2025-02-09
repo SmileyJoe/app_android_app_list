@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.google.android.material.chip.Chip
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
@@ -27,6 +29,7 @@ import io.smileyjoe.applist.extensions.MotionLayoutExt.refresh
 import io.smileyjoe.applist.extensions.ViewExt.getColors
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Color
+import io.smileyjoe.applist.util.Color.Companion.toColorStateList
 import io.smileyjoe.applist.util.IntentUtil
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.view.ButtonAction
@@ -93,6 +96,19 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             }
         }
 
+    // inflate the chip used for tags //
+    private val chipTag: Chip
+        get() = (layoutInflater.inflate(
+            R.layout.inflate_chip_view,
+            binding.layoutTags,
+            false
+        ) as Chip).apply {
+            updateColors(color)
+        }
+
+    // colors pulled from the icon //
+    private var color: Color? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -131,6 +147,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                 hide(actionUnfavourite)
             }
         }
+        populateTags()
     }
 
     /**
@@ -163,6 +180,23 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             imageView.getColors { updateColors(it) }
         }
         handleActions()
+        populateTags()
+    }
+
+    /**
+     * Populate the tags
+     */
+    private fun populateTags() {
+        with(binding.layoutTags) {
+            removeAllViews()
+            appDetail.tags?.forEach { tag ->
+                addView(
+                    chipTag.apply {
+                        text = tag
+                    }
+                )
+            }
+        }
     }
 
     /**
@@ -171,6 +205,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
      * @param color details of the main color of the icon
      */
     private fun updateColors(color: Color) {
+        this.color = color
         actionButtons.withEach {
             val hasBackground = id in expandedBackgroundList
             val iconTint = if (hasBackground) color.title.original else color.main.original
@@ -179,6 +214,12 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             if (hasBackground) {
                 setBackgroundTint(expanded, color.main.muted)
                 setTextColor(expanded, color.body.original)
+            }
+        }
+
+        binding.layoutTags.children.forEach {
+            if (it is Chip) {
+                it.updateColors(color)
             }
         }
 
@@ -328,5 +369,13 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun Chip.updateColors(color: Color?) {
+        color?.let {
+            chipBackgroundColor = it.main.dim.toColorStateList()
+            chipStrokeColor = it.main.original.toColorStateList()
+            setTextColor(it.main.original.toColorStateList())
+        }
     }
 }
