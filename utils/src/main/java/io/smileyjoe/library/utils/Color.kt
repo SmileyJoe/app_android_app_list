@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.util
+package io.smileyjoe.library.utils
 
 import android.content.res.ColorStateList
 import android.graphics.Bitmap

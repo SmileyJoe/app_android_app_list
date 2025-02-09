@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.span
+package io.smileyjoe.library.tags
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,7 +10,7 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.MaterialColors
-import io.smileyjoe.applist.R
+import io.smileyjoe.library.utils.CustomSpan
 
 /**
  * Span that adds a chip style background to the provided text, also includes a remove icon before

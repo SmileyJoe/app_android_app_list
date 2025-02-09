@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.textwatcher
+package io.smileyjoe.library.tags
 
 import android.content.Context
 import android.text.SpannableStringBuilder
@@ -6,11 +6,10 @@ import android.text.style.ImageSpan
 import androidx.annotation.XmlRes
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.textfield.TextInputEditText
-import io.smileyjoe.applist.extensions.Extensions.edit
-import io.smileyjoe.applist.extensions.Extensions.removeSpans
-import io.smileyjoe.applist.extensions.Extensions.withNotNull
-import io.smileyjoe.applist.span.ChipSpan
-import io.smileyjoe.applist.span.ClickPositionSpan
+import io.smileyjoe.library.utils.CustomTextWatcher
+import io.smileyjoe.library.utils.Extensions.edit
+import io.smileyjoe.library.utils.Extensions.removeSpans
+import io.smileyjoe.library.utils.Extensions.withNotNull
 
 /**
  * Text watcher to use on a [TextInputEditText] to allow the user to add tags.

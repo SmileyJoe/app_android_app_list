@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.textwatcher
+package io.smileyjoe.library.utils
 
 import android.text.SpannableString
 import android.text.Spanned

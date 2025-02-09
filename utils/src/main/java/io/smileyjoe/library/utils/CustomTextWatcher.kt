@@ -1,10 +1,10 @@
-package io.smileyjoe.applist.textwatcher
+package io.smileyjoe.library.utils
 
 import android.text.Editable
 import android.text.TextWatcher
-import io.smileyjoe.applist.textwatcher.CustomTextWatcher.Direction
-import io.smileyjoe.applist.textwatcher.CustomTextWatcher.Direction.BACKWARD
-import io.smileyjoe.applist.textwatcher.CustomTextWatcher.Direction.FORWARD
+import io.smileyjoe.library.utils.CustomTextWatcher.Direction
+import io.smileyjoe.library.utils.CustomTextWatcher.Direction.BACKWARD
+import io.smileyjoe.library.utils.CustomTextWatcher.Direction.FORWARD
 
 /**
  * [TextWatcher] that handles some boiler plate.
@@ -23,7 +23,7 @@ abstract class CustomTextWatcher : TextWatcher {
         FORWARD, BACKWARD
     }
 
-    protected var direction: Direction = Direction.FORWARD
+    protected var direction: Direction = FORWARD
     protected var updating = false
         private set
     protected var editable: Editable? = null

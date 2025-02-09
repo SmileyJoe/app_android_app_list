@@ -17,12 +17,12 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterAppList
 import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Page
-import io.smileyjoe.applist.extensions.Extensions.addDistinct
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
+import io.smileyjoe.library.utils.Extensions.addDistinct
 
 /**
  * Main activity, houses a view pager of fragments, one for each item in [Page]
@@ -113,7 +113,7 @@ class MainActivity : BaseActivity() {
 
             // add the tags to the global distinct list //
             this@MainActivity.tags.addDistinct(tags)
-            populateTags()
+            binding.layoutTags.tags = this@MainActivity.tags
         },
         // show the details when an item is selected //
         onItemSelected = { appDetail ->
@@ -130,14 +130,6 @@ class MainActivity : BaseActivity() {
         },
         getFilter = { filter }
     )
-
-    // inflate the chip used for tag filters //
-    private val chipTag: Chip
-        get() = layoutInflater.inflate(
-            R.layout.inflate_chip_filter,
-            binding.layoutTags,
-            false
-        ) as Chip
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // handle any shared element animations //
@@ -172,6 +164,12 @@ class MainActivity : BaseActivity() {
                         )
                 )
             }
+            layoutTags.apply {
+                onSelectedTagsChanged = {
+                    filter.tags = it
+                    pagerAdapterMain.refresh()
+                }
+            }
         }
 
         // remove the splash screen if we are coming from there //
@@ -181,30 +179,5 @@ class MainActivity : BaseActivity() {
                 splashScreen.exitAfterAnim()
             }
         }
-    }
-
-    private fun populateTags() {
-        with(binding.layoutTags) {
-            removeAllViews()
-            tags.forEach { tag ->
-                addView(
-                    chipTag.apply {
-                        text = tag
-                        isChecked = filter.tags.contains(tag)
-                        setOnCheckedChangeListener(::onFilterClicked)
-                    }
-                )
-            }
-        }
-    }
-
-    private fun onFilterClicked(chip: CompoundButton, isChecked: Boolean) {
-        val text = chip.text.toString()
-        if (isChecked) {
-            filter.tags.add(text)
-        } else {
-            filter.tags.remove(text)
-        }
-        pagerAdapterMain.refresh()
     }
 }

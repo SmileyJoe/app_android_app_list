@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.span
+package io.smileyjoe.library.utils
 
 import android.graphics.Canvas
 import android.graphics.Paint

@@ -7,7 +7,7 @@ import android.widget.ImageView
 import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
 import io.smileyjoe.applist.extensions.ViewExt.below
 import io.smileyjoe.applist.extensions.ViewExt.updateSize
-import io.smileyjoe.applist.util.Color
+import io.smileyjoe.library.utils.Color
 
 /**
  * View extensions

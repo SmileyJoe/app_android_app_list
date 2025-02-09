@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.span
+package io.smileyjoe.library.tags
 
 import android.text.style.ClickableSpan
 import android.view.View

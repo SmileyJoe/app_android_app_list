@@ -4,10 +4,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.comparator.AppDetailComparator
 import io.smileyjoe.applist.enums.Page
-import io.smileyjoe.applist.extensions.Extensions.withNotNull
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
+import io.smileyjoe.library.utils.Extensions.withNotNull
 import java.util.Collections
 
 /**

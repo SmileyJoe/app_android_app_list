@@ -1,5 +1,5 @@
 package io.smileyjoe.applist.objects
 
 data class Filter(
-    val tags: MutableList<String> = mutableListOf()
+    var tags: MutableList<String> = mutableListOf()
 )

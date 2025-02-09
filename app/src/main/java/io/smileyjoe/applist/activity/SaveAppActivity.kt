@@ -19,7 +19,7 @@ import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.util.ThemeUtil
-import io.smileyjoe.applist.view.TagInputEditText
+import io.smileyjoe.library.tags.TagInputEditText
 
 /**
  * Save or edit an app

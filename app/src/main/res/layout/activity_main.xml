@@ -22,13 +22,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
-    <com.google.android.material.chip.ChipGroup
+    <io.smileyjoe.library.tags.TagGroup
         android:id="@+id/layout_tags"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_padding"
         android:layout_marginEnd="@dimen/activity_padding"
-        app:chipSpacingHorizontal="@dimen/padding_small"
+        app:layout_chip="@layout/inflate_chip_filter"
+        app:chipSpacing="@dimen/padding_small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title"

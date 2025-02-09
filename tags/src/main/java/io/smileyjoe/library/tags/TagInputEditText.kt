@@ -1,16 +1,15 @@
-package io.smileyjoe.applist.view
+package io.smileyjoe.library.tags
 
 import android.content.Context
 import android.content.res.Resources
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.widget.ArrayAdapter
+import androidx.annotation.LayoutRes
 import androidx.annotation.XmlRes
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
-import io.smileyjoe.applist.R
-import io.smileyjoe.applist.extensions.Extensions.withNotNull
-import io.smileyjoe.applist.textwatcher.TagTextWatcher
-import io.smileyjoe.applist.textwatcher.TokenizerSpace
+import io.smileyjoe.library.utils.Extensions.withNotNull
+import io.smileyjoe.library.utils.TokenizerSpace
 
 /**
  * Text input for adding tags
@@ -37,12 +36,15 @@ class TagInputEditText : AppCompatMultiAutoCompleteTextView {
     }
 
     @XmlRes
-    private var chipXml = Resources.ID_NULL
+    private var xmlChip = Resources.ID_NULL
+
+    @LayoutRes
+    private var layoutAutocompleteRow = Resources.ID_NULL
 
     private val tagTextWatcher by lazy {
         TagTextWatcher(
             context = context,
-            chipXml = chipXml
+            chipXml = xmlChip
         )
     }
 
@@ -77,7 +79,7 @@ class TagInputEditText : AppCompatMultiAutoCompleteTextView {
                 setAdapter(
                     ArrayAdapter(
                         context,
-                        R.layout.row_tag_autocomplete, it.toMutableList()
+                        layoutAutocompleteRow, it.toMutableList()
                     )
                 )
                 setTokenizer(TokenizerSpace())
@@ -111,7 +113,11 @@ class TagInputEditText : AppCompatMultiAutoCompleteTextView {
 
     private fun handleAttributes(attrs: AttributeSet?) =
         with(context.obtainStyledAttributes(attrs, R.styleable.TagInputEditText)) {
-            chipXml = getResourceId(R.styleable.TagInputEditText_chipXml, chipXml)
+            xmlChip = getResourceId(R.styleable.TagInputEditText_xml_chip, xmlChip)
+            layoutAutocompleteRow = getResourceId(
+                R.styleable.TagInputEditText_layout_autocompleteRow,
+                layoutAutocompleteRow
+            )
             recycle()
         }
 

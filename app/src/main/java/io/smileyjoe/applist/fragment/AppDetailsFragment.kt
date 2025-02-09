@@ -9,10 +9,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.google.android.material.chip.Chip
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
@@ -23,16 +21,15 @@ import io.smileyjoe.applist.extensions.ConstraintSetExt.isVisible
 import io.smileyjoe.applist.extensions.ConstraintSetExt.setCardBackgroundColor
 import io.smileyjoe.applist.extensions.ConstraintSetExt.setTextColor
 import io.smileyjoe.applist.extensions.Extensions.statusBarColor
-import io.smileyjoe.applist.extensions.Extensions.withEach
 import io.smileyjoe.applist.extensions.MotionLayoutExt.onStateChanged
 import io.smileyjoe.applist.extensions.MotionLayoutExt.refresh
 import io.smileyjoe.applist.extensions.ViewExt.getColors
 import io.smileyjoe.applist.objects.AppDetail
-import io.smileyjoe.applist.util.Color
-import io.smileyjoe.applist.util.Color.Companion.toColorStateList
 import io.smileyjoe.applist.util.IntentUtil
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.view.ButtonAction
+import io.smileyjoe.library.utils.Color
+import io.smileyjoe.library.utils.Extensions.withEach
 
 /**
  * Fragment to display the app details, as well as all appropriate actions
@@ -95,16 +92,6 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
                 }
                 Notify.success(binding.frameMain, R.string.success_app_edited)
             }
-        }
-
-    // inflate the chip used for tags //
-    private val chipTag: Chip
-        get() = (layoutInflater.inflate(
-            R.layout.inflate_chip_view,
-            binding.layoutTags,
-            false
-        ) as Chip).apply {
-            updateColors(color)
         }
 
     // colors pulled from the icon //
@@ -188,16 +175,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
      * Populate the tags
      */
     private fun populateTags() {
-        with(binding.layoutTags) {
-            removeAllViews()
-            appDetail.tags?.forEach { tag ->
-                addView(
-                    chipTag.apply {
-                        text = tag
-                    }
-                )
-            }
-        }
+        binding.layoutTags.tags = appDetail.tags
     }
 
     /**
@@ -218,11 +196,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
             }
         }
 
-        binding.layoutTags.children.forEach {
-            if (it is Chip) {
-                it.updateColors(color)
-            }
-        }
+        binding.layoutTags.color = color
 
         binding.apply {
             cardBackgroundHeader.setCardBackgroundColor(color.main.original)
@@ -371,13 +345,5 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun Chip.updateColors(color: Color?) {
-        color?.let {
-            chipBackgroundColor = it.main.dim.toColorStateList()
-            chipStrokeColor = it.main.original.toColorStateList()
-            setTextColor(it.main.original.toColorStateList())
-        }
     }
 }

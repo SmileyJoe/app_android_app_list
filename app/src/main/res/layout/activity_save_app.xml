@@ -135,11 +135,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_package">
 
-            <io.smileyjoe.applist.view.TagInputEditText
+            <io.smileyjoe.library.tags.TagInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_app_tag"
-                app:chipXml="@xml/chip_span"/>
+                app:xml_chip="@xml/chip_span"
+                app:layout_autocompleteRow="@layout/row_tag_autocomplete"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
