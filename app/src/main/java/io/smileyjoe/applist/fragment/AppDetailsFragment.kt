@@ -87,6 +87,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
                                 notes = it.notes
                                 isFavourite = it.isFavourite
                                 isSaved = it.isSaved
+                                firebaseKey = it.firebaseKey
                             }
                             updateView()
                         }

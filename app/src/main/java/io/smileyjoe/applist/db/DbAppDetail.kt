@@ -92,6 +92,7 @@ class DbAppDetail(
                             Notify.error(activity, R.string.error_generic)
                         } ?: run {
                             appDetail.isSaved = true
+                            appDetail.firebaseKey = ref.key
                             Icon.upload(appDetail.appPackage, appDetail.icon)
                         }
                         // callback that the operation is complete //
