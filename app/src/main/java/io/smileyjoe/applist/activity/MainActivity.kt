@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.chip.Chip
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterAppList
@@ -165,6 +163,9 @@ class MainActivity : BaseActivity() {
                 )
             }
             layoutTags.apply {
+                toggleView = binding.imageFilter
+                detailsView = binding.textFilter
+                clearView = binding.imageFilterClear
                 onSelectedTagsChanged = {
                     filter.tags = it
                     pagerAdapterMain.refresh()
