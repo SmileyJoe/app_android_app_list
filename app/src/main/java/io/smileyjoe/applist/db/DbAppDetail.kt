@@ -91,6 +91,7 @@ class DbAppDetail(
                         error?.let {
                             Notify.error(activity, R.string.error_generic)
                         } ?: run {
+                            appDetail.isSaved = true
                             Icon.upload(appDetail.appPackage, appDetail.icon)
                         }
                         // callback that the operation is complete //
@@ -114,6 +115,8 @@ class DbAppDetail(
                     .removeValue { error, ref ->
                         // if there is no error, update the details //
                         error?.let {
+                            Notify.error(activity, R.string.error_generic)
+                        } ?: run {
                             appDetail.isFavourite = false
                             appDetail.isSaved = false
                         }

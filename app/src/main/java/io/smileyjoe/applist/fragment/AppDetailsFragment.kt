@@ -86,11 +86,12 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
                                 tags = it.tags
                                 notes = it.notes
                                 isFavourite = it.isFavourite
+                                isSaved = it.isSaved
                             }
                             updateView()
                         }
                 }
-                Notify.success(binding.frameMain, R.string.success_app_edited)
+                Notify.success(binding.frameMain, R.string.success_app_saved)
             }
         }
 
@@ -127,15 +128,15 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
                     setTypeface(null, Typeface.ITALIC)
                 }
             }
-            if (appDetail.isFavourite) {
-                show(actionUnfavourite)
-                hide(actionFavourite)
-            } else {
-                show(actionFavourite)
-                hide(actionUnfavourite)
-            }
+            updateActionVisibility()
         }
         populateTags()
+    }
+
+    private fun updateActionVisibility() {
+        actionButtons.forEach {
+            if (it.action.shouldShow(appDetail)) show(it) else hide(it)
+        }
     }
 
     /**
@@ -232,7 +233,6 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
      * What to do when an [Action] is clicked
      *
      * @param button the button that was clicked
-     * //todo show and hide when actions are clicked should go through [Action.shouldShow]
      */
     private fun onActionButtonClicked(button: ButtonAction) {
         when (button.action) {
@@ -253,8 +253,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
                 appDetail.isFavourite = true
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
-                        hide(binding.actionFavourite)
-                        show(binding.actionUnfavourite)
+                        updateActionVisibility()
                     } else {
                         appDetail.isFavourite = false
                     }
@@ -265,8 +264,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
                 appDetail.isFavourite = false
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
-                        hide(binding.actionUnfavourite)
-                        show(binding.actionFavourite)
+                        updateActionVisibility()
                     } else {
                         appDetail.isFavourite = true
                     }
@@ -274,26 +272,19 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
             }
             // save the app in firebase //
             Action.SAVE -> {
-                appDetail.db.save(requireActivity()) { error, ref ->
-                    if (error == null) {
-                        appDetail.isSaved = true
-                        hide(binding.actionSave)
-                        show(binding.actionDelete, binding.actionFavourite, binding.actionEdit)
-                    }
-                }
+                saveAppResult.launch(
+                    SaveAppActivity.getIntent(
+                        context = requireContext(),
+                        appDetail = appDetail,
+                        tags = tags
+                    )
+                )
             }
             // remove the app from firebase //
             Action.DELETE -> {
                 appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
-                        appDetail.isFavourite = false
-                        hide(
-                            binding.actionDelete,
-                            binding.actionFavourite,
-                            binding.actionUnfavourite,
-                            binding.actionEdit
-                        )
-                        show(binding.actionSave)
+                        updateActionVisibility()
                     }
                 }
             }
