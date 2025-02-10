@@ -6,7 +6,6 @@
         app:constraintSetEnd="@id/expanded"
         app:constraintSetStart="@id/collapsed"
         app:duration="300"
-        app:layoutDuringTransition="honorRequest"
         app:motionInterpolator="easeInOut">
 
         <OnSwipe
@@ -401,7 +400,7 @@
 
         <Constraint
             android:id="@+id/action_edit"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/button_action_no_text"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_expanded"
             app:layout_constraintBottom_toTopOf="@id/barrier_details"
@@ -415,7 +414,7 @@
 
         <Constraint
             android:id="@+id/action_share"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/button_action_no_text"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_app_details_expanded"
             app:layout_constraintBottom_toTopOf="@id/barrier_details"
