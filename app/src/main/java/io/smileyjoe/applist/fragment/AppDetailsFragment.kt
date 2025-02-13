@@ -29,6 +29,8 @@ import io.smileyjoe.applist.util.IntentUtil
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.view.ButtonAction
 import io.smileyjoe.library.utils.Color
+import io.smileyjoe.library.utils.Extensions.layoutListener
+import io.smileyjoe.library.utils.Extensions.truncate
 import io.smileyjoe.library.utils.Extensions.withEach
 
 /**
@@ -162,6 +164,20 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
             viewBack.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+            // due to the required text change in the motionlayout, it got complicated to get the //
+            // view in teh correct place, to cater for this the text is manually truncated so that //
+            // it fits in the screen, even if the view is extending out the screen //
+            textTitle.layoutListener(
+                validate = { measuredWidth > 0 },
+                listener = {
+                    val screenWidth =
+                        requireActivity().windowManager.currentWindowMetrics.bounds.width()
+                    // the text view start in the correct place when contracted, but extends out the //
+                    // the screen, we set the desired width to the screenwidth minus the start position //
+                    // minus the required end padding //
+                    truncate(screenWidth - x - resources.getDimensionPixelOffset(R.dimen.activity_padding))
+                }
+            )
         }
 
         setActionVisibility()
