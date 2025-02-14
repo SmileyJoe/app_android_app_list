@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.ImageView
@@ -18,19 +17,10 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import io.smileyjoe.library.utils.Color
 import io.smileyjoe.library.utils.Color.Companion.toColorStateList
+import io.smileyjoe.library.utils.Extensions.animate
 import io.smileyjoe.library.utils.Extensions.withNotNull
 
 class TagGroup : ChipGroup {
-
-    enum class State {
-        EXPANDED, CONTRACTED;
-
-        val opposite: State
-            get() = when (this) {
-                CONTRACTED -> EXPANDED
-                EXPANDED -> CONTRACTED
-            }
-    }
 
     constructor(context: Context) : super(context) {
         init(null)
@@ -58,22 +48,21 @@ class TagGroup : ChipGroup {
     @LayoutRes
     private var layoutChip = Resources.ID_NULL
 
-    var state: State = if (isVisible) State.EXPANDED else State.CONTRACTED
+    private var state: GroupState = if (isVisible) GroupState.EXPANDED else GroupState.CONTRACTED
         set(value) {
             TransitionManager.beginDelayedTransition(parent as ViewGroup, AutoTransition().apply {
                 duration = 150
             })
-            when (value) {
-                State.CONTRACTED -> {
-                    visibility = View.GONE
-                    detailsView?.visibility = View.VISIBLE
-                    clearView?.visibility = View.GONE
+            with(value) {
+                isVisible = groupVisible
+                detailsView?.isVisible = detailsVisible
+                toggleView?.apply {
+                    animate(filterIcon)
+                    isVisible = toggleVisible
                 }
-
-                State.EXPANDED -> {
-                    visibility = View.VISIBLE
-                    detailsView?.visibility = View.GONE
-                    clearView?.visibility = View.VISIBLE
+                clearView?.apply {
+                    animate(clearIcon)
+                    isVisible = clearVisible
                 }
             }
             field = value
@@ -110,24 +99,30 @@ class TagGroup : ChipGroup {
 
     var toggleView: ImageView? = null
         set(value) {
-            value?.setOnClickListener {
-                state = state.opposite
+            value?.apply {
+                setImageResource(R.drawable.ic_filter)
+                setOnClickListener {
+                    state = state.opposite
+                }
             }
             field = value
         }
 
     var clearView: ImageView? = null
         set(value) {
-            value?.setOnClickListener {
-                children.forEach {
-                    if (it is Chip) {
-                        it.isChecked = false
+            value?.apply {
+                setImageResource(R.drawable.ic_close)
+                setOnClickListener {
+                    children.forEach {
+                        if (it is Chip) {
+                            it.isChecked = false
+                        }
                     }
                 }
-            }
-            value?.isVisible = when (state) {
-                State.CONTRACTED -> false
-                State.EXPANDED -> true
+                isVisible = when (state) {
+                    GroupState.CONTRACTED -> false
+                    GroupState.EXPANDED -> true
+                }
             }
             field = value
         }

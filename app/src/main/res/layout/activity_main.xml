@@ -28,11 +28,10 @@
         android:layout_width="@dimen/icon_medium"
         android:layout_height="@dimen/icon_medium"
         android:layout_marginEnd="@dimen/padding_small"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:paddingStart="@dimen/padding_small"
         android:paddingEnd="@dimen/padding_small"
-        android:src="@drawable/ic_filter"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title"
         app:tint="?android:colorPrimary" />
@@ -46,7 +45,6 @@
         android:clickable="true"
         android:paddingStart="@dimen/padding_small"
         android:paddingEnd="@dimen/padding_small"
-        android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_filter"
         app:tint="?android:colorPrimary" />
