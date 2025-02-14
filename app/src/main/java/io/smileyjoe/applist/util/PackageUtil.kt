@@ -2,9 +2,8 @@ package io.smileyjoe.applist.util
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import io.smileyjoe.applist.extensions.Compat.getInstalledPackagesCompat
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.PackageUtil.checkInstalled
 
 /**
@@ -58,6 +57,7 @@ object PackageUtil {
                     isFavourite = app.isFavourite
                     firebaseKey = app.firebaseKey
                     notes = app.notes
+                    tags = app.tags
                 } ?: run {
                     // if not, set the defaults //
                     isSaved = false

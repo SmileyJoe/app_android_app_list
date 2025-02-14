@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.`object`
+package io.smileyjoe.applist.objects
 
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth

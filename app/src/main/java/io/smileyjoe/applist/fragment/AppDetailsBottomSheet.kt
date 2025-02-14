@@ -20,14 +20,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentBottomSheetDetailsBinding
+import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
 import io.smileyjoe.applist.extensions.ViewExt.below
 import io.smileyjoe.applist.extensions.ViewExt.updateSize
-import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.db.Icon
+import io.smileyjoe.applist.objects.AppDetail
 
-@Deprecated("This has custom animations, it's staying in for learnings sake, " +
-        "but it's been replaced with motionlayout in AppDetailsFragment, which is easier to manage")
+@Deprecated(
+    "This has custom animations, it's staying in for learnings sake, " +
+            "but it's been replaced with motionlayout in AppDetailsFragment, which is easier to manage"
+)
 class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragment() {
 
     private enum class Action(@StringRes var title: Int, @DrawableRes var icon: Int) {
@@ -194,6 +196,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                     }
                 }
             }
+
             Action.UNFAVOURITE -> {
                 appDetail.isFavourite = false
                 appDetail.db.save(requireActivity()) { error, ref ->
@@ -203,6 +206,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                     }
                 }
             }
+
             Action.SAVE -> {
                 appDetail.isSaved = true
                 appDetail.db.save(requireActivity()) { error, ref ->
@@ -212,6 +216,7 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                     }
                 }
             }
+
             Action.DELETE -> {
                 appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
@@ -259,10 +264,12 @@ class AppDetailsBottomSheet(var appDetail: AppDetail) : BottomSheetDialogFragmen
                     binding.layoutContentExpanded.visibility = View.VISIBLE
                     binding.imageSlideDown.visibility = View.VISIBLE
                 }
+
                 BottomSheetBehavior.STATE_COLLAPSED -> {
                     binding.layoutContentExpanded.visibility = View.GONE
                     binding.imageSlideDown.visibility = View.GONE
                 }
+
                 else -> {
                     binding.layoutContentExpanded.visibility = View.VISIBLE
                     binding.imageSlideDown.visibility = View.VISIBLE

@@ -9,7 +9,7 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.ActivitySignInBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
-import io.smileyjoe.applist.`object`.User
+import io.smileyjoe.applist.objects.User
 import io.smileyjoe.applist.util.Notify
 import za.co.smileyjoedev.firebaseauth.google.GoogleAuth
 

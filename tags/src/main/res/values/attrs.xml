@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="TagInputEditText">
+        <attr name="xml_chip" format="reference"/>
+        <attr name="layout_autocompleteRow" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="TagGroup">
+        <attr name="layout_chip" format="reference"/>
+    </declare-styleable>
+
+</resources>

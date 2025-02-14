@@ -2,7 +2,7 @@ package io.smileyjoe.applist.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.smileyjoe.applist.`object`.User
+import io.smileyjoe.applist.objects.User
 
 /**
  * Base activity for all activities

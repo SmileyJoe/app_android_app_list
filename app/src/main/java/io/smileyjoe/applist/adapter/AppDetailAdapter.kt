@@ -4,9 +4,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.comparator.AppDetailComparator
 import io.smileyjoe.applist.enums.Page
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
+import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
-import java.util.*
+import io.smileyjoe.library.utils.Extensions.withNotNull
+import java.util.Collections
 
 /**
  * Adapter for the app details
@@ -16,17 +18,48 @@ class AppDetailAdapter(
     items: List<AppDetail> = ArrayList(),
     private val saveListener: AppDetailViewHolder.Listener? = null,
     private val deleteListener: AppDetailViewHolder.Listener? = null,
-    private val onItemSelected: AppDetailViewHolder.OnItemSelected? = null
-) :
-    RecyclerView.Adapter<AppDetailViewHolder>() {
+    private val onItemSelected: AppDetailViewHolder.OnItemSelected? = null,
+    private val getFilter: GetFilter? = null
+) : RecyclerView.Adapter<AppDetailViewHolder>() {
+
+    fun interface GetFilter {
+        fun getFilter(): Filter
+    }
+
+    // the items list is filtered, so we need to keep a record of the original and a record of what //
+    // is being used by the adapter for the list //
+    private var displayItems: List<AppDetail> = listOf()
+        set(value) {
+            withNotNull(getFilter?.getFilter()) {
+                if (tags.isEmpty()) {
+                    field = value
+                } else {
+                    field = value.filter { app ->
+                        // if the app contains any of the filter tags select it //
+                        app.tags?.any(tags::contains)
+                            ?: run {
+                                false
+                            }
+                    }
+                }
+            }
+        }
 
     // list of items, sorted by [AppDetailComparator] when set //
     var items: List<AppDetail> = items
         set(value) {
             Collections.sort(value, AppDetailComparator())
+            displayItems = value
             field = value
             notifyDataSetChanged()
         }
+
+    // refresh the list, set the display items back to the full list, which will trigger the //
+    // filtering //
+    fun refresh() {
+        displayItems = items
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         AppDetailViewHolder(parent, page).apply {
@@ -38,9 +71,9 @@ class AppDetailAdapter(
     override fun onBindViewHolder(holder: AppDetailViewHolder, position: Int) =
         holder.bind(getItem(position))
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = displayItems.size
 
-    fun hasApps() = items.isNotEmpty()
+    fun hasApps() = displayItems.isNotEmpty()
 
-    fun getItem(position: Int) = items[position]
+    fun getItem(position: Int) = displayItems[position]
 }

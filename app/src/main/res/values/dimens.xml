@@ -24,4 +24,7 @@
     <!-- Elevation -->
     <dimen name="elevation_app_details_collapse">16dp</dimen>
     <dimen name="elevation_app_details_expanded">0dp</dimen>
+
+    <!-- Actions -->
+    <dimen name="button_action_no_text">56dp</dimen>
 </resources>

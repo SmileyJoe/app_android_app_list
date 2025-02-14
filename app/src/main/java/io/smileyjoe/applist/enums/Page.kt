@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 import com.google.firebase.database.DataSnapshot
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.db.DbAppDetail
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.PackageUtil
 
 /**

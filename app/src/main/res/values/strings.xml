@@ -24,6 +24,7 @@
     <string name="text_details">Details</string>
 
     <string name="success_app_saved">Application saved successfully</string>
+    <string name="success_app_edited">Application updated successfully</string>
 
     <string name="error_sign_in">Something went wrong while signing you in. Please try again</string>
     <string name="error_not_signed_in">You need to sign in to complete this action.</string>
@@ -36,6 +37,7 @@
     <string name="error_no_notes">Add notes by selecting "Edit"</string>
 
     <string name="hint_app_package">Package</string>
+    <string name="hint_app_tag">Tags</string>
     <string name="hint_app_name">Name</string>
     <string name="hint_app_notes">Notes</string>
 
@@ -55,4 +57,6 @@
     <string name="title_app_package">Package Name:</string>
     <string name="title_install_status">Install Status:</string>
     <string name="title_notes">Notes:</string>
+
+    <string name="filter_none_selected">No Filters</string>
 </resources>

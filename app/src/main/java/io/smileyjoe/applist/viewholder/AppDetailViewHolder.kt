@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding
 import io.smileyjoe.applist.enums.Page
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.view.ButtonProgress
 

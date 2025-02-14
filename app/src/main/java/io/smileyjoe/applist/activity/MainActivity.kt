@@ -18,7 +18,9 @@ import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
+import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
+import io.smileyjoe.library.utils.Extensions.addDistinct
 
 /**
  * Main activity, houses a view pager of fragments, one for each item in [Page]
@@ -50,6 +52,12 @@ class MainActivity : BaseActivity() {
     val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    // distinct list of all the tags in the lists //
+    private val tags = mutableListOf<String>()
+
+    // enabled filters //
+    private val filter = Filter()
 
     // only remove the splash screen if the activity has fully loaded, so keep track of that //
     private var loaded = false
@@ -91,7 +99,7 @@ class MainActivity : BaseActivity() {
     private val pagerAdapterMain = PagerAdapterAppList(
         activity = this,
         // call back for when the page has loaded //
-        onLoadComplete = { page, appCount ->
+        onLoadComplete = { page, appCount, tags ->
             // installed is the last page, so when that is loaded, everything is loaded //
             if (page == Page.INSTALLED) loaded = true
 
@@ -100,6 +108,10 @@ class MainActivity : BaseActivity() {
                 isVisible = true
                 number = appCount
             }
+
+            // add the tags to the global distinct list //
+            this@MainActivity.tags.addDistinct(tags)
+            binding.layoutTags.tags = this@MainActivity.tags
         },
         // show the details when an item is selected //
         onItemSelected = { appDetail ->
@@ -107,9 +119,14 @@ class MainActivity : BaseActivity() {
 
             supportFragmentManager.commit {
                 addToBackStack(AppDetailsFragment.TAG)
-                add(R.id.fragment_details, AppDetailsFragment(appDetail), AppDetailsFragment.TAG)
+                add(
+                    R.id.fragment_details,
+                    AppDetailsFragment(appDetail, tags),
+                    AppDetailsFragment.TAG
+                )
             }
-        }
+        },
+        getFilter = { filter }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,7 +150,10 @@ class MainActivity : BaseActivity() {
             }
             fabAdd.setOnClickListener { view ->
                 saveAppResult.launch(
-                    SaveAppActivity.getIntent(baseContext),
+                    SaveAppActivity.getIntent(
+                        context = baseContext,
+                        tags = tags
+                    ),
                     ActivityOptionsCompat
                         .makeSceneTransitionAnimation(
                             this@MainActivity,
@@ -141,6 +161,15 @@ class MainActivity : BaseActivity() {
                             "transition_fab"
                         )
                 )
+            }
+            layoutTags.apply {
+                toggleView = binding.imageFilter
+                detailsView = binding.textFilter
+                clearView = binding.imageFilterClear
+                onSelectedTagsChanged = {
+                    filter.tags = it
+                    pagerAdapterMain.refresh()
+                }
             }
         }
 

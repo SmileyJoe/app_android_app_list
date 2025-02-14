@@ -16,6 +16,7 @@ import io.smileyjoe.applist.databinding.FragmentAppListBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
 
@@ -33,8 +34,9 @@ class AppListFragment : Fragment() {
          *
          * @param page the page that loaded
          * @param appCount how many apps are in the list
+         * @param tags distinct list of all tags used by items in the list
          */
-        fun onLoadComplete(page: Page, appCount: Int)
+        fun onLoadComplete(page: Page, appCount: Int, tags: List<String>)
     }
 
     /**
@@ -43,6 +45,11 @@ class AppListFragment : Fragment() {
      * @see [AppDetailViewHolder.OnItemSelected]
      */
     fun interface OnItemSelected : AppDetailViewHolder.OnItemSelected
+
+    /**
+     * @see AppDetailAdapter.GetFilter
+     */
+    fun interface GetFilter : AppDetailAdapter.GetFilter
 
     companion object {
         private const val EXTRA_PAGE: String = "page"
@@ -67,6 +74,7 @@ class AppListFragment : Fragment() {
     lateinit var binding: FragmentAppListBinding
     var onLoadComplete: OnLoadComplete? = null
     var onItemSelected: OnItemSelected? = null
+    var getFilter: GetFilter? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -100,9 +108,10 @@ class AppListFragment : Fragment() {
     private fun setupAdapter() {
         appDetailAdapter = AppDetailAdapter(
             page = page,
-            saveListener = AppDetailViewHolder.Listener { app -> app.db.save(requireActivity()) },
-            deleteListener = AppDetailViewHolder.Listener { app -> app.db.delete(requireActivity()) },
-            onItemSelected = this@AppListFragment.onItemSelected
+            saveListener = { app -> app.db.save(requireActivity()) },
+            deleteListener = { app -> app.db.delete(requireActivity()) },
+            onItemSelected = this@AppListFragment.onItemSelected,
+            getFilter = getFilter
         )
     }
 
@@ -143,6 +152,14 @@ class AppListFragment : Fragment() {
     }
 
     /**
+     * Refresh the contents of the list
+     */
+    fun refresh() {
+        appDetailAdapter.refresh()
+        handleDisplayView()
+    }
+
+    /**
      * Db listener for any updates to the firebase objects.
      * </p>
      * Updates the adapter on any changes and notifies the calling class
@@ -150,14 +167,24 @@ class AppListFragment : Fragment() {
      */
     inner class AppDetailsEventListener : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            appDetailAdapter.items = page.getApps(requireContext(), snapshot)
+            val apps = page.getApps(requireContext(), snapshot)
+            appDetailAdapter.items = apps
             isLoading = false
             handleDisplayView()
-            onLoadComplete?.onLoadComplete(page, appDetailAdapter.itemCount)
+            onLoadComplete?.onLoadComplete(page, appDetailAdapter.itemCount, getTags(apps))
         }
 
         override fun onCancelled(error: DatabaseError) {
             Notify.error(requireActivity(), R.string.error_database_read_failed)
+        }
+
+        private fun getTags(apps: List<AppDetail>): List<String> {
+            val tags = mutableListOf<String>()
+            apps.filter { it.tags.isNullOrEmpty().not() }
+                .forEach {
+                    tags.addAll(it.tags!!)
+                }
+            return tags.distinct()
         }
     }
 }

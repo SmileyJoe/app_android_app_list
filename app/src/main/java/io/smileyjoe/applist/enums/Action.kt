@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 
 /**
  * Actions that can be performed on an [AppDetail]

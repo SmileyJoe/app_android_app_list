@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import io.smileyjoe.applist.R
@@ -14,31 +16,35 @@ import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentAppDetailsBinding
 import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.enums.Action
+import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.extensions.ConstraintSetExt.isVisible
 import io.smileyjoe.applist.extensions.ConstraintSetExt.setCardBackgroundColor
 import io.smileyjoe.applist.extensions.ConstraintSetExt.setTextColor
 import io.smileyjoe.applist.extensions.Extensions.statusBarColor
-import io.smileyjoe.applist.extensions.Extensions.withEach
 import io.smileyjoe.applist.extensions.MotionLayoutExt.onStateChanged
 import io.smileyjoe.applist.extensions.MotionLayoutExt.refresh
 import io.smileyjoe.applist.extensions.ViewExt.getColors
-import io.smileyjoe.applist.`object`.AppDetail
-import io.smileyjoe.applist.util.Color
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.IntentUtil
+import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.view.ButtonAction
+import io.smileyjoe.library.utils.Color
+import io.smileyjoe.library.utils.Extensions.layoutListener
+import io.smileyjoe.library.utils.Extensions.truncate
+import io.smileyjoe.library.utils.Extensions.withEach
 
 /**
  * Fragment to display the app details, as well as all appropriate actions
  *
  * @param appDetail the details to load
  */
-class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
+class AppDetailsFragment(private val appDetail: AppDetail, private val tags: List<String>? = null) :
+    Fragment() {
 
     companion object {
         // the tag to use when adding the fragment //
         const val TAG = "APP_DETAILS"
     }
-
 
     private var _binding: FragmentAppDetailsBinding? = null
     private val binding: FragmentAppDetailsBinding
@@ -70,6 +76,31 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         R.id.action_unfavourite
     )
 
+    // listen for the result from saving/editing an item //
+    private val saveAppResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                result.data?.extras?.let {
+                    it.getParcelableCompat(SaveAppActivity.EXTRA_APP_DETAIL, AppDetail::class.java)
+                        ?.let {
+                            appDetail.apply {
+                                name = it.name
+                                tags = it.tags
+                                notes = it.notes
+                                isFavourite = it.isFavourite
+                                isSaved = it.isSaved
+                                firebaseKey = it.firebaseKey
+                            }
+                            updateView()
+                        }
+                }
+                Notify.success(binding.frameMain, R.string.success_app_saved)
+            }
+        }
+
+    // colors pulled from the icon //
+    private var color: Color? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -85,6 +116,29 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
         // Slide the fragment up, replicating a bottom sheet //
         AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up_in).also { anim ->
             binding.motionMain.startAnimation(anim)
+        }
+    }
+
+    private fun updateView() {
+        binding.apply {
+            textTitle.text = appDetail.name
+            textNotes.apply {
+                if (appDetail.notes.isNullOrEmpty().not()) {
+                    text = appDetail.notes
+                    setTypeface(null, Typeface.NORMAL)
+                } else {
+                    text = getString(R.string.error_no_notes)
+                    setTypeface(null, Typeface.ITALIC)
+                }
+            }
+            updateActionVisibility()
+        }
+        populateTags()
+    }
+
+    private fun updateActionVisibility() {
+        actionButtons.forEach {
+            if (it.action.shouldShow(appDetail)) show(it) else hide(it)
         }
     }
 
@@ -110,6 +164,20 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             viewBack.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+            // due to the required text change in the motionlayout, it got complicated to get the //
+            // view in teh correct place, to cater for this the text is manually truncated so that //
+            // it fits in the screen, even if the view is extending out the screen //
+            textTitle.layoutListener(
+                validate = { measuredWidth > 0 },
+                listener = {
+                    val screenWidth =
+                        requireActivity().windowManager.currentWindowMetrics.bounds.width()
+                    // the text view start in the correct place when contracted, but extends out the //
+                    // the screen, we set the desired width to the screenwidth minus the start position //
+                    // minus the required end padding //
+                    truncate(screenWidth - x - resources.getDimensionPixelOffset(R.dimen.activity_padding))
+                }
+            )
         }
 
         setActionVisibility()
@@ -118,6 +186,14 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
             imageView.getColors { updateColors(it) }
         }
         handleActions()
+        populateTags()
+    }
+
+    /**
+     * Populate the tags
+     */
+    private fun populateTags() {
+        binding.layoutTags.tags = appDetail.tags
     }
 
     /**
@@ -126,6 +202,7 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
      * @param color details of the main color of the icon
      */
     private fun updateColors(color: Color) {
+        this.color = color
         actionButtons.withEach {
             val hasBackground = id in expandedBackgroundList
             val iconTint = if (hasBackground) color.title.original else color.main.original
@@ -136,6 +213,8 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
                 setTextColor(expanded, color.body.original)
             }
         }
+
+        binding.layoutTags.color = color
 
         binding.apply {
             cardBackgroundHeader.setCardBackgroundColor(color.main.original)
@@ -171,59 +250,58 @@ class AppDetailsFragment(private val appDetail: AppDetail) : Fragment() {
      * What to do when an [Action] is clicked
      *
      * @param button the button that was clicked
-     * //todo show and hide when actions are clicked should go through [Action.shouldShow]
      */
     private fun onActionButtonClicked(button: ButtonAction) {
         when (button.action) {
             // start the save/edit activity //
-            // todo: this might need to be with a result listener to update with the changes //
-            Action.EDIT -> startActivity(SaveAppActivity.getIntent(requireContext(), appDetail))
+            Action.EDIT -> saveAppResult.launch(
+                SaveAppActivity.getIntent(
+                    context = requireContext(),
+                    appDetail = appDetail,
+                    tags = tags
+                )
+            )
             // open the app in the play store //
             Action.PLAY_STORE -> startActivity(IntentUtil.open(appDetail.playstoreLink))
             // open the native share dialog populate with the app link //
             Action.SHARE -> startActivity(IntentUtil.share(appDetail.playstoreLink))
             // favourite the app and update firebase //
             Action.FAVOURITE -> {
+                appDetail.isFavourite = true
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
-                        appDetail.isFavourite = true
-                        hide(binding.actionFavourite)
-                        show(binding.actionUnfavourite)
+                        updateActionVisibility()
+                    } else {
+                        appDetail.isFavourite = false
                     }
                 }
             }
             // unfavourite the app and update firebase //
             Action.UNFAVOURITE -> {
+                appDetail.isFavourite = false
                 appDetail.db.save(requireActivity()) { error, ref ->
                     if (error == null) {
-                        appDetail.isFavourite = false
-                        hide(binding.actionUnfavourite)
-                        show(binding.actionFavourite)
+                        updateActionVisibility()
+                    } else {
+                        appDetail.isFavourite = true
                     }
                 }
             }
             // save the app in firebase //
             Action.SAVE -> {
-                appDetail.db.save(requireActivity()) { error, ref ->
-                    if (error == null) {
-                        appDetail.isSaved = true
-                        hide(binding.actionSave)
-                        show(binding.actionDelete, binding.actionFavourite, binding.actionEdit)
-                    }
-                }
+                saveAppResult.launch(
+                    SaveAppActivity.getIntent(
+                        context = requireContext(),
+                        appDetail = appDetail,
+                        tags = tags
+                    )
+                )
             }
             // remove the app from firebase //
             Action.DELETE -> {
                 appDetail.db.delete(requireActivity()) { error, ref ->
                     if (error == null) {
-                        appDetail.isFavourite = true
-                        hide(
-                            binding.actionDelete,
-                            binding.actionFavourite,
-                            binding.actionUnfavourite,
-                            binding.actionEdit
-                        )
-                        show(binding.actionSave)
+                        updateActionVisibility()
                     }
                 }
             }

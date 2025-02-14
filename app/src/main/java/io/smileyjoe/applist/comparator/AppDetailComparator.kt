@@ -1,6 +1,6 @@
 package io.smileyjoe.applist.comparator
 
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 
 /**
  * Sort a list of [AppDetail] alphabetically

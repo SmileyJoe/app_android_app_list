@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="animation_group">150</integer>
+    <integer name="animation_toggle">500</integer>
+    <integer name="animation_clear_alpha_offset">250</integer>
+    <integer name="animation_clear_alpha">250</integer>
+    <integer name="animation_clear_offset">100</integer>
+    <integer name="animation_clear">500</integer>
+</resources>

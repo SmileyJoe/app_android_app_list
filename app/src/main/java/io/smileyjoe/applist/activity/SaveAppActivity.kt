@@ -16,9 +16,10 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.ActivitySaveAppBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
-import io.smileyjoe.applist.`object`.AppDetail
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.util.ThemeUtil
+import io.smileyjoe.library.tags.TagInputEditText
 
 /**
  * Save or edit an app
@@ -29,17 +30,20 @@ class SaveAppActivity : BaseActivity() {
 
     companion object {
         const val EXTRA_APP_DETAIL: String = "app_details"
+        const val EXTRA_TAGS: String = "tags"
 
         /**
          * Get an intent for this activity, pass in an [appDetail] to edit the details
          *
          * @param context current context
          * @param appDetail details to edit, null to create a new app
+         * @param tags to populate the autocomplete with
          * @return intent to start the activity with
          */
-        fun getIntent(context: Context, appDetail: AppDetail? = null) =
+        fun getIntent(context: Context, appDetail: AppDetail? = null, tags: List<String>? = null) =
             Intent(context, SaveAppActivity::class.java).apply {
                 putExtra(EXTRA_APP_DETAIL, appDetail)
+                putStringArrayListExtra(EXTRA_TAGS, tags?.let { ArrayList(it) })
             }
     }
 
@@ -138,6 +142,8 @@ class SaveAppActivity : BaseActivity() {
         intent.extras?.let { extras ->
             if (extras.containsKey(EXTRA_APP_DETAIL)) {
                 appDetail = extras.getParcelableCompat(EXTRA_APP_DETAIL, AppDetail::class.java)
+                (binding.inputTag.editText as TagInputEditText).allTags =
+                    extras.getStringArrayList(EXTRA_TAGS)
             }
         }
 
@@ -147,6 +153,8 @@ class SaveAppActivity : BaseActivity() {
                 inputPackage.editText?.setText(app.appPackage)
                 inputPackage.isEnabled = app.appPackage.isNullOrEmpty()
                 switchFavourite.isChecked = app.isFavourite
+                inputNote.editText?.setText(app.notes)
+                (inputTag.editText as TagInputEditText).tags = app.tags
             }
         }
     }
@@ -232,11 +240,14 @@ class SaveAppActivity : BaseActivity() {
                 appPackage = packageName
                 isFavourite = binding.switchFavourite.isChecked
                 notes = binding.inputNote.editText?.text.toString()
+                tags = (binding.inputTag.editText as TagInputEditText).tags
             }
             appDetail!!.db.save(this) { error, ref ->
                 hideProgress()
                 if (error == null) {
-                    setResult(RESULT_OK)
+                    setResult(RESULT_OK, Intent().apply {
+                        putExtra(EXTRA_APP_DETAIL, appDetail)
+                    })
                     finish()
                 } else {
                     Notify.error(this, R.string.error_generic)
