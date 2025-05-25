@@ -40,6 +40,7 @@
     <string name="hint_app_tag">Tags</string>
     <string name="hint_app_name">Name</string>
     <string name="hint_app_notes">Notes</string>
+    <string name="hint_search">Search</string>
 
     <string name="instruction_empty_app_list">You have no applications in this category at the moment.</string>
     <string name="progress_saving">Saving &#8230;</string>
@@ -59,4 +60,6 @@
     <string name="title_notes">Notes:</string>
 
     <string name="filter_none_selected">No Filters</string>
+
+    <string name="menu_filter">Filter</string>
 </resources>

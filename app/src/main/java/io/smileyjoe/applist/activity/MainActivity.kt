@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.isVisible
@@ -21,6 +22,7 @@ import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.library.utils.Extensions.addDistinct
+import io.smileyjoe.library.utils.Extensions.delayedTransition
 
 /**
  * Main activity, houses a view pager of fragments, one for each item in [Page]
@@ -41,15 +43,14 @@ class MainActivity : BaseActivity() {
          * @param fromSplash true if this is from the splash screen, defaults to true
          * @return the intent to start the activity
          */
-        fun getIntent(context: Context, fromSplash: Boolean = true): Intent {
-            var intent = Intent(context, MainActivity::class.java)
-            intent.putExtra(EXTRA_FROM_SPLASH, fromSplash)
-            return intent
-        }
+        fun getIntent(context: Context, fromSplash: Boolean = true) =
+            Intent(context, MainActivity::class.java).apply {
+                putExtra(EXTRA_FROM_SPLASH, fromSplash)
+            }
     }
 
     // activity UI //
-    val binding: ActivityMainBinding by lazy {
+    private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
@@ -68,6 +69,7 @@ class MainActivity : BaseActivity() {
             supportFragmentManager.findFragmentByTag(AppDetailsFragment.TAG)?.let { _ ->
                 // if the AppDetailsFragment is on the backstack, hide the fab and bottom nav //
                 binding.fabAdd.hide()
+                (binding.bottomNavigation.parent as ViewGroup).delayedTransition(150)
                 binding.bottomNavigation.isVisible = false
             } ?: run {
                 // else show them and remove the listener //
@@ -92,6 +94,7 @@ class MainActivity : BaseActivity() {
             var nav = Page.fromPosition(position)
             binding.textTitle.setText(nav.getTitle(baseContext))
             binding.bottomNavigation.selectedItemId = nav.id
+            binding.searchView.hide()
         }
     }
 

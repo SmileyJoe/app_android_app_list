@@ -7,10 +7,13 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 
 object Extensions {
     /**
@@ -169,7 +172,7 @@ object Extensions {
      * @param animatedVector to run
      * @param onComplete callback for when the animation is done
      */
-    fun ImageView.animate(@DrawableRes animatedVector: Int, onComplete: (() -> Unit)? = null){
+    fun ImageView.animate(@DrawableRes animatedVector: Int, onComplete: (() -> Unit)? = null) {
         setImageResource(animatedVector)
         (drawable as AnimatedVectorDrawable).apply {
             onComplete?.let {
@@ -181,5 +184,16 @@ object Extensions {
             }
             start()
         }
+    }
+
+    /**
+     * Begin a delayed transition for animating layout changes
+     *
+     * @param duration for the animation
+     */
+    fun ViewGroup.delayedTransition(duration: Long) {
+        TransitionManager.beginDelayedTransition(this, AutoTransition().apply {
+            this.duration = duration
+        })
     }
 }
