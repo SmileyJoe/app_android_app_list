@@ -8,10 +8,12 @@ import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 
@@ -195,5 +197,24 @@ object Extensions {
         TransitionManager.beginDelayedTransition(this, AutoTransition().apply {
             this.duration = duration
         })
+    }
+
+    fun View.delayedTransition(duration: Long) =
+        parent.delayedTransition(duration)
+
+    fun ViewParent.delayedTransition(duration: Long) {
+        if(this is ViewGroup) {
+            (this as ViewGroup).delayedTransition(duration)
+        }
+    }
+
+    fun View.hide() {
+        delayedTransition(150)
+        isVisible = false
+    }
+
+    fun View.show(){
+        delayedTransition(150)
+        isVisible = true
     }
 }

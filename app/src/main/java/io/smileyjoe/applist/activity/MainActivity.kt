@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
@@ -16,13 +16,19 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterAppList
 import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.applist.extensions.FragmentExt.add
+import io.smileyjoe.applist.extensions.FragmentExt.clear
+import io.smileyjoe.applist.extensions.SearchViewExt.onClosing
+import io.smileyjoe.applist.extensions.SearchViewExt.onOpening
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
+import io.smileyjoe.applist.fragment.SearchResultsFragment
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.library.utils.Extensions.addDistinct
-import io.smileyjoe.library.utils.Extensions.delayedTransition
+import io.smileyjoe.library.utils.Extensions.hide
+import io.smileyjoe.library.utils.Extensions.show
 
 /**
  * Main activity, houses a view pager of fragments, one for each item in [Page]
@@ -69,12 +75,11 @@ class MainActivity : BaseActivity() {
             supportFragmentManager.findFragmentByTag(AppDetailsFragment.TAG)?.let { _ ->
                 // if the AppDetailsFragment is on the backstack, hide the fab and bottom nav //
                 binding.fabAdd.hide()
-                (binding.bottomNavigation.parent as ViewGroup).delayedTransition(150)
-                binding.bottomNavigation.isVisible = false
+                binding.bottomNavigation.hide()
             } ?: run {
                 // else show them and remove the listener //
                 binding.fabAdd.show()
-                binding.bottomNavigation.isVisible = true
+                binding.bottomNavigation.show()
                 window.statusBarColor = Color.TRANSPARENT
                 supportFragmentManager.removeOnBackStackChangedListener(onDetailsBackstackListener)
             }
@@ -132,12 +137,21 @@ class MainActivity : BaseActivity() {
         getFilter = { filter }
     )
 
+    private var searchResultsFragment: SearchResultsFragment? = null
+        get() =
+            field ?: supportFragmentManager.findFragmentByTag(SearchResultsFragment.TAG)?.let {
+                field = (it as SearchResultsFragment)
+                field
+            }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // handle any shared element animations //
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        handleBackPressed()
 
         // populate the ui //
         binding.apply {
@@ -151,30 +165,11 @@ class MainActivity : BaseActivity() {
                 binding.pagerApps.currentItem = Page.fromId(item.itemId).position
                 true
             }
-            fabAdd.setOnClickListener { view ->
-                saveAppResult.launch(
-                    SaveAppActivity.getIntent(
-                        context = baseContext,
-                        tags = tags
-                    ),
-                    ActivityOptionsCompat
-                        .makeSceneTransitionAnimation(
-                            this@MainActivity,
-                            view,
-                            "transition_fab"
-                        )
-                )
-            }
-            layoutTags.apply {
-                toggleView = binding.imageFilter
-                detailsView = binding.textFilter
-                clearView = binding.imageFilterClear
-                onSelectedTagsChanged = {
-                    filter.tags = it
-                    pagerAdapterMain.refresh()
-                }
-            }
         }
+
+        setupFab()
+        setupTags()
+        setupSearchView()
 
         // remove the splash screen if we are coming from there //
         intent.extras?.getBoolean(EXTRA_FROM_SPLASH, true)?.let { fromSplash ->
@@ -182,6 +177,62 @@ class MainActivity : BaseActivity() {
                 removeOnPreDrawListener { loaded }
                 splashScreen.exitAfterAnim()
             }
+        }
+    }
+
+    private fun handleBackPressed() {
+        onBackPressedDispatcher.addCallback {
+            if (binding.searchView.isShowing) {
+                binding.searchView.hide()
+            } else {
+                finish()
+            }
+        }
+    }
+
+    private fun setupFab() = binding.fabAdd.apply {
+        setOnClickListener { view ->
+            saveAppResult.launch(
+                SaveAppActivity.getIntent(
+                    context = baseContext,
+                    tags = tags
+                ),
+                ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(
+                        this@MainActivity,
+                        view,
+                        "transition_fab"
+                    )
+            )
+        }
+    }
+
+    private fun setupTags() = binding.layoutTags.apply {
+        toggleView = binding.imageFilter
+        detailsView = binding.textFilter
+        clearView = binding.imageFilterClear
+        onSelectedTagsChanged = {
+            filter.tags = it
+            pagerAdapterMain.refresh()
+        }
+    }
+
+    private fun setupSearchView() = with(binding.searchView) {
+        setupWithSearchBar(binding.searchBar)
+        editText.doOnTextChanged { text, _, _, _ ->
+            searchResultsFragment?.search(text.toString())
+        }
+        onOpening {
+            binding.fragmentSearchResults.add(
+                SearchResultsFragment(),
+                SearchResultsFragment.TAG
+            )
+            binding.bottomNavigation.hide()
+        }
+        onClosing {
+            binding.fragmentSearchResults.clear<SearchResultsFragment>()
+            searchResultsFragment = null
+            binding.bottomNavigation.show()
         }
     }
 }
