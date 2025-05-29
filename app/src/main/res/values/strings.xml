@@ -21,6 +21,8 @@
     <string name="text_sign_in">Sign in &#8230;</string>
     <string name="text_sign_in_description">Please sign in to continue.</string>
     <string name="text_installed">Installed</string>
+    <string name="text_saved">Saved</string>
+    <string name="text_favourite">Favourite</string>
     <string name="text_details">Details</string>
 
     <string name="success_app_saved">Application saved successfully</string>

@@ -5,7 +5,7 @@
         <item name="android:statusBarColor">?android:colorBackground</item>
         <item name="materialButtonStyle">@style/Widget.Material3.Button</item>
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
-        <item name="android:textViewStyle">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="android:textViewStyle">@style/Text</item>
         <item name="android:windowContentTransitions">true</item>
         <!-- Splash Screen -->
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_screen_anim</item>
@@ -26,7 +26,13 @@
 
     <style name="Button.Alt" parent="@style/Widget.Material3.Button.OutlinedButton"/>
 
+    <style name="Text" parent="@style/TextAppearance.Material3.BodyMedium"/>
+
     <style name="Text.Title" parent="@style/TextAppearance.Material3.TitleMedium"/>
+
+    <style name="Text.Status">
+        <item name="android:textStyle">italic</item>
+    </style>
 
     <style name="Text.Heading.Large" parent="TextAppearance.Material3.DisplayLarge">
         <item name="android:textStyle">bold</item>
