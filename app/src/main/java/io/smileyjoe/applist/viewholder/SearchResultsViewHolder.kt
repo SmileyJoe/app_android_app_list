@@ -6,18 +6,25 @@ import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultsBinding
 import io.smileyjoe.applist.db.Icon
+import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 
 class SearchResultsViewHolder : RecyclerView.ViewHolder {
 
-    val binding: RowSearchResultsBinding
+    private val binding: RowSearchResultsBinding
+    private val onAppSelected: OnAppSelected
 
     constructor(
-        parent: ViewGroup
-    ) : this(RowSearchResultsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        parent: ViewGroup,
+        onAppSelected: OnAppSelected
+    ) : this(
+        RowSearchResultsBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+        onAppSelected
+    )
 
-    constructor(view: RowSearchResultsBinding) : super(view.root) {
+    constructor(view: RowSearchResultsBinding, onAppSelected: OnAppSelected) : super(view.root) {
         this.binding = view
+        this.onAppSelected = onAppSelected
     }
 
     fun bind(app: AppDetail) {
@@ -25,6 +32,7 @@ class SearchResultsViewHolder : RecyclerView.ViewHolder {
             textTitle.text = app.name
             textStatus.text = getStatus(app)
             Icon.load(imageIcon, app)
+            root.setOnClickListener { onAppSelected.onSelected(app) }
         }
     }
 

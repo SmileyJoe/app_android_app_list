@@ -3,12 +3,14 @@ package io.smileyjoe.applist.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.comparator.AppDetailComparator
+import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.viewholder.SearchResultsViewHolder
 import java.util.Collections
 
 class SearchResultsAdapter(
-    items: List<AppDetail> = ArrayList()
+    items: List<AppDetail> = ArrayList(),
+    private val onAppSelected: OnAppSelected
 ) : RecyclerView.Adapter<SearchResultsViewHolder>() {
 
     var items: List<AppDetail> = items
@@ -23,7 +25,7 @@ class SearchResultsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        SearchResultsViewHolder(parent)
+        SearchResultsViewHolder(parent, onAppSelected)
 
     override fun onBindViewHolder(holder: SearchResultsViewHolder, position: Int) =
         holder.bind(getItem(position))

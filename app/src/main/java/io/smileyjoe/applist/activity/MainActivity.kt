@@ -18,12 +18,14 @@ import io.smileyjoe.applist.databinding.ActivityMainBinding
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.FragmentExt.add
 import io.smileyjoe.applist.extensions.FragmentExt.clear
+import io.smileyjoe.applist.extensions.SearchViewExt.close
 import io.smileyjoe.applist.extensions.SearchViewExt.onClosing
 import io.smileyjoe.applist.extensions.SearchViewExt.onOpening
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.fragment.SearchResultsFragment
+import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.library.utils.Extensions.addDistinct
@@ -122,18 +124,7 @@ class MainActivity : BaseActivity() {
             binding.layoutTags.tags = this@MainActivity.tags
         },
         // show the details when an item is selected //
-        onItemSelected = { appDetail ->
-            supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
-
-            supportFragmentManager.commit {
-                addToBackStack(AppDetailsFragment.TAG)
-                add(
-                    R.id.fragment_details,
-                    AppDetailsFragment(appDetail, tags),
-                    AppDetailsFragment.TAG
-                )
-            }
-        },
+        onItemSelected = { appDetail -> showApp(appDetail) },
         getFilter = { filter }
     )
 
@@ -176,6 +167,21 @@ class MainActivity : BaseActivity() {
             if (fromSplash) {
                 removeOnPreDrawListener { loaded }
                 splashScreen.exitAfterAnim()
+            }
+        }
+    }
+
+    private fun showApp(app: AppDetail) {
+        binding.searchView.close {
+            supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
+
+            supportFragmentManager.commit {
+                addToBackStack(AppDetailsFragment.TAG)
+                add(
+                    R.id.fragment_details,
+                    AppDetailsFragment(app, tags),
+                    AppDetailsFragment.TAG
+                )
             }
         }
     }
@@ -224,7 +230,7 @@ class MainActivity : BaseActivity() {
         }
         onOpening {
             binding.fragmentSearchResults.add(
-                SearchResultsFragment(),
+                SearchResultsFragment { appDetail -> showApp(appDetail) },
                 SearchResultsFragment.TAG
             )
             binding.bottomNavigation.hide()

@@ -14,10 +14,13 @@ import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.databinding.FragmentSearchResultsBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 
-class SearchResultsFragment : Fragment() {
+class SearchResultsFragment(
+    onAppSelected: OnAppSelected
+) : Fragment() {
 
     companion object {
         // the tag to use when adding the fragment //
@@ -29,7 +32,9 @@ class SearchResultsFragment : Fragment() {
     val dbReference by lazy {
         Db.getDetailReference(requireActivity())
     }
-    val resultsAdapter = SearchResultsAdapter()
+    val resultsAdapter = SearchResultsAdapter(
+        onAppSelected = onAppSelected
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
