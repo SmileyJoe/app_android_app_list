@@ -1,10 +1,12 @@
 package io.smileyjoe.applist.objects
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
+import io.smileyjoe.applist.R
 import io.smileyjoe.applist.db.DbAppDetail
 import io.smileyjoe.applist.db.Icon
 import kotlinx.parcelize.Parceler
@@ -52,6 +54,13 @@ class AppDetail(
     var db: DbAppDetail
         get() = DbAppDetail(this)
         private set(value) {}
+
+    fun getStatus(context: Context) =
+        listOfNotNull(
+            if (isInstalled) R.string.text_installed else null,
+            if (isSaved) R.string.text_saved else null,
+            if (isFavourite) R.string.text_favourite else null
+        ).joinToString(separator = " | ") { context.getString(it) }
 
     private companion object : Parceler<AppDetail> {
 

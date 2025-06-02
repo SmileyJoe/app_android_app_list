@@ -60,11 +60,31 @@ class SearchResultsFragment(
         val filtered = allApps
             ?.filter {
                 it.name?.contains(text, ignoreCase = true) ?: false
-                        || it.appPackage?.contains(text, ignoreCase = true) ?: false
                         || it.notes?.contains(text, ignoreCase = true) ?: false
-            }
-        resultsAdapter.items = filtered ?: ArrayList()
+            }?.sort(text)
+
+        resultsAdapter.apply {
+            searchTerm = text
+            items = filtered ?: ArrayList()
+        }
     }
+
+    private fun List<AppDetail>.sort(text: String? = null) =
+        sortedWith(
+            compareBy<AppDetail> { app ->
+                text?.let {
+                    if (app.name?.contains(it, ignoreCase = true) == true) {
+                        SearchResultsAdapter.VIEW_TITLE
+                    } else {
+                        SearchResultsAdapter.VIEW_OTHER
+                    }
+                } ?: run {
+                    SearchResultsAdapter.VIEW_TITLE
+                }
+            }.thenBy {
+                it.name
+            }
+        )
 
     inner class AppDetailsEventListener : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -72,6 +92,7 @@ class SearchResultsFragment(
             val saved = Page.SAVED.getApps(requireContext(), snapshot)
             allApps = (installed + saved).distinctBy { it.appPackage }
             dbReference?.removeEventListener(this)
+            resultsAdapter.items = allApps?.sort() ?: ArrayList()
         }
 
         override fun onCancelled(error: DatabaseError) {

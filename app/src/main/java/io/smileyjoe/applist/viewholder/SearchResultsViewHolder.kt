@@ -1,45 +1,54 @@
 package io.smileyjoe.applist.viewholder
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import io.smileyjoe.applist.R
-import io.smileyjoe.applist.databinding.RowSearchResultsBinding
-import io.smileyjoe.applist.db.Icon
+import androidx.core.view.isVisible
+import com.google.android.material.color.MaterialColors
+import io.smileyjoe.applist.databinding.RowSearchResultBinding
+import io.smileyjoe.applist.extensions.StringExt.highlight
+import io.smileyjoe.applist.extensions.StringExt.removeBreaks
+import io.smileyjoe.applist.extensions.StringExt.summary
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
+import io.smileyjoe.library.tags.R
 
-class SearchResultsViewHolder : RecyclerView.ViewHolder {
+class SearchResultsViewHolder : BindingViewHolder<AppDetail> {
 
-    private val binding: RowSearchResultsBinding
-    private val onAppSelected: OnAppSelected
+    private val binding: RowSearchResultBinding
+    private val onItemSelected: OnAppSelected
+    private val highlightColor: Int
 
     constructor(
         parent: ViewGroup,
         onAppSelected: OnAppSelected
     ) : this(
-        RowSearchResultsBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+        RowSearchResultBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         onAppSelected
     )
 
-    constructor(view: RowSearchResultsBinding, onAppSelected: OnAppSelected) : super(view.root) {
-        this.binding = view
-        this.onAppSelected = onAppSelected
+    constructor(
+        view: RowSearchResultBinding,
+        onAppSelected: OnAppSelected
+    ) : super(view.root) {
+        binding = view
+        onItemSelected = onAppSelected
+        highlightColor =
+            MaterialColors.getColor(binding.root.context, R.attr.colorAccent, Color.WHITE)
     }
 
-    fun bind(app: AppDetail) {
+    override fun bind(app: AppDetail, searchTerm: String?) {
         binding.apply {
-            textTitle.text = app.name
-            textStatus.text = getStatus(app)
-            Icon.load(imageIcon, app)
-            root.setOnClickListener { onAppSelected.onSelected(app) }
+            layoutSummary.bind(app)
+            textNotes.apply {
+                text = app.notes
+                    ?.trimIndent()
+                    ?.removeBreaks()
+                    ?.summary(searchTerm, 50, true)
+                    ?.highlight(searchTerm, highlightColor)
+                isVisible = !app.notes.isNullOrEmpty()
+            }
+            root.setOnClickListener { onItemSelected.onSelected(app) }
         }
     }
-
-    private fun getStatus(app: AppDetail) =
-        listOfNotNull(
-            if (app.isInstalled) R.string.text_installed else null,
-            if (app.isSaved) R.string.text_saved else null,
-            if (app.isFavourite) R.string.text_favourite else null
-        ).joinToString(separator = " | ") { binding.textStatus.context.getString(it) }
 }

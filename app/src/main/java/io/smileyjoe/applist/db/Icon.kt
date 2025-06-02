@@ -1,10 +1,12 @@
 package io.smileyjoe.applist.db
 
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -87,6 +89,7 @@ object Icon {
     fun load(
         imageView: ImageView,
         appDetail: AppDetail,
+        @DrawableRes placeholder: Int = Resources.ID_NULL,
         onComplete: ((ImageView) -> Unit)? = null
     ) {
         // if the icon has already been retrieved from firebase, or from the packagemanager //
@@ -103,6 +106,7 @@ object Icon {
                 reference.downloadUrl.addOnSuccessListener { uri ->
                     Glide.with(imageView.context)
                         .load(reference)
+                        .placeholder(placeholder)
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(
                                 e: GlideException?,
@@ -129,7 +133,11 @@ object Icon {
                     imageView.visibility = View.VISIBLE
                 }.addOnFailureListener {
                     // if there is no icon, hide the view //
-                    imageView.visibility = View.GONE
+                    if (placeholder != Resources.ID_NULL) {
+                        imageView.setImageResource(placeholder)
+                    } else {
+                        imageView.visibility = View.GONE
+                    }
                 }
             }
         }
