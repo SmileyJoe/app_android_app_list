@@ -13,6 +13,7 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.databinding.FragmentSearchResultsBinding
 import io.smileyjoe.applist.db.Db
+import io.smileyjoe.applist.decorator.HeadingDecorator
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
@@ -53,6 +54,7 @@ class SearchResultsFragment(
         binding.recyclerSearchResults.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = resultsAdapter
+            addItemDecoration(HeadingDecorator())
         }
     }
 

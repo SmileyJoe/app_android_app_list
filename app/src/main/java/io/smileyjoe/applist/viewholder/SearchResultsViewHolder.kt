@@ -3,15 +3,17 @@ package io.smileyjoe.applist.viewholder
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import com.google.android.material.color.MaterialColors
+import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultBinding
+import io.smileyjoe.applist.decorator.HeadingDecorator.Companion.addHeader
 import io.smileyjoe.applist.extensions.StringExt.highlight
 import io.smileyjoe.applist.extensions.StringExt.removeBreaks
 import io.smileyjoe.applist.extensions.StringExt.summary
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
-import io.smileyjoe.library.tags.R
 
 class SearchResultsViewHolder : BindingViewHolder<AppDetail> {
 
@@ -37,8 +39,9 @@ class SearchResultsViewHolder : BindingViewHolder<AppDetail> {
             MaterialColors.getColor(binding.root.context, R.attr.colorAccent, Color.WHITE)
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?) {
+    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int) {
         binding.apply {
+            root.addHeader(header)
             layoutSummary.bind(app)
             textNotes.apply {
                 text = app.notes

@@ -64,4 +64,7 @@
     <string name="filter_none_selected">No Filters</string>
 
     <string name="menu_filter">Filter</string>
+
+    <string name="header_search_title">Application</string>
+    <string name="header_search_summary">Details</string>
 </resources>

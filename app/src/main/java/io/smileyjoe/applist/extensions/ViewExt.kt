@@ -7,6 +7,7 @@ import android.widget.ImageView
 import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
 import io.smileyjoe.applist.extensions.ViewExt.below
 import io.smileyjoe.applist.extensions.ViewExt.updateSize
+import io.smileyjoe.applist.objects.Margin
 import io.smileyjoe.library.utils.Color
 
 /**
@@ -82,5 +83,14 @@ object ViewExt {
     fun ImageView.getColors(colors: (Color) -> Unit) {
         Color.from(this, colors)
     }
+
+    fun View.measure() {
+        measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+    }
+
+    fun View.margins() =
+        Margin(this)
 
 }

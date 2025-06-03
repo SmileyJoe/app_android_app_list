@@ -1,7 +1,10 @@
 package io.smileyjoe.applist.adapter
 
+import android.content.res.Resources
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
+import io.smileyjoe.applist.R
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.viewholder.BindingViewHolder
@@ -21,26 +24,24 @@ class SearchResultsAdapter(
     var items: List<AppDetail> = items
         set(value) {
             field = value
+            firstSummary = true
             notifyDataSetChanged()
         }
 
     var searchTerm: String? = null
+    var firstSummary: Boolean = true
 
-    fun refresh() {
-        notifyDataSetChanged()
-    }
+    private fun isTitle(position: Int): Boolean =
+        searchTerm?.let {
+            getItem(position).name?.contains(it, ignoreCase = true) ?: false
+        } ?: true
 
-    override fun getItemViewType(position: Int): Int {
-        return if (!searchTerm.isNullOrEmpty()) {
-            if (getItem(position).name?.contains(searchTerm!!, ignoreCase = true) == true) {
-                VIEW_TITLE
-            } else {
-                VIEW_OTHER
-            }
+    override fun getItemViewType(position: Int): Int =
+        if (isTitle(position)) {
+            VIEW_TITLE
         } else {
             VIEW_OTHER
         }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         if (viewType == VIEW_TITLE) {
@@ -51,10 +52,23 @@ class SearchResultsAdapter(
 
 
     override fun onBindViewHolder(holder: BindingViewHolder<AppDetail>, position: Int) =
-        holder.bind(getItem(position), searchTerm)
+        holder.bind(getItem(position), searchTerm, getHeader(position))
 
     override fun getItemCount() = items.size
 
     fun getItem(position: Int) = items[position]
+
+    @StringRes
+    private fun getHeader(position: Int): Int {
+        val isTitle = isTitle(position)
+        return if (position == 0) {
+            if (isTitle) R.string.header_search_title else R.string.header_search_summary
+        } else if (!searchTerm.isNullOrEmpty() && !isTitle && firstSummary) {
+            firstSummary = false
+            R.string.header_search_summary
+        } else {
+            Resources.ID_NULL
+        }
+    }
 
 }
