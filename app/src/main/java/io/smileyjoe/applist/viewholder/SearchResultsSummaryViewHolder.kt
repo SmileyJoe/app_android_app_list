@@ -16,7 +16,7 @@ fun RowSearchResultSummaryBinding.bind(app: AppDetail) {
     Icon.load(imageIcon, app, R.drawable.ic_placeholder)
 }
 
-class SearchResultsSummaryViewHolder : BindingViewHolder<AppDetail> {
+class SearchResultsSummaryViewHolder : HeaderViewHolder<AppDetail> {
 
     private val binding: RowSearchResultSummaryBinding
     private val onAppSelected: OnAppSelected
@@ -37,7 +37,7 @@ class SearchResultsSummaryViewHolder : BindingViewHolder<AppDetail> {
         this.onAppSelected = onAppSelected
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int, viewType: Int) {
+    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int?, viewType: Int) {
         binding.apply {
             root.addHeader(header)
             root.setTag(R.id.tag_view_type, viewType)

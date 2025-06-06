@@ -15,7 +15,7 @@ import io.smileyjoe.applist.extensions.StringExt.summary
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 
-class SearchResultsViewHolder : BindingViewHolder<AppDetail> {
+class SearchResultsViewHolder : HeaderViewHolder<AppDetail> {
 
     private val binding: RowSearchResultBinding
     private val onItemSelected: OnAppSelected
@@ -39,7 +39,7 @@ class SearchResultsViewHolder : BindingViewHolder<AppDetail> {
             MaterialColors.getColor(binding.root.context, R.attr.colorPrimary, Color.WHITE)
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int, viewType: Int) {
+    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int?, viewType: Int) {
         binding.apply {
             root.addHeader(header)
             root.setTag(R.id.tag_view_type, viewType)

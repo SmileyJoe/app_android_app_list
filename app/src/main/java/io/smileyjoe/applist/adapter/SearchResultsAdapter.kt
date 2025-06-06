@@ -1,22 +1,22 @@
 package io.smileyjoe.applist.adapter
 
-import android.content.res.Resources
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
-import io.smileyjoe.applist.viewholder.BindingViewHolder
+import io.smileyjoe.applist.viewholder.HeaderViewHolder
 import io.smileyjoe.applist.viewholder.SearchResultsSummaryViewHolder
 import io.smileyjoe.applist.viewholder.SearchResultsViewHolder
 
 class SearchResultsAdapter(
     items: List<AppDetail> = ArrayList(),
     private val onAppSelected: OnAppSelected
-) : RecyclerView.Adapter<BindingViewHolder<AppDetail>>() {
+) : RecyclerView.Adapter<HeaderViewHolder<AppDetail>>() {
 
     companion object {
+        const val VIEW_UNKNOWN = 0
         const val VIEW_TITLE = 1
         const val VIEW_OTHER = 2
     }
@@ -24,12 +24,13 @@ class SearchResultsAdapter(
     var items: List<AppDetail> = items
         set(value) {
             field = value
-            firstSummary = true
+            viewTypes.clear()
             notifyDataSetChanged()
         }
 
+    private val viewTypes = mutableMapOf<Int, Int>()
+
     var searchTerm: String? = null
-    var firstSummary: Boolean = true
 
     private fun isTitle(position: Int): Boolean =
         searchTerm?.let {
@@ -37,10 +38,18 @@ class SearchResultsAdapter(
         } ?: true
 
     override fun getItemViewType(position: Int): Int =
-        if (isTitle(position)) {
-            VIEW_TITLE
+        if (position in 0..items.size) {
+            viewTypes[position] ?: run {
+                val viewType = if (isTitle(position)) {
+                    VIEW_TITLE
+                } else {
+                    VIEW_OTHER
+                }
+                viewTypes[position] = viewType
+                return viewType
+            }
         } else {
-            VIEW_OTHER
+            VIEW_UNKNOWN
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -50,8 +59,7 @@ class SearchResultsAdapter(
             SearchResultsViewHolder(parent, onAppSelected)
         }
 
-
-    override fun onBindViewHolder(holder: BindingViewHolder<AppDetail>, position: Int) =
+    override fun onBindViewHolder(holder: HeaderViewHolder<AppDetail>, position: Int) =
         holder.bind(getItem(position), searchTerm, getHeader(position), getItemViewType(position))
 
     override fun getItemCount() = items.size
@@ -59,22 +67,18 @@ class SearchResultsAdapter(
     fun getItem(position: Int) = items[position]
 
     @StringRes
-    private fun getHeader(position: Int): Int {
-        val isTitle = isTitle(position)
-        return if (position == 0) {
-            if (isTitle) {
-                R.string.header_search_title
-            } else if(firstSummary){
-                firstSummary = false
-                R.string.header_search_summary
-            } else {
-                Resources.ID_NULL
+    private fun getHeader(position: Int): Int? {
+        val viewType = getItemViewType(position)
+        val prevViewType = getItemViewType(position - 1)
+
+        if (prevViewType != viewType) {
+            return when (viewType) {
+                VIEW_TITLE -> R.string.header_search_title
+                VIEW_OTHER -> R.string.header_search_summary
+                else -> null
             }
-        } else if (!searchTerm.isNullOrEmpty() && !isTitle && firstSummary) {
-            firstSummary = false
-            R.string.header_search_summary
         } else {
-            Resources.ID_NULL
+            return null
         }
     }
 

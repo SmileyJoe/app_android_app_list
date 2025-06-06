@@ -20,8 +20,8 @@ open class HeadingDecorator : RecyclerView.ItemDecoration() {
 
     companion object {
         private const val TAG = R.id.tag_header
-        fun View.addHeader(@StringRes header: Int) {
-            setTag(TAG, context.getStringOrNull(header))
+        fun View.addHeader(@StringRes header: Int?) {
+            setTag(TAG, header?.let { context.getStringOrNull(it) })
         }
     }
 
