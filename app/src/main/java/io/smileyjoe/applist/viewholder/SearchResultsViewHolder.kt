@@ -9,6 +9,7 @@ import com.google.android.material.color.MaterialColors
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultBinding
 import io.smileyjoe.applist.decorator.HeadingDecorator.Companion.addHeader
+import io.smileyjoe.applist.decorator.SearchResultsDecorator.Companion.addType
 import io.smileyjoe.applist.extensions.StringExt.highlight
 import io.smileyjoe.applist.extensions.StringExt.removeBreaks
 import io.smileyjoe.applist.extensions.StringExt.summary
@@ -42,7 +43,7 @@ class SearchResultsViewHolder : HeaderViewHolder<AppDetail> {
     override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int?, viewType: Int) {
         binding.apply {
             root.addHeader(header)
-            root.setTag(R.id.tag_view_type, viewType)
+            root.addType(viewType)
             layoutSummary.bind(app)
             layoutTags.apply {
                 app.tags?.takeIf { it.isNotEmpty() }?.let {

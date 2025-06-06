@@ -11,7 +11,9 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.databinding.DecoratorDividerBinding
 import io.smileyjoe.applist.extensions.Extensions.setExt
-import io.smileyjoe.applist.extensions.ViewExt.margins
+import io.smileyjoe.applist.extensions.RecyclerViewExt.drawLayout
+import io.smileyjoe.applist.extensions.RecyclerViewExt.getLayoutOffset
+import io.smileyjoe.applist.extensions.RecyclerViewExt.isLastItem
 import io.smileyjoe.applist.extensions.ViewExt.measure
 
 class SearchResultsDecorator : HeadingDecorator() {
@@ -25,10 +27,10 @@ class SearchResultsDecorator : HeadingDecorator() {
     }
 
     private var binding: DecoratorDividerBinding? = null
-    private var marginTop: Int? = null
+    private var marginVertical: Int? = null
 
-    private fun getBinding(recyclerView: RecyclerView): DecoratorDividerBinding {
-        if (binding == null) {
+    private fun getBinding(recyclerView: RecyclerView): DecoratorDividerBinding =
+        binding ?: run {
             binding = DecoratorDividerBinding.inflate(
                 LayoutInflater.from(recyclerView.context),
                 recyclerView,
@@ -36,17 +38,14 @@ class SearchResultsDecorator : HeadingDecorator() {
             ).apply {
                 root.measure()
             }
-        }
-        return binding!!
-    }
-
-    private fun getMarginTop(context: Context): Int {
-        if (marginTop == null) {
-            marginTop = context.resources.getDimensionPixelOffset(R.dimen.padding_medium)
+            return binding!!
         }
 
-        return marginTop!!
-    }
+    private fun getMarginVertical(context: Context): Int =
+        marginVertical ?: run {
+            marginVertical = context.resources.getDimensionPixelOffset(R.dimen.padding_medium)
+            marginVertical!!
+        }
 
     private fun View.getType(): Int? =
         getTag(TAG)?.let {
@@ -64,25 +63,16 @@ class SearchResultsDecorator : HeadingDecorator() {
         } else {
             val top = when (row.getType()) {
                 SearchResultsAdapter.VIEW_OTHER -> {
-                    with(getBinding(recyclerView).root) {
-                        measuredHeight + margins().vertical
-                    }
+                    getLayoutOffset(outRect, getBinding(recyclerView).root)
+                    outRect.top
                 }
 
-                else -> getMarginTop(row.context)
+                else -> getMarginVertical(row.context)
             }
-            val bottom =
-                if (recyclerView.getChildAdapterPosition(row) == recyclerView.adapter?.itemCount?.minus(
-                        1
-                    )
-                ) {
-                    getMarginTop(row.context)
-                } else {
-                    0
-                }
+
             outRect.setExt(
                 top = top,
-                bottom = bottom
+                bottom = if (recyclerView.isLastItem(row)) getMarginVertical(row.context) else 0
             )
         }
     }
@@ -94,22 +84,7 @@ class SearchResultsDecorator : HeadingDecorator() {
             if (!isHeader(row)) {
                 when (row.getType()) {
                     SearchResultsAdapter.VIEW_OTHER -> {
-                        val header = getBinding(recyclerView).root
-                        val margins = header.margins()
-                        header.layout(
-                            recyclerView.left,
-                            0,
-                            recyclerView.right - margins.horizontal,
-                            header.measuredHeight
-                        )
-                        canvas.apply {
-                            save()
-                            val x = margins.start
-                            val y = row.top - header.measuredHeight - margins.bottom
-                            translate(x.toFloat(), y.toFloat())
-                            header.draw(this)
-                            restore()
-                        }
+                        drawLayout(canvas, recyclerView, row, getBinding(recyclerView).root)
                     }
                 }
             }

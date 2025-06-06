@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.DecoratorHeadingBinding
 import io.smileyjoe.applist.extensions.Extensions.getStringOrNull
-import io.smileyjoe.applist.extensions.Extensions.setExt
-import io.smileyjoe.applist.extensions.ViewExt.margins
+import io.smileyjoe.applist.extensions.RecyclerViewExt.drawLayout
+import io.smileyjoe.applist.extensions.RecyclerViewExt.getLayoutOffset
 import io.smileyjoe.applist.extensions.ViewExt.measure
 
 
@@ -57,9 +57,7 @@ open class HeadingDecorator : RecyclerView.ItemDecoration() {
         state: RecyclerView.State
     ) {
         row.getHeader()?.let { tag ->
-            with(getBinding(tag, recyclerView).root) {
-                outRect.setExt(top = measuredHeight + margins().vertical)
-            }
+            getLayoutOffset(outRect, getBinding(tag, recyclerView).root)
         }
     }
 
@@ -67,22 +65,7 @@ open class HeadingDecorator : RecyclerView.ItemDecoration() {
         super.onDraw(canvas, recyclerView, state)
         recyclerView.children.forEach { row ->
             row.getHeader()?.let { tag ->
-                val header = getBinding(tag, recyclerView).root
-                val margins = header.margins()
-                header.layout(
-                    recyclerView.left,
-                    0,
-                    recyclerView.right - margins.horizontal,
-                    header.measuredHeight
-                )
-                canvas.apply {
-                    save()
-                    val x = margins.start
-                    val y = row.top - header.measuredHeight - margins.bottom
-                    translate(x.toFloat(), y.toFloat())
-                    header.draw(this)
-                    restore()
-                }
+                drawLayout(canvas, recyclerView, row, getBinding(tag, recyclerView).root)
             }
         }
     }
