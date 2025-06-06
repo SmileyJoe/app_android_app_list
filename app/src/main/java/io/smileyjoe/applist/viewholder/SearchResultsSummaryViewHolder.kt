@@ -7,7 +7,6 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultSummaryBinding
 import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.decorator.HeadingDecorator.Companion.addHeader
-import io.smileyjoe.applist.decorator.SearchResultsDecorator.Companion.addType
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 
@@ -38,10 +37,9 @@ class SearchResultsSummaryViewHolder : HeaderViewHolder<AppDetail> {
         this.onAppSelected = onAppSelected
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int?, viewType: Int) {
+    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int?) {
         binding.apply {
             root.addHeader(header)
-            root.addType(viewType)
             bind(app)
             root.setOnClickListener { onAppSelected.onSelected(app) }
         }

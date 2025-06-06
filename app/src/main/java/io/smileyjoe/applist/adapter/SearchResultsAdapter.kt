@@ -60,7 +60,7 @@ class SearchResultsAdapter(
         }
 
     override fun onBindViewHolder(holder: HeaderViewHolder<AppDetail>, position: Int) =
-        holder.bind(getItem(position), searchTerm, getHeader(position), getItemViewType(position))
+        holder.bind(getItem(position), searchTerm, getHeader(position))
 
     override fun getItemCount() = items.size
 
