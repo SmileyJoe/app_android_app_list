@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,13 +14,15 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.databinding.FragmentSearchResultsBinding
 import io.smileyjoe.applist.db.Db
-import io.smileyjoe.applist.decorator.HeadingDecorator
 import io.smileyjoe.applist.decorator.SearchResultsDecorator
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Extensions.contains
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchResultsFragment(
     onAppSelected: OnAppSelected
@@ -93,11 +96,15 @@ class SearchResultsFragment(
 
     inner class AppDetailsEventListener : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            val installed = Page.INSTALLED.getApps(requireContext(), snapshot)
-            val saved = Page.SAVED.getApps(requireContext(), snapshot)
-            allApps = (installed + saved).distinctBy { it.appPackage }
             dbReference?.removeEventListener(this)
-            resultsAdapter.items = allApps?.sort() ?: ArrayList()
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    val installed = Page.INSTALLED.getApps(requireContext(), snapshot)
+                    val saved = Page.SAVED.getApps(requireContext(), snapshot)
+                    allApps = (installed + saved).distinctBy { it.appPackage }
+                    resultsAdapter.items = allApps?.sort() ?: ArrayList()
+                }
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {
