@@ -102,6 +102,8 @@ class SearchResultsFragment(
                     val installed = Page.INSTALLED.getApps(requireContext(), snapshot)
                     val saved = Page.SAVED.getApps(requireContext(), snapshot)
                     allApps = (installed + saved).distinctBy { it.appPackage }
+                }
+                withContext(Dispatchers.Main) {
                     resultsAdapter.items = allApps?.sort() ?: ArrayList()
                 }
             }

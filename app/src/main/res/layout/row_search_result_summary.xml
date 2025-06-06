@@ -10,12 +10,12 @@
         android:id="@+id/image_icon"
         android:layout_width="@dimen/icon_medium"
         android:layout_height="@dimen/icon_medium"
+        android:src="@drawable/ic_placeholder"
         app:layout_constraintBottom_toTopOf="@id/barrier_details"
         app:layout_constraintEnd_toStartOf="@id/text_title"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_placeholder" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_title"

@@ -3,6 +3,7 @@ package io.smileyjoe.applist.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import com.google.android.material.color.MaterialColors
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultSummaryBinding
 import io.smileyjoe.applist.db.Icon
@@ -13,7 +14,12 @@ import io.smileyjoe.applist.objects.AppDetail
 fun RowSearchResultSummaryBinding.bind(app: AppDetail) {
     textTitle.text = app.name
     textStatus.text = app.getStatus(textStatus.context)
-    Icon.load(imageIcon, app, R.drawable.ic_placeholder)
+    Icon.load(
+        imageView = imageIcon,
+        appDetail = app,
+        tint = MaterialColors.getColor(imageIcon, R.attr.colorOnBackground),
+        placeholder = R.drawable.ic_placeholder
+    )
 }
 
 class SearchResultsSummaryViewHolder : HeaderViewHolder<AppDetail> {

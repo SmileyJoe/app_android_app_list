@@ -1,11 +1,13 @@
 package io.smileyjoe.applist.db
 
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -89,6 +91,7 @@ object Icon {
     fun load(
         imageView: ImageView,
         appDetail: AppDetail,
+        @ColorInt tint: Int? = null,
         @DrawableRes placeholder: Int = Resources.ID_NULL,
         onComplete: ((ImageView) -> Unit)? = null
     ) {
@@ -102,6 +105,7 @@ object Icon {
             }
         } else {
             // if not, get the icon from firebase //
+            tint?.let { imageView.imageTintList = ColorStateList.valueOf(tint) }
             getReference(appDetail.appPackage)?.let { reference ->
                 reference.downloadUrl.addOnSuccessListener { uri ->
                     Glide.with(imageView.context)
@@ -124,6 +128,7 @@ object Icon {
                                 dataSource: DataSource?,
                                 isFirstResource: Boolean
                             ): Boolean {
+                                imageView.imageTintList = null
                                 onComplete?.invoke(imageView)
                                 return false
                             }
