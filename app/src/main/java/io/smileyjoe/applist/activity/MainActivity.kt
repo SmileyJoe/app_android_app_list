@@ -11,6 +11,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterAppList
@@ -233,11 +234,13 @@ class MainActivity : BaseActivity() {
                 SearchResultsFragment { appDetail -> showApp(appDetail) },
                 SearchResultsFragment.TAG
             )
+            window.statusBarColor = MaterialColors.getColor(binding.root, R.attr.colorSurfaceContainerHigh)
             binding.bottomNavigation.hide()
         }
         onClosing {
             binding.fragmentSearchResults.clear<SearchResultsFragment>()
             searchResultsFragment = null
+            window.statusBarColor = Color.TRANSPARENT
             binding.bottomNavigation.show()
         }
     }

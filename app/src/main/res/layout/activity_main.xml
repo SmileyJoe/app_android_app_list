@@ -33,7 +33,6 @@
 
                 <com.google.android.material.search.SearchBar
                     android:id="@+id/search_bar"
-                    style="@style/Widget.Material3.SearchBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_search"
@@ -151,6 +150,7 @@
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_search_results"
                 android:layout_width="match_parent"
+                android:background="?android:colorBackground"
                 android:layout_height="match_parent"/>
         </com.google.android.material.search.SearchView>
 
