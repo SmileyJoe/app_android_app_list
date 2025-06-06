@@ -13,14 +13,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <io.smileyjoe.library.tags.TagGroup
+        android:id="@+id/layout_tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/padding_medium"
+        android:layout_marginTop="@dimen/padding_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_summary"
+        app:layout_chip="@layout/inflate_chip_view"/>
+
     <TextView
         android:id="@+id/text_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/padding_medium"
-        android:paddingVertical="@dimen/padding_small"
+        android:paddingHorizontal="@dimen/padding_extra_large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_summary"
+        app:layout_constraintTop_toBottomOf="@id/layout_tags"
         tools:text="This is a note" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,9 +37,10 @@ class SearchResultsSummaryViewHolder : BindingViewHolder<AppDetail> {
         this.onAppSelected = onAppSelected
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int) {
+    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int, viewType: Int) {
         binding.apply {
             root.addHeader(header)
+            root.setTag(R.id.tag_view_type, viewType)
             bind(app)
             root.setOnClickListener { onAppSelected.onSelected(app) }
         }

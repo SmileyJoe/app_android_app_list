@@ -9,6 +9,10 @@ class Margin(val view: View) {
     var top = params.topMargin
     var end = params.rightMargin
     var bottom = params.bottomMargin
+    var vertical = top + bottom
+        private set
+    var horizontal = start + end
+        private set
 
     fun apply() {
         params.apply {

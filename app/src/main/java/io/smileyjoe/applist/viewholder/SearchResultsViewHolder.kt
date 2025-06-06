@@ -36,13 +36,22 @@ class SearchResultsViewHolder : BindingViewHolder<AppDetail> {
         binding = view
         onItemSelected = onAppSelected
         highlightColor =
-            MaterialColors.getColor(binding.root.context, R.attr.colorAccent, Color.WHITE)
+            MaterialColors.getColor(binding.root.context, R.attr.colorPrimary, Color.WHITE)
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int) {
+    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int, viewType: Int) {
         binding.apply {
             root.addHeader(header)
+            root.setTag(R.id.tag_view_type, viewType)
             layoutSummary.bind(app)
+            layoutTags.apply {
+                app.tags?.takeIf { it.isNotEmpty() }?.let {
+                    this.searchTerm = searchTerm
+                    tags = it
+                } ?: run {
+                    clear()
+                }
+            }
             textNotes.apply {
                 text = app.notes
                     ?.trimIndent()

@@ -38,7 +38,7 @@ object StringExt {
         if (!text.isNullOrEmpty()) {
             val index = indexOf(text)
             val start = (index - count).min(0)
-            val end = (index + text.length + count).max(length)
+            val end = (index + text.length + count).times(if(index <= 0) 2 else 1).max(length)
             return substring(start, end)
                 .ellipsize(
                     start = ellipsize && start > 0,

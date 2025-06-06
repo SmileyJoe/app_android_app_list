@@ -52,7 +52,7 @@ class SearchResultsAdapter(
 
 
     override fun onBindViewHolder(holder: BindingViewHolder<AppDetail>, position: Int) =
-        holder.bind(getItem(position), searchTerm, getHeader(position))
+        holder.bind(getItem(position), searchTerm, getHeader(position), getItemViewType(position))
 
     override fun getItemCount() = items.size
 
@@ -62,7 +62,14 @@ class SearchResultsAdapter(
     private fun getHeader(position: Int): Int {
         val isTitle = isTitle(position)
         return if (position == 0) {
-            if (isTitle) R.string.header_search_title else R.string.header_search_summary
+            if (isTitle) {
+                R.string.header_search_title
+            } else if(firstSummary){
+                firstSummary = false
+                R.string.header_search_summary
+            } else {
+                Resources.ID_NULL
+            }
         } else if (!searchTerm.isNullOrEmpty() && !isTitle && firstSummary) {
             firstSummary = false
             R.string.header_search_summary

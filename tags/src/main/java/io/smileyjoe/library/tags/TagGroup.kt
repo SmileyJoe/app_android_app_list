@@ -77,6 +77,8 @@ class TagGroup : ChipGroup {
             field = value
         }
 
+    var searchTerm: String? = null
+
     var tags: List<String>? = null
         set(value) {
             removeAllViews()
@@ -84,7 +86,7 @@ class TagGroup : ChipGroup {
                 addView(
                     chip.apply {
                         text = tag
-                        isChecked = selectedTags.contains(tag)
+                        isChecked = selectedTags.contains(tag) || searchTerm?.let { tag.contains(it) } ?: false
                         if (onSelectedTagsChanged != null) {
                             setOnCheckedChangeListener(::onTagSelected)
                         }
@@ -179,6 +181,10 @@ class TagGroup : ChipGroup {
                 selectedTags.sortedBy { it }.joinToString(", ")
             }
         }
+    }
+
+    fun clear() {
+        removeAllViews()
     }
 
 }

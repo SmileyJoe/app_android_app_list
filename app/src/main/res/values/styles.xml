@@ -66,7 +66,10 @@
     </style>
 
     <style name="Chip.Filter" parent="Widget.Material3.Chip.Suggestion"/>
-    <style name="Chip.View" parent="Widget.Material3.Chip.Assist"/>
+    <style name="Chip.View" parent="Widget.Material3.Chip.Assist">
+        <item name="android:clickable">false</item>
+        <item name="android:checkable">true</item>
+    </style>
     <style name="Chip.Input" parent="Widget.Material3.Chip.Input">
         <item name="chipBackgroundColor">?attr/colorSecondaryContainer</item>
         <item name="chipStrokeColor">?attr/colorAccent</item>

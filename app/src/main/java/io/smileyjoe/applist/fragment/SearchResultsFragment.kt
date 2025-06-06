@@ -14,7 +14,9 @@ import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.databinding.FragmentSearchResultsBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.decorator.HeadingDecorator
+import io.smileyjoe.applist.decorator.SearchResultsDecorator
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.applist.extensions.Extensions.contains
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
@@ -54,7 +56,7 @@ class SearchResultsFragment(
         binding.recyclerSearchResults.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = resultsAdapter
-            addItemDecoration(HeadingDecorator())
+            addItemDecoration(SearchResultsDecorator())
         }
     }
 
@@ -63,6 +65,7 @@ class SearchResultsFragment(
             ?.filter {
                 it.name?.contains(text, ignoreCase = true) ?: false
                         || it.notes?.contains(text, ignoreCase = true) ?: false
+                        || it.tags?.contains(text, ignoreCase = true) ?: false
             }?.sort(text)
 
         resultsAdapter.apply {
