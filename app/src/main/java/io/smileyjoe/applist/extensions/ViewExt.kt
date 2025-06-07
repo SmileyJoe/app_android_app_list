@@ -84,12 +84,21 @@ object ViewExt {
         Color.from(this, colors)
     }
 
+    /**
+     * Measure the view before it is drawn
+     */
     fun View.measure() {
         measure(
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
     }
 
+    /**
+     * Get the current margins set the view
+     *
+     * @return [Margin] instance
+     */
     fun View.margins() =
         Margin(this)
 

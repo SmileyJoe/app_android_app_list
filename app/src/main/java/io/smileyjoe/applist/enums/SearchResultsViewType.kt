@@ -2,8 +2,16 @@ package io.smileyjoe.applist.enums
 
 import androidx.annotation.StringRes
 import io.smileyjoe.applist.R
+import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.objects.AppDetail
 
+/**
+ * Views used in the search results
+ *
+ * @param id
+ * @param titleResId for the section heading
+ * @see SearchResultsAdapter
+ */
 enum class SearchResultsViewType(
     val id: Int,
     @StringRes val titleResId: Int

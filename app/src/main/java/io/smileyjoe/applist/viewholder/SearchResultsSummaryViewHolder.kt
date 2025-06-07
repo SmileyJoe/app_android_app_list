@@ -7,7 +7,7 @@ import com.google.android.material.color.MaterialColors
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultSummaryBinding
 import io.smileyjoe.applist.db.Icon
-import io.smileyjoe.applist.decorator.HeadingDecorator.Companion.addHeader
+import io.smileyjoe.applist.decoration.HeadingDecoration.Companion.addHeader
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 
