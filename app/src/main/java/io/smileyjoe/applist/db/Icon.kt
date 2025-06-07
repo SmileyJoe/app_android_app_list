@@ -101,6 +101,7 @@ object Icon {
             imageView.apply {
                 visibility = View.VISIBLE
                 setImageDrawable(appDetail.icon)
+                imageView.imageTintList = null
                 onComplete?.invoke(imageView)
             }
         } else {
