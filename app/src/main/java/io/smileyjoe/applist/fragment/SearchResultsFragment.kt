@@ -16,6 +16,7 @@ import io.smileyjoe.applist.databinding.FragmentSearchResultsBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.decorator.SearchResultsDecorator
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.applist.enums.SearchResultsViewType
 import io.smileyjoe.applist.extensions.Extensions.contains
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
@@ -77,18 +78,10 @@ class SearchResultsFragment(
         }
     }
 
-    private fun List<AppDetail>.sort(text: String? = null) =
+    private fun List<AppDetail>.sort(searchTerm: String? = null) =
         sortedWith(
             compareBy<AppDetail> { app ->
-                text?.let {
-                    if (app.name?.contains(it, ignoreCase = true) == true) {
-                        SearchResultsAdapter.VIEW_TITLE
-                    } else {
-                        SearchResultsAdapter.VIEW_OTHER
-                    }
-                } ?: run {
-                    SearchResultsAdapter.VIEW_TITLE
-                }
+                SearchResultsViewType.get(app, searchTerm)
             }.thenBy {
                 it.name
             }

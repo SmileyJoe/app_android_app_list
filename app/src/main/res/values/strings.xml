@@ -66,5 +66,5 @@
     <string name="menu_filter">Filter</string>
 
     <string name="header_search_title">Application</string>
-    <string name="header_search_summary">Details</string>
+    <string name="header_search_details">Details</string>
 </resources>
