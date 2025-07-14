@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
+import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.objects.AppDetail
@@ -77,7 +79,12 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
 
         }
 
-        Icon.load(binding.imageIcon, app)
+        Icon.load(
+            imageView = binding.imageIcon,
+            appDetail = app,
+            tint = MaterialColors.getColor(binding.imageIcon, R.attr.colorOnBackground),
+            placeholder = R.drawable.ic_placeholder
+        )
     }
 
     /**
