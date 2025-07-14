@@ -2,14 +2,11 @@ package io.smileyjoe.applist.decoration
 
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.view.children
-import androidx.core.view.marginRight
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.DecorationHeadingBinding
@@ -100,7 +97,6 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         ).apply {
             textHeading.text = title
             textHeading.background.alpha = 0
-            root.background.alpha = 255
             // measure the view now, so that space can be made in getItemOffsets()
             root.measure()
         }
@@ -143,25 +139,26 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         if (headings.isNotEmpty() && headingTop in 0..headings.size) {
             val heading = headings[headingTop]
             val binding = getBinding(heading, recyclerView)
-            val emptySpace = recyclerView.measuredWidth - binding.textHeading.measuredWidth - binding.root.paddingStart - binding.root.paddingEnd
+            val emptySpace =
+                recyclerView.measuredWidth - binding.textHeading.measuredWidth - binding.root.paddingStart - binding.root.paddingEnd
 
             drawOver(
                 canvas = canvas,
                 binding = binding,
-                x = getDrawOverX(binding, emptySpace/2),
+                x = getDrawOverX(binding, emptySpace / 2),
                 y = getDrawOverY(binding, recyclerView)
             )
         }
     }
 
     private fun getDrawOverY(binding: DecorationHeadingBinding, recyclerView: RecyclerView): Int {
-        val nextPos = (headingTop + 1).max(headings.size-1, -1)
+        val nextPos = (headingTop + 1).max(headings.size - 1, -1)
         val currentHeight = binding.root.measuredHeight
 
-        if(nextPos > -1 && headerPosition >= currentHeight){
+        if (nextPos > -1 && headerPosition >= currentHeight) {
             val headingNext = headings[nextPos]
             alpha = 0
-            with(getBinding(headingNext, recyclerView)){
+            with(getBinding(headingNext, recyclerView)) {
                 return (headerPosition - currentHeight - root.measuredHeight).max(0)
             }
         } else {
@@ -180,24 +177,24 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         }
     }
 
-    private fun drawOver(canvas: Canvas, binding: DecorationHeadingBinding, x: Int, y: Int) = with(binding){
-        val margins = binding.root.margins()
-        val currentHeight = binding.root.measuredHeight
-        textHeading.background.alpha = 255 - alpha
-        container.background.alpha = alpha
-        textHeading.layout(
-            x,
-            binding.root.paddingTop,
-            binding.textHeading.measuredWidth + x,
-            currentHeight - binding.root.paddingBottom
-        )
-        canvas.apply {
-            save()
-            translate(margins.start.toFloat(), y.toFloat())
-            binding.root.draw(this)
-            restore()
+    private fun drawOver(canvas: Canvas, binding: DecorationHeadingBinding, x: Int, y: Int) =
+        with(binding) {
+            val margins = binding.root.margins()
+            val currentHeight = binding.root.measuredHeight
+            textHeading.background.alpha = 255 - alpha
+            textHeading.layout(
+                x,
+                binding.root.paddingTop,
+                binding.textHeading.measuredWidth + x,
+                currentHeight - binding.root.paddingBottom
+            )
+            canvas.apply {
+                save()
+                translate(margins.start.toFloat(), y.toFloat())
+                binding.root.draw(this)
+                restore()
+            }
         }
-    }
 
     private fun RecyclerView.getHeaderRows(): List<Pair<View, String>> =
         children.filter {
