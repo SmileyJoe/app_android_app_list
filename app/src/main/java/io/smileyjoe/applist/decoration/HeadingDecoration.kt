@@ -94,30 +94,36 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
     override fun onDraw(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
         super.onDraw(canvas, recyclerView, state)
         val helper = getHelper(recyclerView)
-        recyclerView.getHeaderRows().forEachIndexed { i, (row, header) ->
-            val binding = helper.getBinding(header)
-            if (shouldDraw(row, header, binding, helper)) {
-                with(binding) {
-                    textHeading.apply {
-                        layout(
-                            paddingStart,
-                            root.paddingTop,
-                            measuredWidth + paddingStart,
-                            root.measuredHeight - root.paddingBottom
+        val headers = recyclerView.getHeaderRows()
+
+        if (headers.isEmpty()) {
+            topHeadingRow = null
+        } else {
+            headers.forEachIndexed { i, (row, header) ->
+                val binding = helper.getBinding(header)
+                if (shouldDraw(row, header, binding, helper)) {
+                    with(binding) {
+                        textHeading.apply {
+                            layout(
+                                paddingStart,
+                                root.paddingTop,
+                                measuredWidth + paddingStart,
+                                root.measuredHeight - root.paddingBottom
+                            )
+                            background.alpha = 0
+                        }
+                        drawLayout(
+                            canvas,
+                            recyclerView,
+                            row,
+                            root
                         )
-                        background.alpha = 0
                     }
-                    drawLayout(
-                        canvas,
-                        recyclerView,
-                        row,
-                        root
-                    )
                 }
-            }
-            if (i == 0) {
-                topHeadingRow = row
-                helper.topHeadingRow(header, row, binding)
+                if (i == 0) {
+                    topHeadingRow = row
+                    helper.topHeadingRow(header, row, binding)
+                }
             }
         }
     }
@@ -147,6 +153,7 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
     private fun getX(currentBinding: DecorationHeadingBinding, maxX: Int): Int {
         val top = topHeadingRow?.top ?: 0
         val currentHeight = currentBinding.root.measuredHeight
+
         if (top in 1..currentHeight) {
             val movePercent = top.toFloat() / currentHeight.toFloat()
             alpha = (255 * movePercent).toInt()
@@ -179,7 +186,7 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
 
     private fun RecyclerView.getHeaderRows(): List<Pair<View, String>> =
         children.filter {
-            !it.getHeader().isNullOrBlank()
+            it.hasHeader()
         }.map {
             Pair(it, it.getHeader()!!)
         }.toList()
