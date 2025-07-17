@@ -56,6 +56,16 @@ object RecyclerViewExt {
         }
     }
 
+    fun RecyclerView.ItemDecoration.drawLayoutOver(canvas: Canvas, view: View, y: Int){
+        val margins = view.margins()
+        canvas.apply {
+            save()
+            translate(margins.start.toFloat(), y.toFloat())
+            view.draw(this)
+            restore()
+        }
+    }
+
     /**
      * Check if the [row] is the last item in the [RecyclerView]
      *

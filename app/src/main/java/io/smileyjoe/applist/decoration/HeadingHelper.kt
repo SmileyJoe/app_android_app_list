@@ -7,6 +7,18 @@ import io.smileyjoe.applist.databinding.DecorationHeadingBinding
 import io.smileyjoe.applist.extensions.IntExt.min
 import io.smileyjoe.applist.extensions.ViewExt.measure
 
+fun DecorationHeadingBinding.resetHeading() {
+    textHeading.apply {
+        layout(
+            paddingStart,
+            root.paddingTop,
+            measuredWidth + paddingStart,
+            root.measuredHeight - root.paddingBottom
+        )
+        background.alpha = 0
+    }
+}
+
 class HeadingHelper(
     private val recyclerView: RecyclerView
 ) {

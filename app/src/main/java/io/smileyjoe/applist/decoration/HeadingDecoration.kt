@@ -9,8 +9,8 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.DecorationHeadingBinding
 import io.smileyjoe.applist.extensions.IntExt.max
 import io.smileyjoe.applist.extensions.RecyclerViewExt.drawLayout
+import io.smileyjoe.applist.extensions.RecyclerViewExt.drawLayoutOver
 import io.smileyjoe.applist.extensions.RecyclerViewExt.getLayoutOffset
-import io.smileyjoe.applist.extensions.ViewExt.margins
 
 /**
  * [RecyclerView.ItemDecoration] that shows a [DecorationHeadingBinding] view
@@ -103,21 +103,8 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
                 val binding = helper.getBinding(header)
                 if (shouldDraw(row, header, binding, helper)) {
                     with(binding) {
-                        textHeading.apply {
-                            layout(
-                                paddingStart,
-                                root.paddingTop,
-                                measuredWidth + paddingStart,
-                                root.measuredHeight - root.paddingBottom
-                            )
-                            background.alpha = 0
-                        }
-                        drawLayout(
-                            canvas,
-                            recyclerView,
-                            row,
-                            root
-                        )
+                        resetHeading()
+                        drawLayout(canvas, recyclerView, row, root)
                     }
                 }
                 if (i == 0) {
@@ -157,9 +144,9 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         if (top in 1..currentHeight) {
             val movePercent = top.toFloat() / currentHeight.toFloat()
             alpha = (255 * movePercent).toInt()
-            return ((maxX - (maxX * movePercent).toInt()) + currentBinding.textHeading.paddingStart).max(
-                maxX
-            )
+            val newX = maxX - (maxX * movePercent).toInt()
+            return (newX + currentBinding.textHeading.paddingStart)
+                .max(maxX)
         } else {
             return maxX
         }
@@ -167,7 +154,6 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
 
     private fun drawOver(canvas: Canvas, binding: DecorationHeadingBinding, x: Int, y: Int) =
         with(binding) {
-            val margins = root.margins()
             val currentHeight = root.measuredHeight
             textHeading.background.alpha = 255 - alpha
             textHeading.layout(
@@ -176,12 +162,7 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
                 textHeading.measuredWidth + x,
                 currentHeight - root.paddingBottom
             )
-            canvas.apply {
-                save()
-                translate(margins.start.toFloat(), y.toFloat())
-                root.draw(this)
-                restore()
-            }
+            drawLayoutOver(canvas, root, y)
         }
 
     private fun RecyclerView.getHeaderRows(): List<Pair<View, String>> =
