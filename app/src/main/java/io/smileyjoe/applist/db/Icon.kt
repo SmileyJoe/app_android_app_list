@@ -43,7 +43,7 @@ object Icon {
      * @param packageName the name of the package
      * @return reference to the packages icon
      */
-    private fun getReference(packageName: String?): StorageReference? {
+    fun getReference(packageName: String?): StorageReference? {
         if (!packageName.isNullOrEmpty()) {
             getReference()?.let { reference ->
                 return reference.child("$packageName.png")
@@ -101,38 +101,31 @@ object Icon {
             val placeholder = IconLetter(appDetail.name!!)
             imageView.setImageDrawable(placeholder)
             getReference(appDetail.appPackage)?.let { reference ->
-                reference.downloadUrl.addOnSuccessListener { uri ->
-                    Glide.with(imageView.context)
-                        .load(reference)
-                        .placeholder(placeholder)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                appDetail.icon = placeholder
-                                return false
-                            }
+                Glide.with(imageView.context)
+                    .load(reference)
+                    .placeholder(placeholder)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
 
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                onComplete?.invoke(imageView)
-                                appDetail.icon = resource
-                                return false
-                            }
-                        })
-                        .into(imageView)
-                }.addOnFailureListener {
-                    imageView.setImageDrawable(placeholder)
-                    appDetail.icon = placeholder
-                }
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            onComplete?.invoke(imageView)
+                            return false
+                        }
+                    })
+                    .into(imageView)
             }
         }
     }
