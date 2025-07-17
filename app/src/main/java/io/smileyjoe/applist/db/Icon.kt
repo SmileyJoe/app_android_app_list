@@ -1,14 +1,9 @@
 package io.smileyjoe.applist.db
 
-import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.view.View
 import android.widget.ImageView
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -17,6 +12,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import io.smileyjoe.applist.BuildConfig
+import io.smileyjoe.applist.drawable.IconLetter
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.FirebaseGlide
 import java.io.ByteArrayOutputStream
@@ -91,22 +87,19 @@ object Icon {
     fun load(
         imageView: ImageView,
         appDetail: AppDetail,
-        @ColorInt tint: Int? = null,
-        @DrawableRes placeholder: Int = Resources.ID_NULL,
         onComplete: ((ImageView) -> Unit)? = null
     ) {
         // if the icon has already been retrieved from firebase, or from the packagemanager //
         // set it on the imageView //
         if (appDetail.icon != null) {
             imageView.apply {
-                visibility = View.VISIBLE
                 setImageDrawable(appDetail.icon)
-                imageView.imageTintList = null
                 onComplete?.invoke(imageView)
             }
         } else {
             // if not, get the icon from firebase //
-            tint?.let { imageView.imageTintList = ColorStateList.valueOf(tint) }
+            val placeholder = IconLetter(appDetail.name!!)
+            imageView.setImageDrawable(placeholder)
             getReference(appDetail.appPackage)?.let { reference ->
                 reference.downloadUrl.addOnSuccessListener { uri ->
                     Glide.with(imageView.context)
@@ -119,6 +112,7 @@ object Icon {
                                 target: Target<Drawable>?,
                                 isFirstResource: Boolean
                             ): Boolean {
+                                appDetail.icon = placeholder
                                 return false
                             }
 
@@ -129,21 +123,15 @@ object Icon {
                                 dataSource: DataSource?,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                imageView.imageTintList = null
                                 onComplete?.invoke(imageView)
+                                appDetail.icon = resource
                                 return false
                             }
                         })
                         .into(imageView)
-
-                    imageView.visibility = View.VISIBLE
                 }.addOnFailureListener {
-                    // if there is no icon, hide the view //
-                    if (placeholder != Resources.ID_NULL) {
-                        imageView.setImageResource(placeholder)
-                    } else {
-                        imageView.visibility = View.GONE
-                    }
+                    imageView.setImageDrawable(placeholder)
+                    appDetail.icon = placeholder
                 }
             }
         }

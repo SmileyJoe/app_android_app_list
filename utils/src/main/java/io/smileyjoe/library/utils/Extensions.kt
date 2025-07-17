@@ -1,5 +1,6 @@
 package io.smileyjoe.library.utils
 
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.Animatable2.AnimationCallback
@@ -12,6 +13,7 @@ import android.view.ViewParent
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
 import androidx.transition.AutoTransition
@@ -203,7 +205,7 @@ object Extensions {
         parent.delayedTransition(duration)
 
     fun ViewParent.delayedTransition(duration: Long) {
-        if(this is ViewGroup) {
+        if (this is ViewGroup) {
             (this as ViewGroup).delayedTransition(duration)
         }
     }
@@ -213,8 +215,19 @@ object Extensions {
         isVisible = false
     }
 
-    fun View.show(){
+    fun View.show() {
         delayedTransition(150)
         isVisible = true
+    }
+
+    @ColorInt
+    fun String.toColor(): Int {
+        val hash = hashCode()
+
+        val red = (hash and 0xFF0000) shr 16
+        val green = (hash and 0x00FF00) shr 8
+        val blue = (hash and 0x0000FF)
+
+        return Color.argb(255, red, green, blue)
     }
 }

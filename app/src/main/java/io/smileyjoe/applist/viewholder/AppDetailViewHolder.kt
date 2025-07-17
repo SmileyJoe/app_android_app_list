@@ -5,12 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.color.MaterialColors
-import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowAppDetailsBinding
+import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.objects.AppDetail
-import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.view.ButtonProgress
 
 /**
@@ -72,18 +70,11 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
                 isVisible = app.isSaved
                 isImageSelected = app.isFavourite
             }
-            // hide the icon as not all apps will have one. If this is not hidden here //
-            // there is a moment that an old icon is shown while glide does it's thing. //
-            // Icon.Load will reset the visibility if there is an icon to load //
-            imageIcon.isVisible = false
-
         }
 
         Icon.load(
             imageView = binding.imageIcon,
-            appDetail = app,
-            tint = MaterialColors.getColor(binding.imageIcon, R.attr.colorOnBackground),
-            placeholder = R.drawable.ic_placeholder
+            appDetail = app
         )
     }
 

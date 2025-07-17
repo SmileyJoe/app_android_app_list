@@ -8,6 +8,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
+import io.smileyjoe.library.utils.Extensions.toColor
 
 /**
  * Wrapper for helping with [Palette]
@@ -29,6 +30,8 @@ class Color private constructor(
      * @param original the original color
      */
     class Value(@ColorInt val original: Int) {
+
+        constructor(text: String) : this(text.toColor())
 
         /**
          * Update the hue, hue represents WHAT the color is
