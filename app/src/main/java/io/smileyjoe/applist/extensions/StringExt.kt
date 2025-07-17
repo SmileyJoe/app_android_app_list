@@ -1,5 +1,7 @@
 package io.smileyjoe.applist.extensions
 
+import android.content.Context
+import android.content.res.Resources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
@@ -94,5 +96,12 @@ object StringExt {
     fun String.removeBreaks() =
         replace("\n", " ")
             .replace("\\s+".toRegex(), " ")
+
+    fun Int.fromRes(context: Context): String? =
+        try {
+            context.getString(this)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
 
 }

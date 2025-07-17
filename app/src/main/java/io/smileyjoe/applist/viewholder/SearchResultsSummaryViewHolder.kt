@@ -2,7 +2,6 @@ package io.smileyjoe.applist.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import com.google.android.material.color.MaterialColors
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultSummaryBinding
@@ -43,7 +42,7 @@ class SearchResultsSummaryViewHolder : HeaderViewHolder<AppDetail> {
         this.onAppSelected = onAppSelected
     }
 
-    override fun bind(app: AppDetail, searchTerm: String?, @StringRes header: Int?) {
+    override fun bind(app: AppDetail, searchTerm: String?, header: String?) {
         binding.apply {
             root.addHeader(header)
             bind(app)

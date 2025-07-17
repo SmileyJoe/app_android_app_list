@@ -2,21 +2,15 @@ package io.smileyjoe.applist.decoration
 
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.DecorationHeadingBinding
-import io.smileyjoe.applist.extensions.Extensions.getStringOrNull
 import io.smileyjoe.applist.extensions.IntExt.max
-import io.smileyjoe.applist.extensions.IntExt.min
 import io.smileyjoe.applist.extensions.RecyclerViewExt.drawLayout
 import io.smileyjoe.applist.extensions.RecyclerViewExt.getLayoutOffset
 import io.smileyjoe.applist.extensions.ViewExt.margins
-import io.smileyjoe.applist.extensions.ViewExt.measure
 
 /**
  * [RecyclerView.ItemDecoration] that shows a [DecorationHeadingBinding] view
@@ -41,17 +35,14 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
          *
          * @param header text to show
          */
-        fun View.addHeader(@StringRes header: Int?) {
-            setTag(R.id.tag_header, header?.let { context.getStringOrNull(it) })
+        fun View.addHeader(header: String?) {
+            setTag(R.id.tag_header, header)
         }
     }
 
-    // cache any bindings based on the header text
-    private val bindings: MutableMap<String, DecorationHeadingBinding> = mutableMapOf()
-
-    private var headings: MutableList<String> = mutableListOf()
-    private var headerPosition: Int = 0
-    private var headingTop: Int = -1
+    private var alpha = 255
+    private var helper: HeadingHelper? = null
+    private var topHeadingRow: View? = null
 
     /**
      * Get the header from the view
@@ -69,37 +60,18 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
     protected fun View.hasHeader(): Boolean =
         !getHeader().isNullOrEmpty()
 
-    /**
-     * Get the cached binding, or inflate it and cache it
-     *
-     * @param heading to show
-     * @param recyclerView this will be attached to
-     * @return binding to add
-     */
-    private fun getBinding(heading: String, recyclerView: RecyclerView): DecorationHeadingBinding =
-        // get the cached binding if it exists, else, create and cache it
-        bindings[heading] ?: generateBinding(recyclerView, heading).also {
-            bindings[heading] = it
+    private fun getHelper(recyclerView: RecyclerView): HeadingHelper =
+        helper ?: HeadingHelper(recyclerView).also {
+            helper = it
         }
 
-    /**
-     * Generate and populate the view
-     *
-     * @param parent that this will be added to
-     * @param title to show
-     * @return binding
-     */
-    private fun generateBinding(parent: ViewGroup, title: String) =
-        DecorationHeadingBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        ).apply {
-            textHeading.text = title
-            textHeading.background.alpha = 0
-            // measure the view now, so that space can be made in getItemOffsets()
-            root.measure()
-        }
+    private fun shouldDraw(
+        row: View,
+        header: String,
+        binding: DecorationHeadingBinding,
+        helper: HeadingHelper
+    ) =
+        helper.currentPosition != helper.getPosition(header) || (helper.currentPosition == 0 && row.top >= binding.root.measuredHeight)
 
     /**
      * @see RecyclerView.ItemDecoration.getItemOffsets
@@ -110,8 +82,9 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         recyclerView: RecyclerView,
         state: RecyclerView.State
     ) {
+        val helper = getHelper(recyclerView)
         row.getHeader()?.let { tag ->
-            getLayoutOffset(outRect, getBinding(tag, recyclerView).root)
+            getLayoutOffset(outRect, helper.getBinding(tag).root)
         }
     }
 
@@ -120,58 +93,66 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
      */
     override fun onDraw(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
         super.onDraw(canvas, recyclerView, state)
-        recyclerView.getHeaderRows().forEach { (row, header) ->
-            if (!headings.contains(header)) headings.add(header)
-            val binding = getBinding(header, recyclerView)
-            drawLayout(canvas, recyclerView, row, binding.root)
-            headerPosition = row.top
-            if (row.top - binding.root.measuredHeight <= 0) {
-                headingTop = headings.indexOf(header)
-            } else {
-                headingTop = (headings.indexOf(header) - 1).min(0)
+        val helper = getHelper(recyclerView)
+        recyclerView.getHeaderRows().forEachIndexed { i, (row, header) ->
+            val binding = helper.getBinding(header)
+            if (shouldDraw(row, header, binding, helper)) {
+                with(binding) {
+                    textHeading.apply {
+                        layout(
+                            paddingStart,
+                            root.paddingTop,
+                            measuredWidth + paddingStart,
+                            root.measuredHeight - root.paddingBottom
+                        )
+                        background.alpha = 0
+                    }
+                    drawLayout(
+                        canvas,
+                        recyclerView,
+                        row,
+                        root
+                    )
+                }
+            }
+            if (i == 0) {
+                topHeadingRow = row
+                helper.topHeadingRow(header, row, binding)
             }
         }
     }
 
-    var alpha = 255
     override fun onDrawOver(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(canvas, recyclerView, state)
-        if (headings.isNotEmpty() && headingTop in 0..headings.size) {
-            val heading = headings[headingTop]
-            val binding = getBinding(heading, recyclerView)
+        helper?.currentBinding?.let {
             val emptySpace =
-                recyclerView.measuredWidth - binding.textHeading.measuredWidth - binding.root.paddingStart - binding.root.paddingEnd
-
-            drawOver(
-                canvas = canvas,
-                binding = binding,
-                x = getDrawOverX(binding, emptySpace / 2),
-                y = getDrawOverY(binding, recyclerView)
-            )
+                recyclerView.measuredWidth - it.textHeading.measuredWidth - it.root.paddingStart
+            drawOver(canvas, it, getX(it, (emptySpace / 2)), getY(it))
         }
     }
 
-    private fun getDrawOverY(binding: DecorationHeadingBinding, recyclerView: RecyclerView): Int {
-        val nextPos = (headingTop + 1).max(headings.size - 1, -1)
-        val currentHeight = binding.root.measuredHeight
+    private fun getY(currentBinding: DecorationHeadingBinding): Int {
+        val rowTop = topHeadingRow?.top ?: 0
+        val nextBinding = helper?.nextBinding
 
-        if (nextPos > -1 && headerPosition >= currentHeight) {
-            val headingNext = headings[nextPos]
+        if (nextBinding != null && rowTop >= currentBinding.root.measuredHeight) {
             alpha = 0
-            with(getBinding(headingNext, recyclerView)) {
-                return (headerPosition - currentHeight - root.measuredHeight).max(0)
-            }
+            return (rowTop - currentBinding.root.measuredHeight - nextBinding.root.measuredHeight)
+                .max(0)
         } else {
             return 0
         }
     }
 
-    private fun getDrawOverX(binding: DecorationHeadingBinding, maxX: Int): Int {
-        val currentHeight = binding.root.measuredHeight
-        if (headerPosition in 1..currentHeight) {
-            val movePercent = headerPosition.toFloat() / currentHeight.toFloat()
+    private fun getX(currentBinding: DecorationHeadingBinding, maxX: Int): Int {
+        val top = topHeadingRow?.top ?: 0
+        val currentHeight = currentBinding.root.measuredHeight
+        if (top in 1..currentHeight) {
+            val movePercent = top.toFloat() / currentHeight.toFloat()
             alpha = (255 * movePercent).toInt()
-            return maxX - (maxX * movePercent).toInt()
+            return ((maxX - (maxX * movePercent).toInt()) + currentBinding.textHeading.paddingStart).max(
+                maxX
+            )
         } else {
             return maxX
         }
@@ -179,19 +160,19 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
 
     private fun drawOver(canvas: Canvas, binding: DecorationHeadingBinding, x: Int, y: Int) =
         with(binding) {
-            val margins = binding.root.margins()
-            val currentHeight = binding.root.measuredHeight
+            val margins = root.margins()
+            val currentHeight = root.measuredHeight
             textHeading.background.alpha = 255 - alpha
             textHeading.layout(
                 x,
-                binding.root.paddingTop,
-                binding.textHeading.measuredWidth + x,
-                currentHeight - binding.root.paddingBottom
+                root.paddingTop,
+                textHeading.measuredWidth + x,
+                currentHeight - root.paddingBottom
             )
             canvas.apply {
                 save()
                 translate(margins.start.toFloat(), y.toFloat())
-                binding.root.draw(this)
+                root.draw(this)
                 restore()
             }
         }

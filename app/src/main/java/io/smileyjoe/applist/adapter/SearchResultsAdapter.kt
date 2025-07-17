@@ -1,12 +1,13 @@
 package io.smileyjoe.applist.adapter
 
+import android.content.Context
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.enums.SearchResultsViewType
 import io.smileyjoe.applist.enums.SearchResultsViewType.DETAILS
 import io.smileyjoe.applist.enums.SearchResultsViewType.TITLE
 import io.smileyjoe.applist.enums.SearchResultsViewType.UNKNOWN
+import io.smileyjoe.applist.extensions.StringExt.fromRes
 import io.smileyjoe.applist.fragment.SearchResultsFragment
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
@@ -66,20 +67,20 @@ class SearchResultsAdapter(
         }
 
     override fun onBindViewHolder(holder: HeaderViewHolder<AppDetail>, position: Int) =
-        holder.bind(getItem(position), searchTerm, getHeader(position))
+        holder.bind(getItem(position), searchTerm, getHeader(holder.context, position))
 
     override fun getItemCount() = items.size
 
     fun getItem(position: Int) = items[position]
 
-    @StringRes
-    private fun getHeader(position: Int): Int? {
+    private fun getHeader(context: Context, position: Int): String? {
         val viewType = getItemViewType(position)
         val prevViewType = getItemViewType(position - 1)
 
         // only show a header if this is a new view type
         return SearchResultsViewType.fromId(viewType).titleResId
             .takeIf { prevViewType != viewType }
+            ?.fromRes(context)
     }
 
 }
