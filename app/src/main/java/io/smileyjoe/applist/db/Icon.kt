@@ -87,7 +87,8 @@ object Icon {
     fun load(
         imageView: ImageView,
         appDetail: AppDetail,
-        onComplete: ((ImageView) -> Unit)? = null
+        onComplete: ((ImageView) -> Unit)? = null,
+        onFailed: ((Int) -> Unit)? = null
     ) {
         // if the icon has already been retrieved from firebase, or from the packagemanager //
         // set it on the imageView //
@@ -99,7 +100,6 @@ object Icon {
         } else {
             // if not, get the icon from firebase //
             val placeholder = IconLetter(appDetail.name!!)
-            imageView.setImageDrawable(placeholder)
             getReference(appDetail.appPackage)?.let { reference ->
                 Glide.with(imageView.context)
                     .load(reference)
@@ -111,6 +111,7 @@ object Icon {
                             target: Target<Drawable>?,
                             isFirstResource: Boolean
                         ): Boolean {
+                            onFailed?.invoke(placeholder.backgroundColor)
                             return false
                         }
 

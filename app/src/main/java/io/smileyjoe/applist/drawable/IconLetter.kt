@@ -1,7 +1,6 @@
 package io.smileyjoe.applist.drawable
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
@@ -14,17 +13,19 @@ import android.graphics.drawable.Drawable
 class IconLetter(text: String) : Drawable() {
 
     private val letter = text.substring(0, 2).uppercase()
+    private val color = io.smileyjoe.library.utils.Color.from(text)!!
+    val backgroundColor: Int = color.main.original
 
     private val shapePaint = Paint().apply {
         isAntiAlias = true
-        color = io.smileyjoe.library.utils.Color.Value(text).muted
+        color = backgroundColor
     }
 
     private val textPaint = Paint().apply {
         isAntiAlias = true
         textAlign = Paint.Align.CENTER
-        color = Color.WHITE
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        color = this@IconLetter.color.title.original
     }
 
     override fun draw(canvas: Canvas) {

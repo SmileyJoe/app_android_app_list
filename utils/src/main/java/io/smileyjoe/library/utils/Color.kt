@@ -31,8 +31,6 @@ class Color private constructor(
      */
     class Value(@ColorInt val original: Int) {
 
-        constructor(text: String) : this(text.toColor())
-
         /**
          * Update the hue, hue represents WHAT the color is
          *
@@ -118,8 +116,8 @@ class Color private constructor(
          * @param imageView
          * @param color callback with the populated color, this is only called if [Palette] managed to get swatches
          */
-        fun from(imageView: ImageView, color: (Color) -> Unit) =
-            from(imageView.drawable.toBitmap(), color)
+        fun from(imageView: ImageView, onGenerated: ((Color) -> Unit)? = null) =
+            from(imageView.drawable.toBitmap(), onGenerated)
 
         /**
          * Get the colors based on the image set to the [bitmap]
@@ -127,15 +125,37 @@ class Color private constructor(
          * @param bitmap
          * @param color callback with the populated color, this is only called if [Palette] managed to get swatches
          */
-        fun from(bitmap: Bitmap, color: (Color) -> Unit) {
-            Palette
-                .Builder(bitmap)
+        fun from(bitmap: Bitmap, onGenerated: ((Color) -> Unit)? = null) =
+            from(Palette.Builder(bitmap), onGenerated)
+
+        fun from(color: Int, onGenerated: ((Color) -> Unit)? = null) =
+            from(listOf(color), onGenerated)
+
+        fun from(colors: List<Int>, onGenerated: ((Color) -> Unit)? = null): Color? =
+            from(
+                builder = Palette.Builder(colors.map {
+                    Swatch(it, 100)
+                }),
+                onGenerated = onGenerated
+            )
+
+        fun from(text: String, onGenerated: ((Color) -> Unit)? = null) =
+            from(listOf(text.toColor()), onGenerated)
+
+        private fun from(builder: Palette.Builder, onGenerated: ((Color) -> Unit)? = null): Color? {
+            builder
                 .maximumColorCount(32)
-                .generate { palette ->
+
+            return onGenerated?.let {
+                builder.generate { palette ->
                     palette?.getSwatch()?.let {
-                        color(Color(palette))
+                        onGenerated(Color(palette))
                     }
                 }
+                return null
+            } ?: run {
+                return Color(builder.generate())
+            }
         }
 
         /**
