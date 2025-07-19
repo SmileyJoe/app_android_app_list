@@ -8,6 +8,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
+import io.smileyjoe.library.utils.Extensions.toColor
 
 /**
  * Wrapper for helping with [Palette]
@@ -113,42 +114,96 @@ class Color private constructor(
          * Get the colors based on the image set to the [imageView]
          *
          * @param imageView
-         * @param color callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @param onGenerated callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @return it [onGenerated] is null, the Color instance is returned, else null
          */
-        fun from(imageView: ImageView, color: (Color) -> Unit) =
-            from(imageView.drawable.toBitmap(), color)
+        fun from(imageView: ImageView, onGenerated: ((Color) -> Unit)? = null) =
+            from(imageView.drawable.toBitmap(), onGenerated)
 
         /**
          * Get the colors based on the image set to the [bitmap]
          *
          * @param bitmap
-         * @param color callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @param onGenerated callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @return it [onGenerated] is null, the Color instance is returned, else null
          */
-        fun from(bitmap: Bitmap, color: (Color) -> Unit) {
-            Palette
-                .Builder(bitmap)
+        fun from(bitmap: Bitmap, onGenerated: ((Color) -> Unit)? = null) =
+            from(Palette.Builder(bitmap), onGenerated)
+
+        /**
+         * Get the colors based on the given [color]
+         *
+         * @param color
+         * @param onGenerated callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @return it [onGenerated] is null, the Color instance is returned, else null
+         */
+        fun from(color: Int, onGenerated: ((Color) -> Unit)? = null) =
+            from(listOf(color), onGenerated)
+
+        /**
+         * Get the colors based on the provided list of colors
+         *
+         * @param colors
+         * @param onGenerated callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @return it [onGenerated] is null, the Color instance is returned, else null
+         */
+        fun from(colors: List<Int>, onGenerated: ((Color) -> Unit)? = null): Color? =
+            from(
+                builder = Palette.Builder(colors.map {
+                    Swatch(it, 100)
+                }),
+                onGenerated = onGenerated
+            )
+
+        /**
+         * Use the [text] to generate colors
+         *
+         * @param text
+         * @param onGenerated callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @return it [onGenerated] is null, the Color instance is returned, else null
+         */
+        fun from(text: String, onGenerated: ((Color) -> Unit)? = null) =
+            from(listOf(text.toColor()), onGenerated)
+
+        /**
+         * There are a couple ways to get colors, we keep all the settings the same except for the instantiation
+         * of the [Palette.Builder], this keeps all that together, each other "from" function, should
+         * call this.
+         *
+         * @param builder
+         * @param onGenerated callback with the populated color, this is only called if [Palette] managed to get swatches
+         * @return it [onGenerated] is null, the Color instance is returned, else null
+         */
+        private fun from(builder: Palette.Builder, onGenerated: ((Color) -> Unit)? = null): Color? {
+            builder
                 .maximumColorCount(32)
-                .generate { palette ->
+
+            return onGenerated?.let {
+                builder.generate { palette ->
                     palette?.getSwatch()?.let {
-                        color(Color(palette))
+                        onGenerated(Color(palette))
                     }
                 }
+                return null
+            } ?: run {
+                return Color(builder.generate())
+            }
         }
 
         /**
          * Get a [Swatch] value from the [Palette], this will check for nulls and return a non
          * null based on the following priority:
          *
+         * - dominantSwatch
+         * - vibrantSwatch
          * - mutedSwatch
          * - darkMutedSwatch
-         * - vibrantSwatch
          * - darkVibrantSwatch
-         * - dominantSwatch
          *
          * @return the color data, or null
          */
         private fun Palette.getSwatch(): Swatch? =
-            mutedSwatch ?: darkMutedSwatch ?: vibrantSwatch ?: darkVibrantSwatch ?: dominantSwatch
+            dominantSwatch ?: vibrantSwatch ?: mutedSwatch ?: darkMutedSwatch ?: darkVibrantSwatch
 
         /**
          * Convert the [ColorInt], to a [ColorStateList]

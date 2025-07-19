@@ -182,9 +182,18 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
 
         setActionVisibility()
 
-        Icon.load(binding.imageIcon, appDetail) { imageView ->
-            imageView.getColors { updateColors(it) }
-        }
+        Icon.load(
+            imageView = binding.imageIcon,
+            appDetail = appDetail,
+            onComplete = { imageView ->
+                imageView.getColors { updateColors(it) }
+            },
+            onFailed = { color ->
+                Color.from(color) {
+                    updateColors(it)
+                }
+            }
+        )
         handleActions()
         populateTags()
     }
@@ -219,7 +228,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
         binding.apply {
             cardBackgroundHeader.setCardBackgroundColor(color.main.original)
             cardMain.setCardBackgroundColor(expanded, color.main.dim)
-            textTitle.setTextColor(expanded, color.body.original)
+            textTitle.setTextColor(expanded, color.title.original)
             motionMain.refresh()
         }
 

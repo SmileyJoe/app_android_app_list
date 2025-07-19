@@ -3,7 +3,6 @@ package io.smileyjoe.applist.db
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -13,6 +12,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import io.smileyjoe.applist.BuildConfig
+import io.smileyjoe.applist.drawable.IconLetter
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.FirebaseGlide
 import java.io.ByteArrayOutputStream
@@ -43,7 +43,7 @@ object Icon {
      * @param packageName the name of the package
      * @return reference to the packages icon
      */
-    private fun getReference(packageName: String?): StorageReference? {
+    fun getReference(packageName: String?): StorageReference? {
         if (!packageName.isNullOrEmpty()) {
             getReference()?.let { reference ->
                 return reference.child("$packageName.png")
@@ -80,57 +80,58 @@ object Icon {
     /**
      * Load an icon from firebase into a view
      *
+     * If there is no icon, a placeholder image of [IconLetter] is loaded in the [imageView]
+     *
      * @param imageView the view to put the icon into
      * @param appDetail the app whose icon is needed
+     * @param onComplete callback for when the image is loaded
+     * @param onFailed callback for if the icon fails to load
      * @see [FirebaseGlide]
+     * @see [IconLetter]
      */
     fun load(
         imageView: ImageView,
         appDetail: AppDetail,
-        onComplete: ((ImageView) -> Unit)? = null
+        onComplete: ((ImageView) -> Unit)? = null,
+        onFailed: ((Int) -> Unit)? = null
     ) {
         // if the icon has already been retrieved from firebase, or from the packagemanager //
         // set it on the imageView //
         if (appDetail.icon != null) {
             imageView.apply {
-                visibility = View.VISIBLE
                 setImageDrawable(appDetail.icon)
                 onComplete?.invoke(imageView)
             }
         } else {
             // if not, get the icon from firebase //
+            val placeholder = IconLetter(appDetail.name!!)
             getReference(appDetail.appPackage)?.let { reference ->
-                reference.downloadUrl.addOnSuccessListener { uri ->
-                    Glide.with(imageView.context)
-                        .load(reference)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
+                Glide.with(imageView.context)
+                    .load(reference)
+                    .placeholder(placeholder)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            onFailed?.invoke(placeholder.backgroundColor)
+                            return false
+                        }
 
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                onComplete?.invoke(imageView)
-                                return false
-                            }
-                        })
-                        .into(imageView)
-
-                    imageView.visibility = View.VISIBLE
-                }.addOnFailureListener {
-                    // if there is no icon, hide the view //
-                    imageView.visibility = View.GONE
-                }
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            onComplete?.invoke(imageView)
+                            return false
+                        }
+                    })
+                    .into(imageView)
             }
         }
     }

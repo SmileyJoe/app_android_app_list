@@ -8,91 +8,120 @@
     android:fitsSystemWindows="true"
     tools:context="io.smileyjoe.applist.activity.MainActivity">
 
-    <TextView
-        android:id="@+id/text_title"
-        style="@style/Text.Heading.Medium"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/activity_padding"
-        android:paddingTop="@dimen/activity_padding"
-        android:paddingEnd="@dimen/activity_padding"
-        android:textColor="?android:colorPrimary"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Title" />
-
-    <ImageView
-        android:id="@+id/image_filter"
-        android:layout_width="@dimen/icon_medium"
-        android:layout_height="@dimen/icon_medium"
-        android:layout_marginEnd="@dimen/padding_small"
-        android:clickable="true"
-        android:paddingStart="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_small"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_title"
-        app:tint="?android:colorPrimary" />
-
-    <ImageView
-        android:id="@+id/image_filter_clear"
-        android:layout_width="@dimen/icon_medium"
-        android:layout_height="@dimen/icon_medium"
-        android:layout_marginEnd="@dimen/padding_small"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:paddingStart="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_filter"
-        app:tint="?android:colorPrimary" />
-
-    <TextView
-        android:id="@+id/text_filter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_padding"
-        android:layout_marginEnd="@dimen/activity_padding"
-        android:text="@string/filter_none_selected"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@id/barrier_filter"
-        app:layout_constraintEnd_toStartOf="@id/image_filter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_title" />
-
-    <io.smileyjoe.library.tags.TagGroup
-        android:id="@+id/layout_tags"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_padding"
-        android:layout_marginEnd="@dimen/activity_padding"
-        android:visibility="gone"
-        app:chipSpacingHorizontal="@dimen/padding_small"
-        app:chipSpacingVertical="-8dp"
-        app:layout_chip="@layout/inflate_chip_filter"
-        app:layout_constraintBottom_toTopOf="@id/barrier_filter"
-        app:layout_constraintEnd_toStartOf="@id/image_filter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_title" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="layout_tags, image_filter_clear, image_filter" />
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/padding_small"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_filter">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:liftOnScroll="false">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/padding_small">
+
+                <com.google.android.material.search.SearchBar
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_search"
+                    app:forceDefaultNavigationOnClickListener="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/text_title"
+                    style="@style/Text.Heading.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/activity_padding"
+                    android:paddingTop="@dimen/activity_padding"
+                    android:paddingEnd="@dimen/activity_padding"
+                    android:textColor="?android:colorPrimary"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/search_bar"
+                    tools:text="Title" />
+
+                <ImageView
+                    android:id="@+id/image_filter"
+                    android:layout_width="@dimen/icon_medium"
+                    android:layout_height="@dimen/icon_medium"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:layout_marginEnd="@dimen/padding_small"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:paddingStart="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_small"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_title"
+                    app:tint="?android:colorPrimary" />
+
+                <ImageView
+                    android:id="@+id/image_filter_clear"
+                    android:layout_width="@dimen/icon_medium"
+                    android:layout_height="@dimen/icon_medium"
+                    android:layout_marginEnd="@dimen/padding_small"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:paddingStart="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_small"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/image_filter"
+                    app:tint="?android:colorPrimary" />
+
+                <TextView
+                    android:id="@+id/text_filter"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_large"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:layout_marginEnd="@dimen/activity_padding"
+                    android:text="@string/filter_none_selected"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toTopOf="@id/barrier_filter"
+                    app:layout_constraintEnd_toStartOf="@id/image_filter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_title" />
+
+                <io.smileyjoe.library.tags.TagGroup
+                    android:id="@+id/layout_tags"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_padding"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:layout_marginEnd="@dimen/activity_padding"
+                    android:visibility="gone"
+                    app:chipSpacingHorizontal="@dimen/padding_small"
+                    app:chipSpacingVertical="-8dp"
+                    app:layout_chip="@layout/inflate_chip_filter"
+                    app:layout_constraintBottom_toTopOf="@id/barrier_filter"
+                    app:layout_constraintEnd_toStartOf="@id/image_filter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_title" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="layout_tags, image_filter_clear, image_filter" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager_apps"
@@ -111,6 +140,20 @@
             android:transitionName="transition_fab"
             app:icon="@drawable/ic_add"
             app:layout_behavior="io.smileyjoe.applist.behavior.ExtendedFabBehavior" />
+
+        <com.google.android.material.search.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/hint_search"
+            app:layout_anchor="@id/search_bar">
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_search_results"
+                android:layout_width="match_parent"
+                android:background="?android:colorBackground"
+                android:layout_height="match_parent"/>
+        </com.google.android.material.search.SearchView>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

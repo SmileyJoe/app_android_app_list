@@ -4,8 +4,8 @@
     <style name="AppTheme" parent="Theme.Material3.DynamicColors.DayNight">
         <item name="android:statusBarColor">?android:colorBackground</item>
         <item name="materialButtonStyle">@style/Widget.Material3.Button</item>
-        <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
-        <item name="android:textViewStyle">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="materialCardViewStyle">@style/MaterialCardView</item>
+        <item name="android:textViewStyle">@style/Text</item>
         <item name="android:windowContentTransitions">true</item>
         <!-- Splash Screen -->
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_screen_anim</item>
@@ -13,6 +13,7 @@
         <item name="android:windowSplashScreenBackground">?android:colorBackground</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/splash_screen_branding</item>
         <item name="buttonActionStyle">@style/ButtonAction</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigation</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -26,7 +27,13 @@
 
     <style name="Button.Alt" parent="@style/Widget.Material3.Button.OutlinedButton"/>
 
+    <style name="Text" parent="@style/TextAppearance.Material3.BodyMedium"/>
+
     <style name="Text.Title" parent="@style/TextAppearance.Material3.TitleMedium"/>
+
+    <style name="Text.Status">
+        <item name="android:textStyle">italic</item>
+    </style>
 
     <style name="Text.Heading.Large" parent="TextAppearance.Material3.DisplayLarge">
         <item name="android:textStyle">bold</item>
@@ -46,6 +53,10 @@
         <item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.FilledButton.Container.Shape</item>
     </style>
 
+    <style name="MaterialCardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainer</item>
+    </style>
+
     <style name="CardView.ShapeAppearance.RoundedTop" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">16dp</item>
@@ -60,7 +71,10 @@
     </style>
 
     <style name="Chip.Filter" parent="Widget.Material3.Chip.Suggestion"/>
-    <style name="Chip.View" parent="Widget.Material3.Chip.Assist"/>
+    <style name="Chip.View" parent="Widget.Material3.Chip.Assist">
+        <item name="android:clickable">false</item>
+        <item name="android:checkable">true</item>
+    </style>
     <style name="Chip.Input" parent="Widget.Material3.Chip.Input">
         <item name="chipBackgroundColor">?attr/colorSecondaryContainer</item>
         <item name="chipStrokeColor">?attr/colorAccent</item>
@@ -69,5 +83,9 @@
     </style>
 
     <style name="TextInputLayout.AutoComplete" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"/>
+
+    <style name="BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">?attr/colorSurfaceContainerHigh</item>
+    </style>
 
 </resources>

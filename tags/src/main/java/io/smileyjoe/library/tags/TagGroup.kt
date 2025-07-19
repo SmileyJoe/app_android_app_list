@@ -11,13 +11,12 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import androidx.transition.AutoTransition
-import androidx.transition.TransitionManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import io.smileyjoe.library.utils.Color
 import io.smileyjoe.library.utils.Color.Companion.toColorStateList
 import io.smileyjoe.library.utils.Extensions.animate
+import io.smileyjoe.library.utils.Extensions.delayedTransition
 import io.smileyjoe.library.utils.Extensions.withNotNull
 
 class TagGroup : ChipGroup {
@@ -50,9 +49,7 @@ class TagGroup : ChipGroup {
 
     private var state: GroupState = if (isVisible) GroupState.EXPANDED else GroupState.CONTRACTED
         set(value) {
-            TransitionManager.beginDelayedTransition(parent as ViewGroup, AutoTransition().apply {
-                duration = 150
-            })
+            (parent as ViewGroup).delayedTransition(150)
             with(value) {
                 isVisible = groupVisible
                 detailsView?.isVisible = detailsVisible
@@ -80,6 +77,8 @@ class TagGroup : ChipGroup {
             field = value
         }
 
+    var searchTerm: String? = null
+
     var tags: List<String>? = null
         set(value) {
             removeAllViews()
@@ -87,7 +86,7 @@ class TagGroup : ChipGroup {
                 addView(
                     chip.apply {
                         text = tag
-                        isChecked = selectedTags.contains(tag)
+                        isChecked = selectedTags.contains(tag) || searchTerm?.let { tag.contains(it) } ?: false
                         if (onSelectedTagsChanged != null) {
                             setOnCheckedChangeListener(::onTagSelected)
                         }
@@ -182,6 +181,10 @@ class TagGroup : ChipGroup {
                 selectedTags.sortedBy { it }.joinToString(", ")
             }
         }
+    }
+
+    fun clear() {
+        removeAllViews()
     }
 
 }

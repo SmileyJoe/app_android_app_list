@@ -1,5 +1,6 @@
 package io.smileyjoe.library.utils
 
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.Animatable2.AnimationCallback
@@ -7,10 +8,16 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewParent
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 
 object Extensions {
     /**
@@ -169,7 +176,7 @@ object Extensions {
      * @param animatedVector to run
      * @param onComplete callback for when the animation is done
      */
-    fun ImageView.animate(@DrawableRes animatedVector: Int, onComplete: (() -> Unit)? = null){
+    fun ImageView.animate(@DrawableRes animatedVector: Int, onComplete: (() -> Unit)? = null) {
         setImageResource(animatedVector)
         (drawable as AnimatedVectorDrawable).apply {
             onComplete?.let {
@@ -181,5 +188,70 @@ object Extensions {
             }
             start()
         }
+    }
+
+    /**
+     * Begin a delayed transition for animating layout changes
+     *
+     * @param duration for the animation
+     */
+    fun ViewGroup.delayedTransition(duration: Long) {
+        TransitionManager.beginDelayedTransition(this, AutoTransition().apply {
+            this.duration = duration
+        })
+    }
+
+    /**
+     * Begin a delayed transition of this view
+     *
+     * @param duration of the animation
+     */
+    fun View.delayedTransition(duration: Long) =
+        parent.delayedTransition(duration)
+
+    /**
+     * Begin a delayed transition of this view
+     *
+     * @param duration of the animation
+     */
+    fun ViewParent.delayedTransition(duration: Long) {
+        if (this is ViewGroup) {
+            (this as ViewGroup).delayedTransition(duration)
+        }
+    }
+
+    /**
+     * Hide the view with a [duration] delay
+     *
+     * @param duration for the transition delay, defaults to 150
+     */
+    fun View.hide(duration: Long = 150) {
+        delayedTransition(duration)
+        isVisible = false
+    }
+
+    /**
+     * Show the view with a [duration] delay
+     *
+     * @param duration for the transition delay, defaults to 150
+     */
+    fun View.show(duration: Long = 150) {
+        delayedTransition(duration)
+        isVisible = true
+    }
+
+    /**
+     * Generate a color based on the String.
+     */
+    @ColorInt
+    fun String.toColor(): Int {
+        // this is basically ripped from the web somewhere, but I don't have the links //
+        val hash = hashCode()
+
+        val red = (hash and 0xFF0000) shr 16
+        val green = (hash and 0x00FF00) shr 8
+        val blue = (hash and 0x0000FF)
+
+        return Color.argb(255, red, green, blue)
     }
 }
