@@ -73,6 +73,13 @@ class SearchResultsAdapter(
 
     fun getItem(position: Int) = items[position]
 
+    /**
+     * Get the header based on the [SearchResultsViewType]
+     *
+     * @param context
+     * @param position
+     * @return section header or null
+     */
     private fun getHeader(context: Context, position: Int): String? {
         val viewType = getItemViewType(position)
         val prevViewType = getItemViewType(position - 1)

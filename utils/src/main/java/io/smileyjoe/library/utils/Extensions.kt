@@ -201,27 +201,51 @@ object Extensions {
         })
     }
 
+    /**
+     * Begin a delayed transition of this view
+     *
+     * @param duration of the animation
+     */
     fun View.delayedTransition(duration: Long) =
         parent.delayedTransition(duration)
 
+    /**
+     * Begin a delayed transition of this view
+     *
+     * @param duration of the animation
+     */
     fun ViewParent.delayedTransition(duration: Long) {
         if (this is ViewGroup) {
             (this as ViewGroup).delayedTransition(duration)
         }
     }
 
-    fun View.hide() {
-        delayedTransition(150)
+    /**
+     * Hide the view with a [duration] delay
+     *
+     * @param duration for the transition delay, defaults to 150
+     */
+    fun View.hide(duration: Long = 150) {
+        delayedTransition(duration)
         isVisible = false
     }
 
-    fun View.show() {
-        delayedTransition(150)
+    /**
+     * Show the view with a [duration] delay
+     *
+     * @param duration for the transition delay, defaults to 150
+     */
+    fun View.show(duration: Long = 150) {
+        delayedTransition(duration)
         isVisible = true
     }
 
+    /**
+     * Generate a color based on the String.
+     */
     @ColorInt
     fun String.toColor(): Int {
+        // this is basically ripped from the web somewhere, but I don't have the links //
         val hash = hashCode()
 
         val red = (hash and 0xFF0000) shr 16

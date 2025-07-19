@@ -56,7 +56,14 @@ object RecyclerViewExt {
         }
     }
 
-    fun RecyclerView.ItemDecoration.drawLayoutOver(canvas: Canvas, view: View, y: Int){
+    /**
+     * Draw the [view] as a floating header on top of the [RecyclerView]
+     *
+     * @param canvas to draw onto
+     * @param view to draw
+     * @param y position
+     */
+    fun RecyclerView.ItemDecoration.drawLayoutOver(canvas: Canvas, view: View, y: Int) {
         val margins = view.margins()
         canvas.apply {
             save()

@@ -42,6 +42,8 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
 
     private var alpha = 255
     private var helper: HeadingHelper? = null
+
+    // the first row in the current loaded rows that has a heading //
     private var topHeadingRow: View? = null
 
     /**
@@ -60,11 +62,27 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
     protected fun View.hasHeader(): Boolean =
         !getHeader().isNullOrEmpty()
 
+    /**
+     * Get the instance of the [HeadingHelper] or create it
+     *
+     * @param recyclerView
+     * @return helper instance
+     */
     private fun getHelper(recyclerView: RecyclerView): HeadingHelper =
         helper ?: HeadingHelper(recyclerView).also {
             helper = it
         }
 
+    /**
+     * Check if the heading needs to be drawn into the row, because we draw the heading over
+     * the recycler when it starts scrolling of screen, it's not always drawn into the row
+     *
+     * @param row row that might need the header
+     * @param header text for the heading
+     * @param binding heading binding to draw
+     * @param helper instance of the helper
+     * @return true if the header needs to be drawn, false otherwise
+     */
     private fun shouldDraw(
         row: View,
         header: String,
@@ -107,6 +125,7 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
                         drawLayout(canvas, recyclerView, row, root)
                     }
                 }
+                // if this is the first visible heading, save it to be used in onDrawOver //
                 if (i == 0) {
                     topHeadingRow = row
                     helper.topHeadingRow(header, row, binding)
@@ -115,16 +134,28 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         }
     }
 
+    /**
+     * @see RecyclerView.ItemDecoration.onDraw
+     */
     override fun onDrawOver(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(canvas, recyclerView, state)
         helper?.currentBinding?.let {
+            // the space that is not taken up by the header //
             val emptySpace =
                 recyclerView.measuredWidth - it.textHeading.measuredWidth - it.root.paddingStart
-            drawOver(canvas, it, getX(it, (emptySpace / 2)), getY(it))
+            drawOver(canvas, it, getDrawOverX(it, (emptySpace / 2)), getDrawOverY(it))
         }
     }
 
-    private fun getY(currentBinding: DecorationHeadingBinding): Int {
+    /**
+     * Get the Y position of the floating header.
+     *
+     * This is scrolled off screen as the next heading inside the [RecyclerView] gets to it.
+     *
+     * @param currentBinding that will be drawn as the floating heading
+     * @return the y position
+     */
+    private fun getDrawOverY(currentBinding: DecorationHeadingBinding): Int {
         val rowTop = topHeadingRow?.top ?: 0
         val nextBinding = helper?.nextBinding
 
@@ -137,7 +168,17 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         }
     }
 
-    private fun getX(currentBinding: DecorationHeadingBinding, maxX: Int): Int {
+    /**
+     * Get the X position of the floating header.
+     *
+     * As the [RecyclerView] is scrolled and the row moves offscreen, the floating header
+     * moves from left align to center align.
+     *
+     * @param currentBinding that will be drawn as the floating heading
+     * @param maxX the max x value it can be moved to
+     * @return the x position
+     */
+    private fun getDrawOverX(currentBinding: DecorationHeadingBinding, maxX: Int): Int {
         val top = topHeadingRow?.top ?: 0
         val currentHeight = currentBinding.root.measuredHeight
 
@@ -152,9 +193,19 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         }
     }
 
+    /**
+     * Draw the floating header
+     *
+     * @param canvas
+     * @param binding to draw
+     * @param x position
+     * @param y position
+     */
     private fun drawOver(canvas: Canvas, binding: DecorationHeadingBinding, x: Int, y: Int) =
         with(binding) {
             val currentHeight = root.measuredHeight
+            // because the background is transparent, we are moving the heading text inside //
+            // the heading view, not the heading view itself //
             textHeading.background.alpha = 255 - alpha
             textHeading.layout(
                 x,
@@ -165,6 +216,11 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
             drawLayoutOver(canvas, root, y)
         }
 
+    /**
+     * Get all the rows that need a heading to be added
+     *
+     * @return list of [Pair], with first = the row, and second being the heading
+     */
     private fun RecyclerView.getHeaderRows(): List<Pair<View, String>> =
         children.filter {
             it.hasHeader()

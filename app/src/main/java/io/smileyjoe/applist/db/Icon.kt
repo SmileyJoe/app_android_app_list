@@ -80,9 +80,14 @@ object Icon {
     /**
      * Load an icon from firebase into a view
      *
+     * If there is no icon, a placeholder image of [IconLetter] is loaded in the [imageView]
+     *
      * @param imageView the view to put the icon into
      * @param appDetail the app whose icon is needed
+     * @param onComplete callback for when the image is loaded
+     * @param onFailed callback for if the icon fails to load
      * @see [FirebaseGlide]
+     * @see [IconLetter]
      */
     fun load(
         imageView: ImageView,

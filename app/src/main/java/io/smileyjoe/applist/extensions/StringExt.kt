@@ -97,6 +97,12 @@ object StringExt {
         replace("\n", " ")
             .replace("\\s+".toRegex(), " ")
 
+    /**
+     * Get the text value of a string res id
+     *
+     * @param context
+     * @return the string value, or null
+     */
     fun Int.fromRes(context: Context): String? =
         try {
             context.getString(this)
