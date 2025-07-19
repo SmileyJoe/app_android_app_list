@@ -162,16 +162,16 @@ class Color private constructor(
          * Get a [Swatch] value from the [Palette], this will check for nulls and return a non
          * null based on the following priority:
          *
+         * - dominantSwatch
+         * - vibrantSwatch
          * - mutedSwatch
          * - darkMutedSwatch
-         * - vibrantSwatch
          * - darkVibrantSwatch
-         * - dominantSwatch
          *
          * @return the color data, or null
          */
         private fun Palette.getSwatch(): Swatch? =
-            mutedSwatch ?: darkMutedSwatch ?: vibrantSwatch ?: darkVibrantSwatch ?: dominantSwatch
+            dominantSwatch ?: vibrantSwatch ?: mutedSwatch ?: darkMutedSwatch ?: darkVibrantSwatch
 
         /**
          * Convert the [ColorInt], to a [ColorStateList]
