@@ -1,5 +1,6 @@
 package io.smileyjoe.library.utils
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -7,12 +8,14 @@ import android.graphics.drawable.Animatable2.AnimationCallback
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.text.Editable
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
@@ -253,5 +256,9 @@ object Extensions {
         val blue = (hash and 0x0000FF)
 
         return Color.argb(255, red, green, blue)
+    }
+
+    fun View.setPadding(start: Int = paddingStart, top: Int = paddingTop, end: Int = paddingEnd, bottom: Int = paddingBottom){
+        this.setPadding(start, top, end, bottom)
     }
 }

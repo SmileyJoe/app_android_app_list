@@ -3,6 +3,7 @@ package io.smileyjoe.applist.extensions
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
+import android.os.Handler
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 
@@ -58,4 +59,10 @@ object Extensions {
         } catch (e: Resources.NotFoundException) {
             null
         }
+
+    fun Context.runOnUiThread(task: () -> Unit){
+        Handler(mainLooper).post {
+            task()
+        }
+    }
 }

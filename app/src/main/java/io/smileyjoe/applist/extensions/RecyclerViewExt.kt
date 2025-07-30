@@ -3,11 +3,17 @@ package io.smileyjoe.applist.extensions
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.extensions.Extensions.setExt
 import io.smileyjoe.applist.extensions.ViewExt.margins
 
 object RecyclerViewExt {
+
+    const val POSITION_TOP = -1
+    const val POSITION_BOTTOM = -2
+    const val POSITION_UNKNOWN = -3
 
     /**
      * Get the offset needed to draw the [layout] as a [RecyclerView.ItemDecoration]
@@ -81,4 +87,34 @@ object RecyclerViewExt {
      */
     fun RecyclerView.isLastItem(row: View): Boolean =
         getChildAdapterPosition(row) == adapter?.itemCount?.minus(1)
+
+    val RecyclerView.itemCount : Int
+        get() = adapter?.itemCount ?: -1
+
+    val RecyclerView.positionTop : Int
+        get() = (layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: -1
+
+    val RecyclerView.positionBottom : Int
+        get() = (layoutManager as? LinearLayoutManager)?.findLastCompletelyVisibleItemPosition() ?: -1
+
+    val RecyclerView.position : Int
+        get() = when{
+            positionTop == -1 -> POSITION_UNKNOWN
+            positionBottom == -1 -> POSITION_UNKNOWN
+            positionTop == 0 -> POSITION_TOP
+            positionBottom + 1 == itemCount -> POSITION_BOTTOM
+            else -> positionTop
+        }
+
+    fun RecyclerView.smoothScrollTo(position: Int){
+        val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }.apply {
+            targetPosition = position
+        }
+
+        layoutManager?.startSmoothScroll(smoothScroller)
+    }
 }

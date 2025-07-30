@@ -16,9 +16,15 @@ import io.smileyjoe.applist.databinding.FragmentAppListBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
+import io.smileyjoe.applist.extensions.RecyclerViewExt.POSITION_BOTTOM
+import io.smileyjoe.applist.extensions.RecyclerViewExt.POSITION_TOP
+import io.smileyjoe.applist.extensions.RecyclerViewExt.position
+import io.smileyjoe.applist.extensions.RecyclerViewExt.smoothScrollTo
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
+import kotlin.math.absoluteValue
+
 
 /**
  * Fragment containing a list of apps, filtered by the [Page] details
@@ -51,6 +57,13 @@ class AppListFragment : Fragment() {
      */
     fun interface GetFilter : AppDetailAdapter.GetFilter
 
+    fun interface OnScroll {
+        enum class State{
+            QUICK, STOPPED, SCROLL
+        }
+        fun onScroll(state: State, topItem: AppDetail?)
+    }
+
     companion object {
         private const val EXTRA_PAGE: String = "page"
 
@@ -75,6 +88,8 @@ class AppListFragment : Fragment() {
     var onLoadComplete: OnLoadComplete? = null
     var onItemSelected: OnItemSelected? = null
     var getFilter: GetFilter? = null
+    var onScroll: OnScroll? = null
+    private var externalScroll: Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -94,12 +109,35 @@ class AppListFragment : Fragment() {
         binding.recyclerAppDetails.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = appDetailAdapter
+            setHasFixedSize(true)
+            setOnScrollChangeListener { _, _, _, _, oldScrollY ->
+                onAppListScroll(oldScrollY.absoluteValue)
+            }
         }
 
         populateList()
         handleDisplayView()
 
         return binding.root
+    }
+
+    private fun onAppListScroll(distance: Int) {
+        val position = binding.recyclerAppDetails.position
+        var state = OnScroll.State.SCROLL
+        var appDetail: AppDetail? = null
+
+        if (distance <= 2 || position == POSITION_TOP || position == POSITION_BOTTOM) {
+            state = OnScroll.State.STOPPED
+            externalScroll = false
+        } else if (distance >= 100) {
+            state = OnScroll.State.QUICK
+        }
+
+        if (!externalScroll) {
+            appDetail = appDetailAdapter.getItem(position)
+        }
+
+        onScroll?.onScroll(state, appDetail)
     }
 
     /**
@@ -157,6 +195,13 @@ class AppListFragment : Fragment() {
     fun refresh() {
         appDetailAdapter.refresh()
         handleDisplayView()
+    }
+
+    fun scrollTo(section: Char) {
+        appDetailAdapter.getSectionPosition(section)?.let {
+            externalScroll = true
+            binding.recyclerAppDetails.smoothScrollTo(it)
+        }
     }
 
     /**

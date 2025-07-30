@@ -1,5 +1,7 @@
 package io.smileyjoe.applist.extensions
 
+import android.graphics.Rect
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -101,5 +103,14 @@ object ViewExt {
      */
     fun View.margins() =
         Margin(this)
+
+    val View.layoutInflater
+        get() = LayoutInflater.from(context)
+
+    val View.hitRect : Rect
+        get() = with(Rect()){
+            getHitRect(this)
+            return@with this
+        }
 
 }

@@ -1,6 +1,7 @@
 package io.smileyjoe.applist.util
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -21,6 +22,10 @@ object ThemeUtil {
      * @param attr attr of a color to get
      * @return the color
      */
+    @Deprecated(
+        message = "Use context extension instead",
+        replaceWith = ReplaceWith("context.getThemeColor(attr)")
+    )
     @ColorInt
     fun getColor(context: Context, @AttrRes attr: Int): Int {
         val typedValue = TypedValue()
@@ -28,4 +33,14 @@ object ThemeUtil {
         return typedValue.data
     }
 
+    @ColorInt
+    fun Context.getThemeColor(@AttrRes attr: Int): Int =
+        with(TypedValue()) {
+            theme.resolveAttribute(attr, this, true)
+            return@with data
+        }
+
+    val Context.isDarkMode: Boolean
+        get() = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 }

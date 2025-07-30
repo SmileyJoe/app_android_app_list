@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.comparator.AppDetailComparator
@@ -69,11 +70,31 @@ class AppDetailAdapter(
         }
 
     override fun onBindViewHolder(holder: AppDetailViewHolder, position: Int) =
-        holder.bind(getItem(position))
+        holder.bind(getItem(position)!!)
 
     override fun getItemCount() = displayItems.size
 
     fun hasApps() = displayItems.isNotEmpty()
 
-    fun getItem(position: Int) = displayItems[position]
+    fun getItem(position: Int): AppDetail? =
+        if (position in displayItems.indices) {
+            displayItems[position]
+        } else {
+            null
+        }
+
+    fun getSectionPosition(section: Char): Int? {
+        var position: Int? = null
+        run breakable@{
+            displayItems.forEachIndexed { index, appDetail ->
+                if (appDetail.name?.startsWith(section, true) == true) {
+                    position = index
+                    Log.d("AlphabetThings", "Found $position")
+                    return@breakable
+                }
+            }
+        }
+
+        return position
+    }
 }

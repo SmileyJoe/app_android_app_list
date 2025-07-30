@@ -25,6 +25,7 @@ import io.smileyjoe.applist.extensions.SearchViewExt.onOpening
 import io.smileyjoe.applist.extensions.SplashScreenExt.exitAfterAnim
 import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
+import io.smileyjoe.applist.fragment.AppListFragment
 import io.smileyjoe.applist.fragment.SearchResultsFragment
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.objects.Filter
@@ -71,6 +72,7 @@ class MainActivity : BaseActivity() {
 
     // only remove the splash screen if the activity has fully loaded, so keep track of that //
     private var loaded = false
+
 
     // listen to the backstack to show or hide the fab and bottom nav //
     private val onDetailsBackstackListener: OnBackStackChangedListener =
@@ -126,7 +128,20 @@ class MainActivity : BaseActivity() {
         },
         // show the details when an item is selected //
         onItemSelected = { appDetail -> showApp(appDetail) },
-        getFilter = { filter }
+        getFilter = { filter },
+        onAppListScroll = { state, topItem ->
+            when (state) {
+                AppListFragment.OnScroll.State.STOPPED -> binding.layoutAlphabet.hide(2000)
+                AppListFragment.OnScroll.State.QUICK -> binding.layoutAlphabet.show()
+                else -> {
+                    // do nothing //
+                }
+            }
+
+            topItem?.name?.first()?.let {
+                binding.layoutAlphabet.highlightLetter(it)
+            }
+        }
     )
 
     private var searchResultsFragment: SearchResultsFragment? = null
@@ -156,6 +171,20 @@ class MainActivity : BaseActivity() {
             bottomNavigation.setOnItemSelectedListener { item ->
                 binding.pagerApps.currentItem = Page.fromId(item.itemId).position
                 true
+            }
+            layoutAlphabet.apply {
+                onShow = {
+                    fabAdd.hide()
+                }
+                onHide = {
+                    fabAdd.show()
+                }
+                onSelected = {
+                    show()
+                    pagerAdapterMain.fragments.forEach { t, u ->
+                        u.get()?.scrollTo(it)
+                    }
+                }
             }
         }
 
@@ -234,7 +263,8 @@ class MainActivity : BaseActivity() {
                 SearchResultsFragment { appDetail -> showApp(appDetail) },
                 SearchResultsFragment.TAG
             )
-            window.statusBarColor = MaterialColors.getColor(binding.root, R.attr.colorSurfaceContainerHigh)
+            window.statusBarColor =
+                MaterialColors.getColor(binding.root, R.attr.colorSurfaceContainerHigh)
             binding.bottomNavigation.hide()
         }
         onClosing {
