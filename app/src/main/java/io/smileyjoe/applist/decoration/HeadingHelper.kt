@@ -71,6 +71,10 @@ class HeadingHelper(
         }
     }
 
+    fun clearTopHeadingRow() {
+        currentPosition = -1
+    }
+
     /**
      * Get the position in [headings] based on the heading text
      *

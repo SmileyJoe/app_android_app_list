@@ -116,6 +116,10 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
 
         if (headers.isEmpty()) {
             topHeadingRow = null
+            // if there are no items, clear the heading //
+            if (recyclerView.adapter?.itemCount == 0) {
+                helper.clearTopHeadingRow()
+            }
         } else {
             headers.forEachIndexed { i, (row, header) ->
                 val binding = helper.getBinding(header)
