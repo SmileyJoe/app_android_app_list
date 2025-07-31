@@ -21,10 +21,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
     <style name="Button.Alt" parent="@style/Widget.Material3.Button.OutlinedButton"/>
 
     <style name="Text" parent="@style/TextAppearance.Material3.BodyMedium"/>

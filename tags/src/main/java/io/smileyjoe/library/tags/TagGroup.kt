@@ -156,9 +156,9 @@ class TagGroup : ChipGroup {
 
     private fun Chip.updateColors(color: Color?) {
         color?.let {
-            chipBackgroundColor = it.main.dim.toColorStateList()
-            chipStrokeColor = it.main.original.toColorStateList()
-            setTextColor(it.main.original.toColorStateList())
+            chipBackgroundColor = it.main.theme.toColorStateList()
+            chipStrokeColor = it.main.themeInverse.toColorStateList()
+            setTextColor(it.main.themeInverse.toColorStateList())
         }
     }
 

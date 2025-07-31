@@ -82,10 +82,6 @@ object ViewExt {
         y = viewAbove.y + viewAbove.measuredHeight + marginTop
     }
 
-    fun ImageView.getColors(colors: (Color) -> Unit) {
-        Color.from(this, colors)
-    }
-
     /**
      * Measure the view before it is drawn
      */

@@ -3,6 +3,7 @@ package io.smileyjoe.applist.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +24,10 @@ import io.smileyjoe.applist.extensions.ConstraintSetExt.setTextColor
 import io.smileyjoe.applist.extensions.Extensions.statusBarColor
 import io.smileyjoe.applist.extensions.MotionLayoutExt.onStateChanged
 import io.smileyjoe.applist.extensions.MotionLayoutExt.refresh
-import io.smileyjoe.applist.extensions.ViewExt.getColors
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.IntentUtil
 import io.smileyjoe.applist.util.Notify
+import io.smileyjoe.applist.util.ThemeUtil.isDarkMode
 import io.smileyjoe.applist.view.ButtonAction
 import io.smileyjoe.library.utils.Color
 import io.smileyjoe.library.utils.Extensions.layoutListener
@@ -186,12 +187,10 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
             imageView = binding.imageIcon,
             appDetail = appDetail,
             onComplete = { imageView ->
-                imageView.getColors { updateColors(it) }
+                Color.from(imageView).dark(requireContext().isDarkMode).get { updateColors(it) }
             },
             onFailed = { color ->
-                Color.from(color) {
-                    updateColors(it)
-                }
+                Color.from(color).dark(requireContext().isDarkMode).get { updateColors(it) }
             }
         )
         handleActions()
@@ -214,7 +213,7 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
         this.color = color
         actionButtons.withEach {
             val hasBackground = id in expandedBackgroundList
-            val iconTint = if (hasBackground) color.title.original else color.main.original
+            val iconTint = if (hasBackground) color.title.original else color.main.themeInverse
 
             setIconTint(expanded, iconTint)
             if (hasBackground) {
@@ -227,13 +226,13 @@ class AppDetailsFragment(private val appDetail: AppDetail, private val tags: Lis
 
         binding.apply {
             cardBackgroundHeader.setCardBackgroundColor(color.main.original)
-            cardMain.setCardBackgroundColor(expanded, color.main.dim)
-            textTitle.setTextColor(expanded, color.title.original)
+            cardMain.setCardBackgroundColor(expanded, color.main.theme)
+            textTitle.setTextColor(expanded, color.body.original)
             motionMain.refresh()
         }
 
         binding.motionMain.onStateChanged { expanded ->
-            statusBarColor = if (expanded) color.main.dim else android.graphics.Color.TRANSPARENT
+            statusBarColor = if (expanded) color.main.theme else android.graphics.Color.TRANSPARENT
         }
 
     }

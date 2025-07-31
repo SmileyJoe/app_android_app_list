@@ -202,6 +202,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showApp(app: AppDetail) {
+        binding.layoutAlphabet.hide()
         binding.searchView.close {
             supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
 

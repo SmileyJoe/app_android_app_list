@@ -29,7 +29,7 @@ class IconLetter(
     private val letter = text.substring(0, characters).uppercase()
 
     // color instance used for the background and font //
-    private val color = Color.from(text)!!
+    private val color = Color.from(text).get()
 
     // color for the background //
     val backgroundColor: Int = color.main.original
