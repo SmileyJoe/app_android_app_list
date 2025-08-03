@@ -9,6 +9,7 @@ import android.os.Parcelable
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.db.DbAppDetail
 import io.smileyjoe.applist.db.Icon
+import io.smileyjoe.library.recycler.AlphabetLayoutItem
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 
@@ -39,7 +40,7 @@ class AppDetail(
     var appPackage: String? = null,
     firebaseKey: String? = null,
     var tags: List<String>? = null
-) : Parcelable {
+) : Parcelable, AlphabetLayoutItem {
 
     // caters for an empty key, if it's empty, make it null //
     var firebaseKey: String? = firebaseKey
@@ -61,6 +62,9 @@ class AppDetail(
             if (isSaved) R.string.text_saved else null,
             if (isFavourite) R.string.text_favourite else null
         ).joinToString(separator = " | ") { context.getString(it) }
+
+    override val section: Char?
+        get() = name?.first()
 
     private companion object : Parceler<AppDetail> {
 

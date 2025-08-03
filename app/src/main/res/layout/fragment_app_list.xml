@@ -27,24 +27,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <io.smileyjoe.library.recycler.AlphabetLayoutRecyclerView
         android:id="@+id/recycler_app_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/padding_small"
         android:visibility="gone"
+        app:layout_alphabetLayout="@id/layout_alphabet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <io.smileyjoe.applist.view.AlphabetLayout
+    <io.smileyjoe.library.recycler.AlphabetLayout
         android:id="@+id/layout_alphabet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginEnd="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_medium"
+        android:paddingBottom="@dimen/padding_medium"
+        android:background="@drawable/bg_pill"
+        app:item_paddingStart="@dimen/padding_small"
+        app:item_paddingEnd="@dimen/padding_small"
         app:view_header="@id/text_section"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

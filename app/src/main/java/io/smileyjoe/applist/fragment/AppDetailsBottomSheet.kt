@@ -21,9 +21,9 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.activity.SaveAppActivity
 import io.smileyjoe.applist.databinding.FragmentBottomSheetDetailsBinding
 import io.smileyjoe.applist.db.Icon
-import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
-import io.smileyjoe.applist.extensions.ViewExt.below
-import io.smileyjoe.applist.extensions.ViewExt.updateSize
+import io.smileyjoe.library.utils.ViewExt.addLayoutListener
+import io.smileyjoe.library.utils.ViewExt.below
+import io.smileyjoe.library.utils.ViewExt.updateSize
 import io.smileyjoe.applist.objects.AppDetail
 
 @Deprecated(

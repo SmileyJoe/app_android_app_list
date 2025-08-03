@@ -1,10 +1,10 @@
 package io.smileyjoe.applist.adapter
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.comparator.AppDetailComparator
 import io.smileyjoe.applist.enums.Page
+import io.smileyjoe.library.recycler.AlphabetLayoutAdapter
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
@@ -21,15 +21,19 @@ class AppDetailAdapter(
     private val deleteListener: AppDetailViewHolder.Listener? = null,
     private val onItemSelected: AppDetailViewHolder.OnItemSelected? = null,
     private val getFilter: GetFilter? = null
-) : RecyclerView.Adapter<AppDetailViewHolder>() {
+) : RecyclerView.Adapter<AppDetailViewHolder>(), AlphabetLayoutAdapter<AppDetail> {
 
     fun interface GetFilter {
         fun getFilter(): Filter
     }
 
+    override val adapter: RecyclerView.Adapter<*> = this
+
+    override var externalScroll: Boolean = false
+
     // the items list is filtered, so we need to keep a record of the original and a record of what //
     // is being used by the adapter for the list //
-    private var displayItems: List<AppDetail> = listOf()
+    override var displayItems: List<AppDetail> = listOf()
         set(value) {
             withNotNull(getFilter?.getFilter()) {
                 if (tags.isEmpty()) {
@@ -75,26 +79,4 @@ class AppDetailAdapter(
     override fun getItemCount() = displayItems.size
 
     fun hasApps() = displayItems.isNotEmpty()
-
-    fun getItem(position: Int): AppDetail? =
-        if (position in displayItems.indices) {
-            displayItems[position]
-        } else {
-            null
-        }
-
-    fun getSectionPosition(section: Char): Int? {
-        var position: Int? = null
-        run breakable@{
-            displayItems.forEachIndexed { index, appDetail ->
-                if (appDetail.name?.startsWith(section, true) == true) {
-                    position = index
-                    Log.d("AlphabetThings", "Found $position")
-                    return@breakable
-                }
-            }
-        }
-
-        return position
-    }
 }

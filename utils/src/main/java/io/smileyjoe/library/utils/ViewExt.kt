@@ -1,16 +1,13 @@
-package io.smileyjoe.applist.extensions
+package io.smileyjoe.library.utils
 
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ImageView
-import io.smileyjoe.applist.extensions.ViewExt.addLayoutListener
-import io.smileyjoe.applist.extensions.ViewExt.below
-import io.smileyjoe.applist.extensions.ViewExt.updateSize
-import io.smileyjoe.applist.objects.Margin
-import io.smileyjoe.library.utils.Color
+import io.smileyjoe.library.utils.ViewExt.addLayoutListener
+import io.smileyjoe.library.utils.ViewExt.below
+import io.smileyjoe.library.utils.ViewExt.updateSize
 
 /**
  * View extensions
@@ -103,8 +100,8 @@ object ViewExt {
     val View.layoutInflater
         get() = LayoutInflater.from(context)
 
-    val View.hitRect : Rect
-        get() = with(Rect()){
+    val View.hitRect: Rect
+        get() = with(Rect()) {
             getHitRect(this)
             return@with this
         }

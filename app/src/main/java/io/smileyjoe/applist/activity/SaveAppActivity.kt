@@ -18,7 +18,7 @@ import io.smileyjoe.applist.databinding.ActivitySaveAppBinding
 import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
-import io.smileyjoe.applist.util.ThemeUtil
+import io.smileyjoe.library.utils.ThemeUtil
 import io.smileyjoe.library.tags.TagInputEditText
 
 /**

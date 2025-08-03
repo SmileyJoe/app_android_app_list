@@ -5,8 +5,8 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
-import io.smileyjoe.applist.extensions.Extensions.setExt
-import io.smileyjoe.applist.extensions.RecyclerViewExt.isLastItem
+import io.smileyjoe.library.recycler.RecyclerViewExt.isLastItem
+import io.smileyjoe.library.utils.Extensions.setExt
 
 /**
  * [RecyclerView.ItemDecoration] for the search results that adds a heading and spacing

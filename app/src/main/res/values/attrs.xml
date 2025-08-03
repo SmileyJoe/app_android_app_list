@@ -2,7 +2,6 @@
 <resources>
 
     <attr name="buttonActionStyle"/>
-    <attr name="alphabetLayoutStyle"/>
 
     <declare-styleable name="ButtonProgress">
         <attr name="text_enabled" format="reference"/>
@@ -38,10 +37,6 @@
             <enum name="delete" value="6"/>
             <enum name="settings" value="7"/>
         </attr>
-    </declare-styleable>
-
-    <declare-styleable name="AlphabetLayout">
-        <attr name="view_header" format="reference"/>
     </declare-styleable>
 
 </resources>

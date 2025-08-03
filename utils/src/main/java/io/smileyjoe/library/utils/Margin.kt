@@ -1,9 +1,8 @@
-package io.smileyjoe.applist.objects
+package io.smileyjoe.library.utils
 
 import android.view.View
 import android.view.ViewGroup
-import io.smileyjoe.applist.extensions.ViewExt
-import io.smileyjoe.applist.extensions.ViewExt.margins
+import io.smileyjoe.library.utils.ViewExt.margins
 
 /**
  * Easier way to deal with view margins

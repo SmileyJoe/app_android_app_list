@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="alphabetLayoutStyle"/>
+
+    <declare-styleable name="AlphabetLayout">
+        <attr name="view_header" format="reference"/>
+        <attr name="item_paddingStart" format="dimension"/>
+        <attr name="item_paddingEnd" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="AlphabetLayoutRecyclerView">
+        <attr name="layout_alphabetLayout" format="reference"/>
+    </declare-styleable>
+
+</resources>

@@ -17,7 +17,7 @@ import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.decoration.SearchResultsDecoration
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.enums.SearchResultsViewType
-import io.smileyjoe.applist.extensions.Extensions.contains
+import io.smileyjoe.library.utils.Extensions.contains
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify

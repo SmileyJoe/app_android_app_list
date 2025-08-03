@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.databinding.DecorationHeadingBinding
 import io.smileyjoe.applist.extensions.IntExt.min
-import io.smileyjoe.applist.extensions.ViewExt.measure
+import io.smileyjoe.library.utils.ViewExt.measure
 
 /**
  * Reset the heading row

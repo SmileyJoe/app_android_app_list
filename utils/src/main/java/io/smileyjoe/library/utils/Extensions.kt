@@ -1,24 +1,27 @@
 package io.smileyjoe.library.utils
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Animatable2.AnimationCallback
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.text.Editable
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 
@@ -258,7 +261,67 @@ object Extensions {
         return Color.argb(255, red, green, blue)
     }
 
-    fun View.setPadding(start: Int = paddingStart, top: Int = paddingTop, end: Int = paddingEnd, bottom: Int = paddingBottom){
+    fun View.setPadding(
+        start: Int = paddingStart,
+        top: Int = paddingTop,
+        end: Int = paddingEnd,
+        bottom: Int = paddingBottom
+    ) {
         this.setPadding(start, top, end, bottom)
+    }
+
+
+    /**
+     * Update the status bar color from a [Fragment]
+     */
+    var Fragment.statusBarColor: Int
+        get() = requireActivity().window.statusBarColor
+        set(value) {
+            requireActivity().window.statusBarColor = value
+        }
+
+    /**
+     * Helper to set the values, anything not passed in defaults to 0
+     *
+     * @see Rect.set
+     */
+    fun Rect.setExt(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) =
+        set(left, top, right, bottom)
+
+    /**
+     * Check if the [term] exists, in part, or in full, in any of the items.
+     *
+     * @param term to look for
+     * @param ignoreCase
+     * @return true if any of the elements contain the [term]
+     * @see String.contains
+     */
+    fun List<String>?.contains(term: String, ignoreCase: Boolean = false): Boolean {
+        this?.forEach {
+            if (it.contains(term, ignoreCase = ignoreCase)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Get the string for the provided [id], or return null if the [id] is [Resources.ID_NULL],
+     * or is not found
+     *
+     * @param id
+     * @return the string value, or null
+     */
+    fun Context.getStringOrNull(@StringRes id: Int): String? =
+        try {
+            if (id == Resources.ID_NULL) null else getString(id)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
+
+    fun Context.runOnUiThread(task: () -> Unit) {
+        Handler(mainLooper).post {
+            task()
+        }
     }
 }

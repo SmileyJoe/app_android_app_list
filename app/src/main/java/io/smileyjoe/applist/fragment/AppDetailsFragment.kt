@@ -3,7 +3,6 @@ package io.smileyjoe.applist.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,13 +20,13 @@ import io.smileyjoe.applist.extensions.Compat.getParcelableCompat
 import io.smileyjoe.applist.extensions.ConstraintSetExt.isVisible
 import io.smileyjoe.applist.extensions.ConstraintSetExt.setCardBackgroundColor
 import io.smileyjoe.applist.extensions.ConstraintSetExt.setTextColor
-import io.smileyjoe.applist.extensions.Extensions.statusBarColor
+import io.smileyjoe.library.utils.Extensions.statusBarColor
 import io.smileyjoe.applist.extensions.MotionLayoutExt.onStateChanged
 import io.smileyjoe.applist.extensions.MotionLayoutExt.refresh
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.IntentUtil
 import io.smileyjoe.applist.util.Notify
-import io.smileyjoe.applist.util.ThemeUtil.isDarkMode
+import io.smileyjoe.library.utils.ThemeUtil.isDarkMode
 import io.smileyjoe.applist.view.ButtonAction
 import io.smileyjoe.library.utils.Color
 import io.smileyjoe.library.utils.Extensions.layoutListener
