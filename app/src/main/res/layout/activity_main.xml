@@ -175,29 +175,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <io.smileyjoe.applist.view.AlphabetLayout
-        android:id="@+id/layout_alphabet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginEnd="@dimen/padding_small"
-        app:view_header="@id/text_section"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/text_section"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:padding="@dimen/padding_medium"
-        android:layout_marginEnd="@dimen/padding_small"
-        style="@style/Text.Heading.Medium"
-        android:background="@drawable/bg_circle"
-        android:backgroundTint="?attr/colorSurfaceContainerHigh"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintEnd_toStartOf="@id/layout_alphabet"
-        app:layout_constraintTop_toTopOf="@id/layout_alphabet"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.PagerAdapterAppList
@@ -27,6 +28,7 @@ import io.smileyjoe.applist.extensions.SplashScreenExt.removeOnPreDrawListener
 import io.smileyjoe.applist.fragment.AppDetailsFragment
 import io.smileyjoe.applist.fragment.AppListFragment
 import io.smileyjoe.applist.fragment.SearchResultsFragment
+import io.smileyjoe.applist.interfaces.FabActivity
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.objects.Filter
 import io.smileyjoe.applist.util.Notify
@@ -37,7 +39,7 @@ import io.smileyjoe.library.utils.Extensions.show
 /**
  * Main activity, houses a view pager of fragments, one for each item in [Page]
  */
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), FabActivity {
 
     companion object {
         /**
@@ -73,17 +75,19 @@ class MainActivity : BaseActivity() {
     // only remove the splash screen if the activity has fully loaded, so keep track of that //
     private var loaded = false
 
+    override val fab: ExtendedFloatingActionButton
+        get() = binding.fabAdd
 
     // listen to the backstack to show or hide the fab and bottom nav //
     private val onDetailsBackstackListener: OnBackStackChangedListener =
         OnBackStackChangedListener {
             supportFragmentManager.findFragmentByTag(AppDetailsFragment.TAG)?.let { _ ->
                 // if the AppDetailsFragment is on the backstack, hide the fab and bottom nav //
-                binding.fabAdd.hide()
+                hideFab()
                 binding.bottomNavigation.hide()
             } ?: run {
                 // else show them and remove the listener //
-                binding.fabAdd.show()
+                showFab()
                 binding.bottomNavigation.show()
                 window.statusBarColor = Color.TRANSPARENT
                 supportFragmentManager.removeOnBackStackChangedListener(onDetailsBackstackListener)
@@ -128,20 +132,7 @@ class MainActivity : BaseActivity() {
         },
         // show the details when an item is selected //
         onItemSelected = { appDetail -> showApp(appDetail) },
-        getFilter = { filter },
-        onAppListScroll = { state, topItem ->
-            when (state) {
-                AppListFragment.OnScroll.State.STOPPED -> binding.layoutAlphabet.hide(2000)
-                AppListFragment.OnScroll.State.QUICK -> binding.layoutAlphabet.show()
-                else -> {
-                    // do nothing //
-                }
-            }
-
-            topItem?.name?.first()?.let {
-                binding.layoutAlphabet.highlightLetter(it)
-            }
-        }
+        getFilter = { filter }
     )
 
     private var searchResultsFragment: SearchResultsFragment? = null
@@ -172,20 +163,6 @@ class MainActivity : BaseActivity() {
                 binding.pagerApps.currentItem = Page.fromId(item.itemId).position
                 true
             }
-            layoutAlphabet.apply {
-                onShow = {
-                    fabAdd.hide()
-                }
-                onHide = {
-                    fabAdd.show()
-                }
-                onSelected = {
-                    show()
-                    pagerAdapterMain.fragments.forEach { t, u ->
-                        u.get()?.scrollTo(it)
-                    }
-                }
-            }
         }
 
         setupFab()
@@ -202,7 +179,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showApp(app: AppDetail) {
-        binding.layoutAlphabet.hide()
         binding.searchView.close {
             supportFragmentManager.addOnBackStackChangedListener(onDetailsBackstackListener)
 
@@ -227,7 +203,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun setupFab() = binding.fabAdd.apply {
+    private fun setupFab() = fab.apply {
         setOnClickListener { view ->
             saveAppResult.launch(
                 SaveAppActivity.getIntent(

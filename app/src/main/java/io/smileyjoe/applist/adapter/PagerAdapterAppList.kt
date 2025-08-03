@@ -15,8 +15,7 @@ class PagerAdapterAppList(
     private val activity: FragmentActivity,
     private val onLoadComplete: OnLoadComplete? = null,
     private val onItemSelected: OnItemSelected? = null,
-    private val getFilter: GetFilter? = null,
-    private val onAppListScroll: AppListFragment.OnScroll? = null
+    private val getFilter: GetFilter? = null
 ) : FragmentStateAdapter(activity) {
 
     // keep track of the fragments so we can update them with filtes //
@@ -42,7 +41,6 @@ class PagerAdapterAppList(
             onLoadComplete = this@PagerAdapterAppList.onLoadComplete
             onItemSelected = this@PagerAdapterAppList.onItemSelected
             getFilter = this@PagerAdapterAppList.getFilter
-            onScroll = this@PagerAdapterAppList.onAppListScroll
         }
         fragments[position] = WeakReference(fragment)
         return fragment

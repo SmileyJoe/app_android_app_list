@@ -20,6 +20,7 @@ import io.smileyjoe.applist.extensions.RecyclerViewExt.POSITION_BOTTOM
 import io.smileyjoe.applist.extensions.RecyclerViewExt.POSITION_TOP
 import io.smileyjoe.applist.extensions.RecyclerViewExt.position
 import io.smileyjoe.applist.extensions.RecyclerViewExt.smoothScrollTo
+import io.smileyjoe.applist.interfaces.FabActivity
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
@@ -88,7 +89,6 @@ class AppListFragment : Fragment() {
     var onLoadComplete: OnLoadComplete? = null
     var onItemSelected: OnItemSelected? = null
     var getFilter: GetFilter? = null
-    var onScroll: OnScroll? = null
     private var externalScroll: Boolean = false
 
     override fun onAttach(context: Context) {
@@ -117,8 +117,25 @@ class AppListFragment : Fragment() {
 
         populateList()
         handleDisplayView()
+        handleQuickScroll()
 
         return binding.root
+    }
+
+    private fun handleQuickScroll(){
+        val fabActivity = requireActivity() as? FabActivity
+        binding.layoutAlphabet.apply {
+            onShow = {
+                fabActivity?.hideFab()
+            }
+            onHide = {
+                fabActivity?.showFab()
+            }
+            onSelected = {
+                show()
+                scrollTo(it)
+            }
+        }
     }
 
     private fun onAppListScroll(distance: Int) {
@@ -137,7 +154,17 @@ class AppListFragment : Fragment() {
             appDetail = appDetailAdapter.getItem(position)
         }
 
-        onScroll?.onScroll(state, appDetail)
+        when (state) {
+            AppListFragment.OnScroll.State.STOPPED -> binding.layoutAlphabet.hide(2000)
+            AppListFragment.OnScroll.State.QUICK -> binding.layoutAlphabet.show()
+            else -> {
+                // do nothing //
+            }
+        }
+
+        appDetail?.name?.first()?.let {
+            binding.layoutAlphabet.highlightLetter(it)
+        }
     }
 
     /**
@@ -148,7 +175,10 @@ class AppListFragment : Fragment() {
             page = page,
             saveListener = { app -> app.db.save(requireActivity()) },
             deleteListener = { app -> app.db.delete(requireActivity()) },
-            onItemSelected = this@AppListFragment.onItemSelected,
+            onItemSelected = {
+                binding.layoutAlphabet.hide()
+                this@AppListFragment.onItemSelected?.onSelected(it)
+            },
             getFilter = getFilter
         )
     }
