@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.R
+import io.smileyjoe.library.recycler.HeadingDecoration
 import io.smileyjoe.library.recycler.RecyclerViewExt.isLastItem
 import io.smileyjoe.library.utils.Extensions.setExt
 

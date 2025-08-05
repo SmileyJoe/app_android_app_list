@@ -1,4 +1,4 @@
-package io.smileyjoe.applist.extensions
+package io.smileyjoe.library.utils
 
 object IntExt {
 

@@ -6,8 +6,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
 import androidx.annotation.ColorInt
-import io.smileyjoe.applist.extensions.IntExt.max
-import io.smileyjoe.applist.extensions.IntExt.min
+import io.smileyjoe.library.utils.IntExt.max
+import io.smileyjoe.library.utils.IntExt.min
 
 object StringExt {
 

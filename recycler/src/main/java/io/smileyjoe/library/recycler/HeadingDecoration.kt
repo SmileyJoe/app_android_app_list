@@ -1,16 +1,15 @@
-package io.smileyjoe.applist.decoration
+package io.smileyjoe.library.recycler
 
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
-import io.smileyjoe.applist.R
-import io.smileyjoe.applist.databinding.DecorationHeadingBinding
-import io.smileyjoe.applist.extensions.IntExt.max
 import io.smileyjoe.library.recycler.RecyclerViewExt.drawLayout
 import io.smileyjoe.library.recycler.RecyclerViewExt.drawLayoutOver
 import io.smileyjoe.library.recycler.RecyclerViewExt.getLayoutOffset
+import io.smileyjoe.library.recycler.databinding.DecorationHeadingBinding
+import io.smileyjoe.library.utils.IntExt.max
 
 /**
  * [RecyclerView.ItemDecoration] that shows a [DecorationHeadingBinding] view

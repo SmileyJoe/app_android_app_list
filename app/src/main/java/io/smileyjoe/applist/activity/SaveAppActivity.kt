@@ -201,7 +201,7 @@ class SaveAppActivity : BaseActivity() {
      * Hide the progress if it is showing
      */
     private fun hideProgress() {
-        progressDialog?.show()
+        progressDialog?.hide()
     }
 
     /**
