@@ -67,6 +67,8 @@ class TagInputEditText : AppCompatMultiAutoCompleteTextView {
                         // the end when they are added externally //
                         .plus(" ")
                 )
+                // the cursor needs to be at the end of input //
+                setSelection(text.length)
             }
         }
 
