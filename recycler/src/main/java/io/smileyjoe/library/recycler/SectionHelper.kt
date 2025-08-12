@@ -15,7 +15,7 @@ import io.smileyjoe.library.utils.ViewExt.measure
  *
  * This just makes sure that regardless of the position callbacks, it will be reset correctly.
  */
-fun DecorationHeadingBinding.resetHeading() {
+internal fun DecorationHeadingBinding.resetHeading() {
     textHeading.apply {
         layout(
             paddingStart,
@@ -28,16 +28,16 @@ fun DecorationHeadingBinding.resetHeading() {
 }
 
 /**
- * Helper class for keeping track of headers when using [HeadingDecoration]
+ * Helper class for keeping track of headers when using [SectionDecoration]
  *
  * We need to scroll headers on and off the screen, but not all headers are known all the
  * time as the [RecyclerView] only loads in what it needs, so this keeps track of them, caches
  * them, and makes sure next and previous ones are available
  *
- * @param recyclerView that the [HeadingDecoration] is added to
- * @see [HeadingDecoration]
+ * @param recyclerView that the [SectionDecoration] is added to
+ * @see [SectionDecoration]
  */
-class HeadingHelper(
+internal class HeadingHelper(
     private val recyclerView: RecyclerView
 ) {
 

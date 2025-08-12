@@ -26,7 +26,7 @@ import io.smileyjoe.library.utils.IntExt.max
  * binding.root.addHeader("Header")
  * ```
  */
-open class HeadingDecoration : RecyclerView.ItemDecoration() {
+open class SectionDecoration : RecyclerView.ItemDecoration() {
 
     companion object {
         /**
@@ -35,7 +35,7 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
          * @param header text to show
          */
         fun View.addHeader(header: String?) {
-            setTag(R.id.tag_header, header)
+            setTag(R.id.tag_section, header)
         }
     }
 
@@ -50,16 +50,16 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
      *
      * @return the header text, or null if nothing is set
      */
-    private fun View.getHeader(): String? =
-        getTag(R.id.tag_header)?.toString()
+    private fun View.getSection(): String? =
+        getTag(R.id.tag_section)?.toString()
 
     /**
      * Check if the view has a header set
      *
      * @return true if there is a header, false otherwise
      */
-    protected fun View.hasHeader(): Boolean =
-        !getHeader().isNullOrEmpty()
+    protected fun View.hasSection(): Boolean =
+        !getSection().isNullOrEmpty()
 
     /**
      * Get the instance of the [HeadingHelper] or create it
@@ -100,7 +100,7 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
         state: RecyclerView.State
     ) {
         val helper = getHelper(recyclerView)
-        row.getHeader()?.let { tag ->
+        row.getSection()?.let { tag ->
             getLayoutOffset(outRect, helper.getBinding(tag).root)
         }
     }
@@ -226,9 +226,9 @@ open class HeadingDecoration : RecyclerView.ItemDecoration() {
      */
     private fun RecyclerView.getHeaderRows(): List<Pair<View, String>> =
         children.filter {
-            it.hasHeader()
+            it.hasSection()
         }.map {
-            Pair(it, it.getHeader()!!)
+            Pair(it, it.getSection()!!)
         }.toList()
 
 }

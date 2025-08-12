@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import com.google.android.material.color.MaterialColors
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.databinding.RowSearchResultBinding
-import io.smileyjoe.library.recycler.HeadingDecoration.Companion.addHeader
+import io.smileyjoe.library.recycler.SectionDecoration.Companion.addHeader
 import io.smileyjoe.applist.extensions.StringExt.highlight
 import io.smileyjoe.applist.extensions.StringExt.removeBreaks
 import io.smileyjoe.applist.extensions.StringExt.summary

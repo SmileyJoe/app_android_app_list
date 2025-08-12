@@ -10,18 +10,15 @@ import io.smileyjoe.applist.db.Icon
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.view.ButtonProgress
+import io.smileyjoe.library.recycler.ViewHolder
 
 /**
  * View holder for the details row
  */
-class AppDetailViewHolder : RecyclerView.ViewHolder {
+class AppDetailViewHolder(parent: ViewGroup, var page: Page) :
+    ViewHolder<AppDetail, RowAppDetailsBinding>(parent, RowAppDetailsBinding::inflate) {
 
-    /**
-     * Callback for when an item is selected
-     */
-    fun interface OnItemSelected {
-        fun onSelected(appDetail: AppDetail)
-    }
+    fun interface OnItemSelected : ViewHolder.OnItemSelected<AppDetail>
 
     /**
      * Callback for when the details need to be updated
@@ -32,33 +29,19 @@ class AppDetailViewHolder : RecyclerView.ViewHolder {
         fun onUpdate(appDetail: AppDetail)
     }
 
-    var binding: RowAppDetailsBinding
-    var page: Page
     var saveListener: Listener? = null
     var deleteListener: Listener? = null
-    var onItemSelected: OnItemSelected? = null
-
-    constructor(
-        parent: ViewGroup,
-        page: Page
-    ) : this(RowAppDetailsBinding.inflate(LayoutInflater.from(parent.context), parent, false), page)
-
-    constructor(view: RowAppDetailsBinding, page: Page) : super(view.root) {
-        this.binding = view
-        this.page = page
-    }
 
     /**
      * Populate the row with the provided details
      *
      * @param app app details
      */
-    fun bind(app: AppDetail) {
+    override fun bind(app: AppDetail) {
         binding.apply {
             textTitle.setText(app.name)
             textPackage.setText(app.appPackage)
             textInstalled.isVisible = page == Page.INSTALLED && app.isInstalled
-            root.setOnClickListener { onItemSelected?.onSelected(app) }
             buttonSave.apply {
                 onEnabledClick { save(app) }
                 onDisabledClick { deleteListener?.onUpdate(app) }

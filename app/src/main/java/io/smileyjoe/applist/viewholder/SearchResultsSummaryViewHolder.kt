@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.smileyjoe.applist.databinding.RowSearchResultSummaryBinding
 import io.smileyjoe.applist.db.Icon
-import io.smileyjoe.library.recycler.HeadingDecoration.Companion.addHeader
+import io.smileyjoe.library.recycler.SectionDecoration.Companion.addHeader
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 

@@ -1,6 +1,6 @@
 package io.smileyjoe.library.recycler
 
-interface AlphabetLayoutItem {
+interface SectionItem {
 
     val section: Char?
 

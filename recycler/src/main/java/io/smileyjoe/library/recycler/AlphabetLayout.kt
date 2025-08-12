@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -117,7 +119,10 @@ class AlphabetLayout : LinearLayout {
         val newHeading = pair.text.first()
         if (newHeading != currentHeading) {
             currentHeading = newHeading
-            if (!fromExternal) onSelected?.invoke(newHeading)
+            if (!fromExternal) {
+                pair.view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                onSelected?.invoke(newHeading)
+            }
             if (isVisible) headingView?.apply {
                 isVisible = true
                 text = currentHeading.toString()
@@ -183,8 +188,11 @@ class AlphabetLayout : LinearLayout {
         }
     }
 
+    private val Pair<TextView, Rect>.view: TextView
+        get() = first
+
     private val Pair<TextView, Rect>.text: CharSequence
-        get() = first.text
+        get() = view.text
 
     private val Pair<TextView, Rect>.hitRect: Rect
         get() = second

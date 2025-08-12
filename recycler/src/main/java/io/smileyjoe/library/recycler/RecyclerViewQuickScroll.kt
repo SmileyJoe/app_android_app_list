@@ -9,15 +9,15 @@ import io.smileyjoe.library.recycler.RecyclerViewExt.position
 import io.smileyjoe.library.recycler.RecyclerViewExt.smoothScrollTo
 import kotlin.math.absoluteValue
 
-class AlphabetLayoutRecyclerView : RecyclerView {
+class RecyclerViewQuickScroll : RecyclerView {
 
     private var externalScroll: Boolean = false
     private var alphabetLayoutResId: Int = Resources.ID_NULL
     private val alphabetLayout: AlphabetLayout? by lazy {
         (parent as? ViewGroup)?.findViewById(alphabetLayoutResId) as? AlphabetLayout
     }
-    private val alphabetLayoutAdapter by lazy {
-        adapter as? AlphabetLayoutAdapter<*>
+    private val sectionAdapter by lazy {
+        adapter as? SectionAdapter<*>
     }
 
     enum class State {
@@ -79,14 +79,14 @@ class AlphabetLayoutRecyclerView : RecyclerView {
         }
 
         if (!externalScroll) {
-            alphabetLayoutAdapter?.getItem(position)?.section?.let {
+            sectionAdapter?.getItem(position)?.section?.let {
                 alphabetLayout?.highlightLetter(it)
             }
         }
     }
 
     fun scrollTo(section: Char) {
-        alphabetLayoutAdapter?.getSectionPosition(section)?.let {
+        sectionAdapter?.getSectionPosition(section)?.let {
             externalScroll = true
             smoothScrollTo(it)
         }

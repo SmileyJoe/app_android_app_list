@@ -130,12 +130,13 @@ class AppListFragment : Fragment() {
             page = page,
             saveListener = { app -> app.db.save(requireActivity()) },
             deleteListener = { app -> app.db.delete(requireActivity()) },
-            onItemSelected = {
+            getFilter = getFilter
+        ).apply {
+            onItemClicked {
                 binding.layoutAlphabet.hide()
                 this@AppListFragment.onItemSelected?.onSelected(it)
-            },
-            getFilter = getFilter
-        )
+            }
+        }
     }
 
     /**

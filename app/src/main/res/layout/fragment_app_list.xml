@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <io.smileyjoe.library.recycler.AlphabetLayoutRecyclerView
+    <io.smileyjoe.library.recycler.RecyclerViewQuickScroll
         android:id="@+id/recycler_app_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,31 +44,31 @@
         android:id="@+id/layout_alphabet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginEnd="@dimen/padding_small"
+        android:background="@drawable/bg_pill"
+        android:orientation="vertical"
         android:paddingTop="@dimen/padding_medium"
         android:paddingBottom="@dimen/padding_medium"
-        android:background="@drawable/bg_pill"
-        app:item_paddingStart="@dimen/padding_small"
-        app:item_paddingEnd="@dimen/padding_small"
-        app:view_header="@id/text_section"
-        app:layout_constraintTop_toTopOf="parent"
+        app:item_paddingEnd="@dimen/padding_medium"
+        app:item_paddingStart="@dimen/padding_medium"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:view_header="@id/text_section" />
 
     <TextView
         android:id="@+id/text_section"
+        style="@style/Text.Heading.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:padding="@dimen/padding_medium"
         android:layout_marginEnd="@dimen/padding_small"
-        style="@style/Text.Heading.Medium"
         android:background="@drawable/bg_circle"
         android:backgroundTint="?attr/colorSurfaceContainerHigh"
+        android:padding="@dimen/padding_medium"
+        android:textAlignment="center"
         android:textColor="?attr/colorPrimary"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/layout_alphabet"
-        app:layout_constraintTop_toTopOf="@id/layout_alphabet"/>
+        app:layout_constraintTop_toTopOf="@id/layout_alphabet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
