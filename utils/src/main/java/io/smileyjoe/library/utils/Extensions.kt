@@ -324,4 +324,7 @@ object Extensions {
             task()
         }
     }
+
+    fun Rect.containsY(y: Int) =
+        contains(centerX(), y)
 }

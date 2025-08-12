@@ -13,6 +13,7 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import io.smileyjoe.library.recycler.databinding.ViewLayoutAlphabetItemBinding
 import io.smileyjoe.library.utils.Color.Companion.toColorStateList
+import io.smileyjoe.library.utils.Extensions.containsY
 import io.smileyjoe.library.utils.Extensions.runOnUiThread
 import io.smileyjoe.library.utils.Extensions.setPadding
 import io.smileyjoe.library.utils.Language
@@ -109,7 +110,7 @@ class AlphabetLayout : LinearLayout {
             MotionEvent.ACTION_MOVE -> {
                 show()
                 letterViews.firstOrNull {
-                    it.hitRect.contains(event.x.toInt(), event.y.toInt())
+                    it.hitRect.containsY(event.y.toInt())
                 }?.let {
                     highlightLetter(it)
                 }
