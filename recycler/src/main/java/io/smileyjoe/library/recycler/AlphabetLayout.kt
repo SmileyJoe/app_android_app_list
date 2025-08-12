@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -38,8 +37,16 @@ class AlphabetLayout : LinearLayout {
     var itemPaddingStart: Int = 0
     var itemPaddingEnd: Int = 0
     private var timerHide: TimerTask? = null
-
     private var currentHeading: Char? = null
+    var availableLetters: List<Char>? = null
+        set(value) {
+            value?.let {
+                letterViews.forEach { pair ->
+                    pair.view.isEnabled = it.contains(pair.text.first().uppercaseChar())
+                }
+            }
+            field = value
+        }
 
     constructor(context: Context) : super(context, null, R.attr.alphabetLayoutStyle) {
         init(null)
@@ -84,6 +91,7 @@ class AlphabetLayout : LinearLayout {
         Language.from(context).alphabet.forEach {
             val binding = ViewLayoutAlphabetItemBinding.inflate(layoutInflater).apply {
                 root.text = it.toString().uppercase()
+                root.isEnabled = availableLetters?.contains(it.uppercaseChar()) ?: false
                 setPadding(start = itemPaddingStart, end = itemPaddingEnd)
             }
             addView(binding.root)
@@ -120,11 +128,11 @@ class AlphabetLayout : LinearLayout {
         if (newHeading != currentHeading) {
             currentHeading = newHeading
             if (!fromExternal) {
-                pair.view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 onSelected?.invoke(newHeading)
             }
-            if (isVisible) headingView?.apply {
+            if (isVisible && pair.view.isEnabled) headingView?.apply {
                 isVisible = true
+                pair.view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 text = currentHeading.toString()
                 y = pair.hitRect.exactCenterY() + top - (measuredHeight / 2)
                 onLayout {

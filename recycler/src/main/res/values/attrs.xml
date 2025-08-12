@@ -9,7 +9,7 @@
         <attr name="item_paddingEnd" format="dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="AlphabetLayoutRecyclerView">
+    <declare-styleable name="RecyclerViewQuickScroll">
         <attr name="layout_alphabetLayout" format="reference"/>
     </declare-styleable>
 

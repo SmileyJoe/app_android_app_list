@@ -1,6 +1,5 @@
 package io.smileyjoe.library.recycler
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 
 interface SectionAdapter<T : SectionItem> {
@@ -17,7 +16,6 @@ interface SectionAdapter<T : SectionItem> {
             displayItems?.forEachIndexed { index, item ->
                 if (item.section == section) {
                     position = index
-                    Log.d("AlphabetThings", "Found $position")
                     return@breakable
                 }
             }
@@ -25,5 +23,10 @@ interface SectionAdapter<T : SectionItem> {
 
         return position
     }
+
+    fun getAllSections(): List<Char>? =
+        displayItems?.mapNotNull {
+            it.section
+        }?.distinct()
 
 }

@@ -14,7 +14,9 @@ class RecyclerViewQuickScroll : RecyclerView {
     private var externalScroll: Boolean = false
     private var alphabetLayoutResId: Int = Resources.ID_NULL
     private val alphabetLayout: AlphabetLayout? by lazy {
-        (parent as? ViewGroup)?.findViewById(alphabetLayoutResId) as? AlphabetLayout
+        ((parent as? ViewGroup)?.findViewById(alphabetLayoutResId) as? AlphabetLayout).apply {
+            this?.availableLetters = sectionAdapter?.getAllSections()
+        }
     }
     private val sectionAdapter by lazy {
         adapter as? SectionAdapter<*>
@@ -48,9 +50,9 @@ class RecyclerViewQuickScroll : RecyclerView {
     }
 
     private fun handleAttributes(attrs: AttributeSet?) =
-        with(context.obtainStyledAttributes(attrs, R.styleable.AlphabetLayoutRecyclerView)) {
+        with(context.obtainStyledAttributes(attrs, R.styleable.RecyclerViewQuickScroll)) {
             alphabetLayoutResId = getResourceId(
-                R.styleable.AlphabetLayoutRecyclerView_layout_alphabetLayout,
+                R.styleable.RecyclerViewQuickScroll_layout_alphabetLayout,
                 Resources.ID_NULL
             )
             recycle()
