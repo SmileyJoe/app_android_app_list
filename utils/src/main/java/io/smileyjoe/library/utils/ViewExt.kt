@@ -1,10 +1,16 @@
 package io.smileyjoe.library.utils
 
+import android.content.res.Resources
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationUtils
+import androidx.annotation.AnimRes
+import androidx.core.view.isVisible
 import io.smileyjoe.library.utils.ViewExt.addLayoutListener
 import io.smileyjoe.library.utils.ViewExt.below
 import io.smileyjoe.library.utils.ViewExt.updateSize
@@ -105,5 +111,61 @@ object ViewExt {
             getHitRect(this)
             return@with this
         }
+
+    fun View.padding(
+        start: Int = paddingStart,
+        top: Int = paddingTop,
+        end: Int = paddingEnd,
+        bottom: Int = paddingBottom
+    ) = setPadding(start, top, end, bottom)
+
+    fun View.show(@AnimRes animation: Int) {
+        animate(
+            animation = animation,
+            onStart = { isVisible = true }
+        )
+    }
+
+    fun View.hide(@AnimRes animation: Int) {
+        animate(
+            animation = animation,
+            onComplete = { isVisible = false }
+        )
+    }
+
+    fun View.animate(@AnimRes animation: Int, onStart: (() -> Unit)? = null, onComplete: (() -> Unit)? = null) {
+        if (animation != Resources.ID_NULL) {
+            AnimationUtils.loadAnimation(context, animation).also { anim ->
+                anim.setListener(
+                    onStart = onStart,
+                    onComplete = onComplete
+                )
+                startAnimation(anim)
+            }
+        } else {
+            onStart?.invoke()
+            onComplete?.invoke()
+        }
+    }
+
+    fun Animation.setListener(
+        onStart: (() -> Unit)? = null,
+        onComplete: (() -> Unit)? = null,
+        onRepeat: (() -> Unit)? = null
+    ) {
+        setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                onStart?.invoke()
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                onComplete?.invoke()
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+                onRepeat?.invoke()
+            }
+        })
+    }
 
 }

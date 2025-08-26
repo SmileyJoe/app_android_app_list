@@ -14,12 +14,15 @@ import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.AppDetailAdapter
 import io.smileyjoe.applist.databinding.FragmentAppListBinding
 import io.smileyjoe.applist.db.Db
+import io.smileyjoe.applist.drawable.LottieNoResults
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.extensions.Compat.getSerializableCompat
 import io.smileyjoe.applist.interfaces.FabActivity
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
 import io.smileyjoe.applist.viewholder.AppDetailViewHolder
+import io.smileyjoe.library.recycler.RecyclerEmptyView
+import io.smileyjoe.library.utils.ViewExt.padding
 
 
 /**
@@ -92,13 +95,7 @@ class AppListFragment : Fragment() {
         binding = FragmentAppListBinding.inflate(layoutInflater, container, false)
 
         setupAdapter()
-
-        binding.recyclerAppDetails.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = appDetailAdapter
-            setHasFixedSize(true)
-        }
-
+        setupRecycler()
         populateList()
         handleDisplayView()
         handleQuickScroll()
@@ -106,9 +103,24 @@ class AppListFragment : Fragment() {
         return binding.root
     }
 
-    private fun handleQuickScroll(){
+    private fun setupRecycler() {
+        binding.recyclerAppDetails.apply {
+            setAdapter(appDetailAdapter, LinearLayoutManager(context))
+            hasFixedSize = true
+            isRefreshEnabled = false
+            emptyView = RecyclerEmptyView(requireContext()).apply {
+                lottieImage = LottieNoResults()
+                titleResId = R.string.title_no_results
+                padding(bottom = requireContext().resources.getDimensionPixelOffset(R.dimen.padding_extra_extra_large))
+            }
+        }
+    }
+
+    private fun handleQuickScroll() {
         val fabActivity = requireActivity() as? FabActivity
         binding.layoutAlphabet.apply {
+            animShow = R.anim.slide_in_right
+            animHide = R.anim.slide_out_right
             onShow = {
                 fabActivity?.hideFab()
             }
@@ -156,22 +168,18 @@ class AppListFragment : Fragment() {
         // only one shows at a time, so set them all to GONE to start //
         var progressVisibility = View.GONE
         var recyclerVisibility = View.GONE
-        var textVisibility = View.GONE
 
         // set only the needed view to visible //
         if (isLoading) {
             progressVisibility = View.VISIBLE
-        } else if (appDetailAdapter.hasApps()) {
-            recyclerVisibility = View.VISIBLE
         } else {
-            textVisibility = View.VISIBLE
+            recyclerVisibility = View.VISIBLE
         }
 
         // update all the visibilities //
         binding.apply {
             progressLoading.visibility = progressVisibility
             recyclerAppDetails.visibility = recyclerVisibility
-            textEmpty.visibility = textVisibility
         }
     }
 

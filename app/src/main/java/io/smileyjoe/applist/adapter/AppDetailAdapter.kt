@@ -33,13 +33,18 @@ class AppDetailAdapter(
 
     // the items list is filtered, so we need to keep a record of the original and a record of what //
     // is being used by the adapter for the list //
-    override var displayItems: List<AppDetail>? = listOf()
+    var allItems: List<AppDetail>? = listOf()
+
+    // list of items, sorted by [AppDetailComparator] when set //
+    override var items: List<AppDetail>?
+        get() = super.items
         set(value) {
+            Collections.sort(value, AppDetailComparator())
             withNotNull(getFilter?.getFilter()) {
                 if (tags.isEmpty()) {
-                    field = value
+                    super.items = value
                 } else {
-                    field = value?.filter { app ->
+                    super.items = value?.filter { app ->
                         // if the app contains any of the filter tags select it //
                         app.tags?.any(tags::contains)
                             ?: run {
@@ -48,15 +53,7 @@ class AppDetailAdapter(
                     }
                 }
             }
-        }
-
-    // list of items, sorted by [AppDetailComparator] when set //
-    override var items: List<AppDetail>?
-        get() = super.items
-        set(value) {
-            Collections.sort(value, AppDetailComparator())
-            displayItems = value
-            super.items = value
+            allItems = value
         }
 
     init {
@@ -66,13 +63,13 @@ class AppDetailAdapter(
     // refresh the list, set the display items back to the full list, which will trigger the //
     // filtering //
     fun refresh() {
-        displayItems = items
+        items = allItems
         notifyDataSetChanged()
     }
 
     override fun getItem(position: Int): AppDetail? {
-        return if (displayItems?.indices?.contains(position) == true) {
-            displayItems!![position]
+        return if (items?.indices?.contains(position) == true) {
+            items!![position]
         } else {
             null
         }
@@ -84,7 +81,5 @@ class AppDetailAdapter(
             deleteListener = this@AppDetailAdapter.deleteListener
         }
 
-    fun hasApps() = displayItems?.isNotEmpty() ?: false
-
-    override fun getItemCount() = displayItems?.size ?: 0
+    fun hasApps() = items?.isNotEmpty() ?: false
 }

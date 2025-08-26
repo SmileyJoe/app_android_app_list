@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.AnimRes
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import io.smileyjoe.library.recycler.databinding.ViewLayoutAlphabetItemBinding
@@ -18,8 +20,11 @@ import io.smileyjoe.library.utils.Extensions.runOnUiThread
 import io.smileyjoe.library.utils.Extensions.setPadding
 import io.smileyjoe.library.utils.Language
 import io.smileyjoe.library.utils.ThemeUtil.getThemeColor
+import io.smileyjoe.library.utils.ViewExt.animate
+import io.smileyjoe.library.utils.ViewExt.hide
 import io.smileyjoe.library.utils.ViewExt.hitRect
 import io.smileyjoe.library.utils.ViewExt.layoutInflater
+import io.smileyjoe.library.utils.ViewExt.show
 import io.smileyjoe.library.utils.onLayout
 import java.util.Timer
 import java.util.TimerTask
@@ -32,6 +37,7 @@ class AlphabetLayout : LinearLayout {
         (parent as? ViewGroup)?.findViewById(headingResId) as? TextView
     }
     private var headingResId: Int = Resources.ID_NULL
+    private val language = Language.from(context)
     var onShow: (() -> Unit)? = null
     var onHide: (() -> Unit)? = null
     var onSelected: ((Char) -> Unit)? = null
@@ -39,15 +45,21 @@ class AlphabetLayout : LinearLayout {
     var itemPaddingEnd: Int = 0
     private var timerHide: TimerTask? = null
     private var currentHeading: Char? = null
-    var availableLetters: List<Char>? = null
+    var availableLetters: List<Char>? = language.alphabetUpper
         set(value) {
             value?.let {
                 letterViews.forEach { pair ->
-                    pair.view.isEnabled = it.contains(pair.text.first().uppercaseChar())
+                    pair.view.isEnabled = it.contains(pair.text.first())
                 }
             }
             field = value
         }
+
+    @AnimRes
+    var animShow: Int = Resources.ID_NULL
+
+    @AnimRes
+    var animHide: Int = Resources.ID_NULL
 
     constructor(context: Context) : super(context, null, R.attr.alphabetLayoutStyle) {
         init(null)
@@ -70,8 +82,6 @@ class AlphabetLayout : LinearLayout {
     }
 
     private fun init(attrs: AttributeSet?) {
-        visibility = INVISIBLE
-
         handleAttributes(attrs)
         addLetterViews()
         updateStyle()
@@ -84,15 +94,19 @@ class AlphabetLayout : LinearLayout {
                 letterViews.add(Pair(it, it.hitRect))
             }
         }
-
-        isVisible = false
+        highlightLetter(letterViews.first())
+        Log.d("LetterThings", "Available: ${letterViews.first()}")
+        availableLetters?.first()?.let {
+            Log.d("LetterThings", "On Drawn: $it")
+            highlightLetter(it)
+        }
     }
 
     private fun addLetterViews() {
-        Language.from(context).alphabet.forEach {
+        language.alphabetUpper.forEach {
             val binding = ViewLayoutAlphabetItemBinding.inflate(layoutInflater).apply {
-                root.text = it.toString().uppercase()
-                root.isEnabled = availableLetters?.contains(it.uppercaseChar()) ?: false
+                root.text = it.toString()
+                root.isEnabled = availableLetters?.contains(it) ?: false
                 setPadding(start = itemPaddingStart, end = itemPaddingEnd)
             }
             addView(binding.root)
@@ -105,22 +119,30 @@ class AlphabetLayout : LinearLayout {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        parent.requestDisallowInterceptTouchEvent(true)
-        when (event?.action) {
-            MotionEvent.ACTION_MOVE -> {
-                show()
-                letterViews.firstOrNull {
-                    it.hitRect.containsY(event.y.toInt())
-                }?.let {
-                    highlightLetter(it)
+        if(isVisible) {
+            parent.requestDisallowInterceptTouchEvent(true)
+            when (event?.action) {
+                MotionEvent.ACTION_MOVE -> {
+                    show()
+                    letterViews.firstOrNull {
+                        it.hitRect.containsY(event.y.toInt())
+                    }?.let {
+                        highlightLetter(it)
+                    }
+                    return true
                 }
-                return true
-            }
+                MotionEvent.ACTION_UP -> {
+                    hide()
+                    return true
+                }
 
-            else -> {
-                hide()
-                return true
+                else -> {
+                    return true
+                }
             }
+        } else {
+            parent.requestDisallowInterceptTouchEvent(false)
+            return super.dispatchTouchEvent(event)
         }
     }
 
@@ -131,8 +153,8 @@ class AlphabetLayout : LinearLayout {
             if (!fromExternal) {
                 onSelected?.invoke(newHeading)
             }
+            Log.d("LetterThings", "Highlight $isVisible - ${pair.view.isEnabled} - $headingView")
             if (isVisible && pair.view.isEnabled) headingView?.apply {
-                isVisible = true
                 pair.view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 text = currentHeading.toString()
                 y = pair.hitRect.exactCenterY() + top - (measuredHeight / 2)
@@ -155,17 +177,18 @@ class AlphabetLayout : LinearLayout {
         cancelTimerHide()
         if (!isVisible) {
             onShow?.invoke()
-            isVisible = true
+            headingView?.show(animShow)
+            show(animShow)
         }
     }
 
     fun hide(delay: Long = 0) {
         if (delay > 0) {
             startTimerHide(delay)
-        } else {
+        } else if (isVisible) {
             currentHeading = null
-            headingView?.isVisible = false
-            isVisible = false
+            headingView?.hide(animHide)
+            hide(animHide)
             onHide?.invoke()
         }
     }

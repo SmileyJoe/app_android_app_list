@@ -44,6 +44,7 @@
     <string name="hint_app_notes">Notes</string>
     <string name="hint_search">Search</string>
 
+    <string name="title_no_results">No Results</string>
     <string name="instruction_empty_app_list">You have no applications in this category at the moment.</string>
     <string name="progress_saving">Saving &#8230;</string>
 

@@ -4,9 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import io.smileyjoe.library.recycler.RecyclerViewExt.position
-import io.smileyjoe.library.recycler.RecyclerViewExt.smoothScrollTo
 import kotlin.math.absoluteValue
 
 class RecyclerViewQuickScroll : RecyclerView {

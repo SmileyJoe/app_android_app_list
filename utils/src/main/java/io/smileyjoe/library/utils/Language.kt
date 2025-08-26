@@ -20,6 +20,8 @@ enum class Language(
             from(context.resources.configuration.locales[0] ?: Locale.ENGLISH)
     }
 
-    val alphabet: List<Char> = (firstLetter..lastLetter).toMutableList()
+    val alphabet: List<Char> = (firstLetter..lastLetter).toList()
+
+    val alphabetUpper: List<Char> = alphabet.map { it.uppercaseChar() }
 
 }

@@ -15,23 +15,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/text_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/activity_padding"
-        android:text="@string/instruction_empty_app_list"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <io.smileyjoe.library.recycler.RecyclerViewQuickScroll
         android:id="@+id/recycler_app_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:paddingBottom="@dimen/padding_small"
         android:visibility="gone"
         app:layout_alphabetLayout="@id/layout_alphabet"
@@ -69,7 +56,6 @@
         android:padding="@dimen/padding_medium"
         android:textAlignment="center"
         android:textColor="?attr/colorPrimary"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/layout_alphabet"
         app:layout_constraintTop_toTopOf="@id/layout_alphabet" />
 

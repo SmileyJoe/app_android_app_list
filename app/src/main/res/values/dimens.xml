@@ -5,6 +5,7 @@
     <dimen name="padding_medium">16dp</dimen>
     <dimen name="padding_large">24dp</dimen>
     <dimen name="padding_extra_large">32dp</dimen>
+    <dimen name="padding_extra_extra_large">64dp</dimen>
 
     <!-- Icons -->
     <dimen name="icon_small">24dp</dimen>
