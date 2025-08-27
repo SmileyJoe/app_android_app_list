@@ -15,12 +15,14 @@ import io.smileyjoe.applist.adapter.SearchResultsAdapter
 import io.smileyjoe.applist.databinding.FragmentSearchResultsBinding
 import io.smileyjoe.applist.db.Db
 import io.smileyjoe.applist.decoration.SearchResultsDecoration
+import io.smileyjoe.applist.drawable.LottieNoResults
 import io.smileyjoe.applist.enums.Page
 import io.smileyjoe.applist.enums.SearchResultsViewType
-import io.smileyjoe.library.utils.Extensions.contains
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.util.Notify
+import io.smileyjoe.library.recycler.RecyclerEmptyView
+import io.smileyjoe.library.utils.Extensions.contains
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,13 +57,17 @@ class SearchResultsFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dbReference?.addValueEventListener(AppDetailsEventListener())
-
         binding.recyclerSearchResults.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = resultsAdapter
-            addItemDecoration(SearchResultsDecoration(context))
+            emptyView = RecyclerEmptyView(requireContext()).apply {
+                lottieImage = LottieNoResults()
+                titleResId = R.string.title_no_results
+            }
+            setAdapter(resultsAdapter, LinearLayoutManager(context))
+            itemDecoration = SearchResultsDecoration(context)
+            isRefreshEnabled = false
         }
+
+        dbReference?.addValueEventListener(AppDetailsEventListener())
     }
 
     fun search(text: String) {

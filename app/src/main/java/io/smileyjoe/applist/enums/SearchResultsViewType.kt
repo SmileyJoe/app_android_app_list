@@ -1,5 +1,6 @@
 package io.smileyjoe.applist.enums
 
+import android.util.Log
 import androidx.annotation.StringRes
 import io.smileyjoe.applist.R
 import io.smileyjoe.applist.adapter.SearchResultsAdapter

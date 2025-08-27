@@ -2,12 +2,12 @@ package io.smileyjoe.library.recycler
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.smileyjoe.library.recycler.RecyclerViewExt.position
 import io.smileyjoe.library.recycler.RecyclerViewExt.smoothScrollTo
@@ -16,8 +16,15 @@ import io.smileyjoe.library.utils.Extensions.setPadding
 
 open class RecyclerView : ConstraintLayout {
 
-    private val binding: ViewRecyclerBinding
-    var isRefreshing: Boolean
+    private val binding =
+        ViewRecyclerBinding.inflate(LayoutInflater.from(context), this, true).apply {
+            recycler.setPadding(bottom = paddingBottom)
+        }
+    var isRefreshing
+        get() = binding.swipeRecycler.isRefreshing
+        set(value) {
+            binding.swipeRecycler.isRefreshing = value
+        }
     val adapter
         get() = binding.recycler.adapter
     val position
@@ -27,7 +34,6 @@ open class RecyclerView : ConstraintLayout {
         get() = binding.recycler.hasFixedSize()
     var isRefreshEnabled: Boolean = false
         set(value) {
-            Log.d("RecyclerThings", "Enabled: $value")
             binding.swipeRecycler.isEnabled = value
             field = value
         }
@@ -36,6 +42,13 @@ open class RecyclerView : ConstraintLayout {
             value?.let {
                 binding.frameEmpty.addView(it)
                 it.isVisible = false
+            }
+            field = value
+        }
+    var itemDecoration: ItemDecoration? = null
+        set(value) {
+            value?.let {
+                binding.recycler.addItemDecoration(it)
             }
             field = value
         }
@@ -50,10 +63,7 @@ open class RecyclerView : ConstraintLayout {
     )
 
     init {
-        binding = ViewRecyclerBinding.inflate(LayoutInflater.from(context), this, true)
-        binding.recycler.setPadding(bottom = paddingBottom)
         setPadding(bottom = 0)
-        isRefreshing = binding.swipeRecycler.isRefreshing
     }
 
     fun smoothScrollTo(position: Int) =
@@ -70,7 +80,6 @@ open class RecyclerView : ConstraintLayout {
             this.layoutManager = layoutManager
             this.adapter = adapter
         }
-        changeView()
     }
 
     fun onRefresh(onRefresh: SwipeRefreshLayout.OnRefreshListener) {
@@ -78,33 +87,31 @@ open class RecyclerView : ConstraintLayout {
     }
 
     fun showError() {
-        binding.swipeRecycler.isRefreshing = false
-        binding.swipeRecycler.visibility = GONE
-        binding.frameEmpty.visibility = GONE
+        binding.apply {
+            swipeRecycler.isRefreshing = false
+            swipeRecycler.isVisible = false
+            frameEmpty.isVisible = false
+            frameError.isVisible = true
+        }
         emptyView?.isVisible = false
-        binding.frameError.visibility = VISIBLE
     }
 
     override fun setOnScrollChangeListener(l: OnScrollChangeListener?) {
         binding.recycler.setOnScrollChangeListener(l)
     }
 
-    private fun changeView() =
-        if (binding.recycler.adapter == null || binding.recycler.adapter!!.itemCount == 0) {
-            binding.apply {
-                swipeRecycler.visibility = GONE
-                frameEmpty.visibility = VISIBLE
-                emptyView?.isVisible = true
-                binding.frameError.visibility = GONE
-            }
-        } else {
-            binding.apply {
-                swipeRecycler.visibility = VISIBLE
-                frameEmpty.visibility = GONE
-                emptyView?.isVisible = false
-                binding.frameError.visibility = GONE
-            }
+    private fun changeView() {
+        val hasItems = adapter?.let {
+            it.itemCount > 0
+        } ?: false
+
+        binding.apply {
+            swipeRecycler.isVisible = hasItems
+            frameEmpty.isVisible = !hasItems
+            binding.frameError.isVisible = false
         }
 
+        emptyView?.isVisible = !hasItems
+    }
 
 }

@@ -19,12 +19,12 @@ object StringExt {
      * @return a list of all the index positions of the given [text]
      */
     fun String.indexOfAll(text: String, start: Int = 0): List<Int> {
-        var index = indexOf(text, start)
+        var index = indexOf(text, start, ignoreCase = true)
         val list = ArrayList<Int>()
         // while an index is found, add it to the list and look again, starting at that point
         while (index > -1) {
             list.add(index)
-            index = indexOf(text, index + 1)
+            index = indexOf(text, index + 1, ignoreCase = true)
         }
         return list
     }

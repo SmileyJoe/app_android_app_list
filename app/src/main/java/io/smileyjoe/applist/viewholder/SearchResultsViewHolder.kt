@@ -14,29 +14,22 @@ import io.smileyjoe.applist.extensions.StringExt.summary
 import io.smileyjoe.applist.interfaces.OnAppSelected
 import io.smileyjoe.applist.objects.AppDetail
 
-class SearchResultsViewHolder : HeaderViewHolder<AppDetail> {
+class SearchResultsViewHolder : HeaderViewHolder<AppDetail, RowSearchResultBinding> {
 
-    private val binding: RowSearchResultBinding
     private val onItemSelected: OnAppSelected
     private val highlightColor: Int
 
     constructor(
         parent: ViewGroup,
         onAppSelected: OnAppSelected
-    ) : this(
-        RowSearchResultBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-        onAppSelected
-    )
-
-    constructor(
-        view: RowSearchResultBinding,
-        onAppSelected: OnAppSelected
-    ) : super(view.root) {
-        binding = view
+    ) : super(parent, RowSearchResultBinding::inflate) {
         onItemSelected = onAppSelected
         highlightColor =
             MaterialColors.getColor(binding.root.context, R.attr.colorPrimary, Color.WHITE)
     }
+
+    override fun bind(item: AppDetail) =
+        bind(item, null, null)
 
     override fun bind(app: AppDetail, searchTerm: String?, header: String?) {
         binding.apply {

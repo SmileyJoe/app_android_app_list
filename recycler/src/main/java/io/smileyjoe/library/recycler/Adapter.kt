@@ -1,5 +1,6 @@
 package io.smileyjoe.library.recycler
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class Adapter<T, U : ViewHolder<T, *>> : RecyclerView.Adapter<U>() {
@@ -21,9 +22,14 @@ abstract class Adapter<T, U : ViewHolder<T, *>> : RecyclerView.Adapter<U>() {
         return items?.size ?: 0
     }
 
-    open fun getItem(position: Int): T? {
-        return items?.get(position)
-    }
+    open fun getItem(position: Int): T? =
+        items?.let {
+            if (position in 0..it.size) {
+                it.get(position)
+            } else {
+                null
+            }
+        }
 
     fun onItemClicked(onClick: (T) -> Unit) {
         this.onClick = onClick

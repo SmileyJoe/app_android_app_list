@@ -95,9 +95,7 @@ class AlphabetLayout : LinearLayout {
             }
         }
         highlightLetter(letterViews.first())
-        Log.d("LetterThings", "Available: ${letterViews.first()}")
         availableLetters?.first()?.let {
-            Log.d("LetterThings", "On Drawn: $it")
             highlightLetter(it)
         }
     }
@@ -153,7 +151,7 @@ class AlphabetLayout : LinearLayout {
             if (!fromExternal) {
                 onSelected?.invoke(newHeading)
             }
-            Log.d("LetterThings", "Highlight $isVisible - ${pair.view.isEnabled} - $headingView")
+
             if (isVisible && pair.view.isEnabled) headingView?.apply {
                 pair.view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 text = currentHeading.toString()

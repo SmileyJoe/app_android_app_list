@@ -1,8 +1,8 @@
 package io.smileyjoe.applist.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import io.smileyjoe.applist.enums.SearchResultsViewType
 import io.smileyjoe.applist.enums.SearchResultsViewType.DETAILS
 import io.smileyjoe.applist.enums.SearchResultsViewType.TITLE
@@ -14,11 +14,11 @@ import io.smileyjoe.applist.objects.AppDetail
 import io.smileyjoe.applist.viewholder.HeaderViewHolder
 import io.smileyjoe.applist.viewholder.SearchResultsSummaryViewHolder
 import io.smileyjoe.applist.viewholder.SearchResultsViewHolder
+import io.smileyjoe.library.recycler.Adapter
 
 /**
  * Adapter to show a list of search results
  *
- * @param items
  * @param onAppSelected
  * @see SearchResultsFragment
  * @see SearchResultsViewType
@@ -26,19 +26,8 @@ import io.smileyjoe.applist.viewholder.SearchResultsViewHolder
  * @see SearchResultsSummaryViewHolder
  */
 class SearchResultsAdapter(
-    items: List<AppDetail> = ArrayList(),
     private val onAppSelected: OnAppSelected
-) : RecyclerView.Adapter<HeaderViewHolder<AppDetail>>() {
-
-    /**
-     * Items to show
-     */
-    var items: List<AppDetail> = items
-        set(value) {
-            field = value
-            viewTypes.clear()
-            notifyDataSetChanged()
-        }
+) : Adapter<AppDetail, HeaderViewHolder<AppDetail, *>>() {
 
     /**
      * Search term that was used to filter the [items]
@@ -47,31 +36,34 @@ class SearchResultsAdapter(
 
     private val viewTypes = mutableMapOf<Int, SearchResultsViewType>()
 
-    override fun getItemViewType(position: Int): Int =
-        if (position in 0..items.size) {
-            // if the type is saved, return it, else get the type
-            viewTypes[position] ?: SearchResultsViewType.get(getItem(position), searchTerm)
-        } else {
-            // else we don't know what it is
-            UNKNOWN
-        }.also {
-            // also save the view type if it's not saved already
-            if (!viewTypes.containsKey(position)) viewTypes[position] = it
-        }.id
+    override var items: List<AppDetail>?
+        get() = super.items
+        set(value) {
+            viewTypes.clear()
+            super.items = value
+        }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        when (SearchResultsViewType.fromId(viewType)) {
+    override fun getItemViewType(position: Int): Int =
+        (getItem(position)?.let {
+            // if the type is saved, return it, else get the type
+            viewTypes[position] ?: SearchResultsViewType.get(it, searchTerm)
+        } ?: UNKNOWN)
+            .also {
+                // also save the view type if it's not saved already
+                if (!viewTypes.containsKey(position)) viewTypes[position] = it
+            }.id
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : HeaderViewHolder<AppDetail, *> {
+        return when (SearchResultsViewType.fromId(viewType)) {
             TITLE -> SearchResultsSummaryViewHolder(parent, onAppSelected)
             DETAILS -> SearchResultsViewHolder(parent, onAppSelected)
             UNKNOWN -> SearchResultsViewHolder(parent, onAppSelected)
         }
+    }
 
-    override fun onBindViewHolder(holder: HeaderViewHolder<AppDetail>, position: Int) =
-        holder.bind(getItem(position), searchTerm, getHeader(holder.context, position))
-
-    override fun getItemCount() = items.size
-
-    fun getItem(position: Int) = items[position]
+    override fun onBindViewHolder(holder: HeaderViewHolder<AppDetail, *>, position: Int) {
+        getItem(position)?.let { holder.bind(it, searchTerm, getHeader(holder.context, position)) }
+    }
 
     /**
      * Get the header based on the [SearchResultsViewType]
